@@ -1,0 +1,20 @@
+{
+    "name": "flowcode/amulen-shop-bundle",
+    "description": "Description of project AmulenShopBundle.",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Juan Manuel Aguero",
+            "email": "jaguero@flowcode.com.ar"
+        }
+    ],
+    "require": {
+        "php": ">=5.3.3",
+        "flowcode/amulen-classification-bundle": "dev-master",
+        "symfony-cmf/seo-bundle": "1.0.*@dev",
+        "helios-ag/fm-elfinder-bundle": "1.x",
+        "knplabs/knp-paginator-bundle": "~2.4",
+        "stof/doctrine-extensions-bundle": "~1.1@dev",
+        "egeloen/ckeditor-bundle": "~2.0"
+    }
+}
