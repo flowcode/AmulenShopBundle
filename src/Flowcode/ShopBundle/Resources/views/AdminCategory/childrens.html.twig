@@ -1,4 +1,4 @@
-{% extends '::backend.html.twig' %}
+{% extends 'FlowcodeDashboardBundle:Default:layout.html.twig' %}
 
 {% block body -%}
 
@@ -16,7 +16,7 @@
             {% if parent.getParent.id is defined %}
             <li>
                 <a href="{{ path('admin_shop_category_children', { 'id': parent.getParent.id }) }}" class="btn btn-primary btn-block">
-                    <i class="glyphicon glyphicon-arrow-left"></i> {{ "previous level"|trans }}
+                    <i class="fa fa-arrow-left"></i> {{ "previous level"|trans }}
                 </a>
             </li>
             {% endif %}
@@ -33,7 +33,7 @@
         {% endfor %}
             <li>
                 <a href="{{ path('admin_shop_category_new', { 'parent_id': parent.id }) }}" class="btn btn-primary btn-block">
-                    <i class="glyphicon glyphicon-plus"></i> {{ "add here"|trans }}
+                    <i class="fa fa-plus"></i> {{ "add here"|trans }}
                 </a>
             </li>
         </ul>
