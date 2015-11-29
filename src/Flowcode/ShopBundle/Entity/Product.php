@@ -72,7 +72,7 @@ class Product {
     private $enabled;
 
     /**
-     * @ManyToOne(targetEntity="Flowcode\ClassificationBundle\Entity\Category")
+     * @ManyToOne(targetEntity="Amulen\ClassificationBundle\Entity\Category")
      * @JoinColumn(name="category_id", referencedColumnName="id")
      * */
     private $category;
@@ -87,7 +87,7 @@ class Product {
     private $tags;
 
     /**
-     * @OneToOne(targetEntity="Flowcode\MediaBundle\Entity\Gallery")
+     * @OneToOne(targetEntity="Amulen\MediaBundle\Entity\Gallery")
      * @JoinColumn(name="media_gallery_id", referencedColumnName="id")
      * */
     private $mediaGallery;
@@ -229,10 +229,10 @@ class Product {
     /**
      * Set category
      *
-     * @param \Flowcode\ClassificationBundle\Entity\Category $category
+     * @param \Amulen\ClassificationBundle\Entity\Category $category
      * @return Product
      */
-    public function setCategory(\Flowcode\ClassificationBundle\Entity\Category $category = null) {
+    public function setCategory(\Amulen\ClassificationBundle\Entity\Category $category = null) {
         $this->category = $category;
 
         return $this;
@@ -241,7 +241,7 @@ class Product {
     /**
      * Get category
      *
-     * @return \Flowcode\ClassificationBundle\Entity\Category 
+     * @return \Amulen\ClassificationBundle\Entity\Category 
      */
     public function getCategory() {
         return $this->category;
@@ -280,10 +280,10 @@ class Product {
     /**
      * Set mediaGallery
      *
-     * @param \Flowcode\MediaBundle\Entity\Gallery $mediaGallery
+     * @param \Amulen\MediaBundle\Entity\Gallery $mediaGallery
      * @return Product
      */
-    public function setMediaGallery(\Flowcode\MediaBundle\Entity\Gallery $mediaGallery = null) {
+    public function setMediaGallery(\Amulen\MediaBundle\Entity\Gallery $mediaGallery = null) {
         $this->mediaGallery = $mediaGallery;
 
         return $this;
@@ -292,7 +292,7 @@ class Product {
     /**
      * Get mediaGallery
      *
-     * @return \Flowcode\MediaBundle\Entity\Gallery 
+     * @return \Amulen\MediaBundle\Entity\Gallery 
      */
     public function getMediaGallery() {
         return $this->mediaGallery;
@@ -369,7 +369,7 @@ class Product {
         if (!is_null($this->mediaGallery) && $this->mediaGallery->getGalleryItems()->count() > 0) {
             $media = $this->getMediaGallery()->getGalleryItems()->first()->getMedia();
         }else{
-            $media = new \Flowcode\MediaBundle\Entity\Media();
+            $media = new \Amulen\MediaBundle\Entity\Media();
             $media->setName("default image");
             $media->setPath("uploads/default.jpg");
         }

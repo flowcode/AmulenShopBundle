@@ -2,8 +2,8 @@
 
 namespace Flowcode\ShopBundle\Controller;
 
-use Flowcode\MediaBundle\Entity\Gallery;
-use Flowcode\MediaBundle\Entity\GalleryItem;
+use Amulen\MediaBundle\Entity\Gallery;
+use Amulen\MediaBundle\Entity\GalleryItem;
 use Flowcode\MediaBundle\Form\GalleryItemType;
 use Flowcode\MediaBundle\Form\ImageGalleryType;
 use Flowcode\ShopBundle\Entity\Product;

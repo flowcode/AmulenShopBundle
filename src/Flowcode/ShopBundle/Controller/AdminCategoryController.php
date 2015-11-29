@@ -2,7 +2,7 @@
 
 namespace Flowcode\ShopBundle\Controller;
 
-use Flowcode\ClassificationBundle\Entity\Category;
+use Amulen\ClassificationBundle\Entity\Category;
 use Flowcode\ClassificationBundle\Form\CategoryType;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
