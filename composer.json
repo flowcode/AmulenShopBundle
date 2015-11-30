@@ -18,7 +18,7 @@
         "flowcode/amulen-classification-bundle": "dev-master",
         "flowcode/amulen-media-bundle": "dev-master",
         "symfony-cmf/seo-bundle": "1.0.*@dev",
-        "helios-ag/fm-elfinder-bundle": "1.x",
+        "helios-ag/fm-elfinder-bundle": "~5",
         "knplabs/knp-paginator-bundle": "~2.4",
         "stof/doctrine-extensions-bundle": "~1.1@dev",
         "egeloen/ckeditor-bundle": "~2.0"
