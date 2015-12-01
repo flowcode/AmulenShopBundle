@@ -37,7 +37,7 @@ class Product {
 
     /**
      * @var string
-     * 
+     *
      * @Gedmo\Slug(fields={"name"})
      * @ORM\Column(name="slug", type="string", length=255, unique=true)
      */
@@ -78,7 +78,7 @@ class Product {
     private $category;
 
     /**
-     * @ManyToMany(targetEntity="Flowcode\ClassificationBundle\Entity\Tag")
+     * @ManyToMany(targetEntity="Amulen\ClassificationBundle\Entity\Tag")
      * @JoinTable(name="product_tag",
      *      joinColumns={@JoinColumn(name="product_id", referencedColumnName="id")},
      *      inverseJoinColumns={@JoinColumn(name="tag_id", referencedColumnName="id")}
@@ -115,7 +115,7 @@ class Product {
     /**
      * Get id
      *
-     * @return integer 
+     * @return integer
      */
     public function getId() {
         return $this->id;
@@ -136,7 +136,7 @@ class Product {
     /**
      * Get name
      *
-     * @return string 
+     * @return string
      */
     public function getName() {
         return $this->name;
@@ -157,7 +157,7 @@ class Product {
     /**
      * Get description
      *
-     * @return string 
+     * @return string
      */
     public function getDescription() {
         return $this->description;
@@ -178,7 +178,7 @@ class Product {
     /**
      * Get content
      *
-     * @return string 
+     * @return string
      */
     public function getContent() {
         return $this->content;
@@ -199,7 +199,7 @@ class Product {
     /**
      * Get price
      *
-     * @return float 
+     * @return float
      */
     public function getPrice() {
         return $this->price;
@@ -220,7 +220,7 @@ class Product {
     /**
      * Get enabled
      *
-     * @return boolean 
+     * @return boolean
      */
     public function getEnabled() {
         return $this->enabled;
@@ -241,7 +241,7 @@ class Product {
     /**
      * Get category
      *
-     * @return \Amulen\ClassificationBundle\Entity\Category 
+     * @return \Amulen\ClassificationBundle\Entity\Category
      */
     public function getCategory() {
         return $this->category;
@@ -250,10 +250,10 @@ class Product {
     /**
      * Add tags
      *
-     * @param \Flowcode\ClassificationBundle\Entity\Tag $tags
+     * @param \Amulen\ClassificationBundle\Entity\Tag $tags
      * @return Product
      */
-    public function addTag(\Flowcode\ClassificationBundle\Entity\Tag $tags) {
+    public function addTag(\Amulen\ClassificationBundle\Entity\Tag $tags) {
         $this->tags[] = $tags;
 
         return $this;
@@ -262,16 +262,16 @@ class Product {
     /**
      * Remove tags
      *
-     * @param \Flowcode\ClassificationBundle\Entity\Tag $tags
+     * @param \Amulen\ClassificationBundle\Entity\Tag $tags
      */
-    public function removeTag(\Flowcode\ClassificationBundle\Entity\Tag $tags) {
+    public function removeTag(\Amulen\ClassificationBundle\Entity\Tag $tags) {
         $this->tags->removeElement($tags);
     }
 
     /**
      * Get tags
      *
-     * @return \Doctrine\Common\Collections\Collection 
+     * @return \Doctrine\Common\Collections\Collection
      */
     public function getTags() {
         return $this->tags;
@@ -292,7 +292,7 @@ class Product {
     /**
      * Get mediaGallery
      *
-     * @return \Amulen\MediaBundle\Entity\Gallery 
+     * @return \Amulen\MediaBundle\Entity\Gallery
      */
     public function getMediaGallery() {
         return $this->mediaGallery;
@@ -317,7 +317,7 @@ class Product {
     /**
      * Get slug
      *
-     * @return string 
+     * @return string
      */
     public function getSlug() {
         return $this->slug;
@@ -338,7 +338,7 @@ class Product {
     /**
      * Get created
      *
-     * @return \DateTime 
+     * @return \DateTime
      */
     public function getCreated() {
         return $this->created;
@@ -359,7 +359,7 @@ class Product {
     /**
      * Get updated
      *
-     * @return \DateTime 
+     * @return \DateTime
      */
     public function getUpdated() {
         return $this->updated;
