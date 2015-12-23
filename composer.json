@@ -15,7 +15,7 @@
     ],
     "require": {
         "php": ">=5.3.3",
-        "flowcode/amulen-classification-bundle": "~0.1",
+        "flowcode/amulen-classification-bundle": "dev-master",
         "flowcode/amulen-media-bundle": "~0.1",
         "symfony-cmf/seo-bundle": "1.0.*@dev",
         "helios-ag/fm-elfinder-bundle": "^5.3",
