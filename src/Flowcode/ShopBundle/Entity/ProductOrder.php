@@ -8,7 +8,7 @@ use Doctrine\ORM\Mapping as ORM;
 use Doctrine\ORM\Mapping\JoinColumn;
 use Doctrine\ORM\Mapping\ManyToOne;
 use Doctrine\ORM\Mapping\OneToMany;
-use Flowcode\UserBundle\Entity\User;
+use Amulen\UserBundle\Entity\User;
 use Gedmo\Mapping\Annotation as Gedmo;
 
 /**
@@ -49,7 +49,7 @@ class ProductOrder {
     private $status;
 
     /**
-     * @ManyToOne(targetEntity="Flowcode\UserBundle\Entity\User", inversedBy="productorders")
+     * @ManyToOne(targetEntity="Amulen\UserBundle\Entity\User", inversedBy="productorders")
      * @JoinColumn(name="user_id", referencedColumnName="id")
      * */
     private $user;
@@ -83,7 +83,7 @@ class ProductOrder {
     /**
      * Get id
      *
-     * @return integer 
+     * @return integer
      */
     public function getId() {
         return $this->id;
@@ -104,7 +104,7 @@ class ProductOrder {
     /**
      * Get total
      *
-     * @return float 
+     * @return float
      */
     public function getTotal() {
         return $this->total;
@@ -125,7 +125,7 @@ class ProductOrder {
     /**
      * Get enabled
      *
-     * @return boolean 
+     * @return boolean
      */
     public function getEnabled() {
         return $this->enabled;
@@ -155,7 +155,7 @@ class ProductOrder {
     /**
      * Get items
      *
-     * @return Collection 
+     * @return Collection
      */
     public function getItems() {
         return $this->items;
@@ -176,7 +176,7 @@ class ProductOrder {
     /**
      * Get user
      *
-     * @return User 
+     * @return User
      */
     public function getUser() {
         return $this->user;
@@ -197,7 +197,7 @@ class ProductOrder {
     /**
      * Get status
      *
-     * @return \Flowcode\ShopBundle\Entity\ProductOrderStatus 
+     * @return \Flowcode\ShopBundle\Entity\ProductOrderStatus
      */
     public function getStatus() {
         return $this->status;
@@ -220,7 +220,7 @@ class ProductOrder {
     /**
      * Get created
      *
-     * @return \DateTime 
+     * @return \DateTime
      */
     public function getCreated()
     {
@@ -243,7 +243,7 @@ class ProductOrder {
     /**
      * Get updated
      *
-     * @return \DateTime 
+     * @return \DateTime
      */
     public function getUpdated()
     {
