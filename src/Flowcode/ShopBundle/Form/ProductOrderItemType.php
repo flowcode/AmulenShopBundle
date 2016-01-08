@@ -20,14 +20,14 @@ class ProductOrderItemType extends AbstractType
             ->add('product')
         ;
     }
-    
+
     /**
      * @param OptionsResolverInterface $resolver
      */
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
         $resolver->setDefaults(array(
-            'data_class' => 'Flowcode\ShopBundle\Entity\ProductOrderItem'
+            'data_class' => 'Amulen\ShopBundle\Entity\ProductOrderItem'
         ));
     }
 

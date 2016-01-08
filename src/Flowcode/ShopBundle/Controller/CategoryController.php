@@ -24,7 +24,7 @@ class CategoryController extends Controller {
      */
     public function indexAction() {
         $em = $this->getDoctrine()->getManager();
-        $entities = $em->getRepository('FlowcodeClassificationBundle:Category')->findAll();
+        $entities = $em->getRepository('AmulenClassificationBundle:Category')->findAll();
 
         return array(
             'entities' => $entities,
@@ -34,8 +34,8 @@ class CategoryController extends Controller {
     public function activesAction() {
         $em = $this->getDoctrine()->getManager();
         $rootName = $this->container->getParameter('flowcode_shop.root_category');
-        $root = $em->getRepository('FlowcodeClassificationBundle:Category')->findOneBy(array("name" => $rootName));
-        $entities = $em->getRepository('FlowcodeClassificationBundle:Category')->getChildren($root);
+        $root = $em->getRepository('AmulenClassificationBundle:Category')->findOneBy(array("name" => $rootName));
+        $entities = $em->getRepository('AmulenClassificationBundle:Category')->childrenHierarchy($root);
 
         return $this->render(
                         'FlowcodeShopBundle:Category:leftcolumn.html.twig', array('entities' => $entities)
@@ -52,7 +52,7 @@ class CategoryController extends Controller {
     public function showAction($id) {
         $em = $this->getDoctrine()->getManager();
 
-        $entity = $em->getRepository('FlowcodeClassificationBundle:Category')->find($id);
+        $entity = $em->getRepository('AmulenClassificationBundle:Category')->find($id);
 
         if (!$entity) {
             throw $this->createNotFoundException('Unable to find Category entity.');

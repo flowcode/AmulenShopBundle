@@ -21,14 +21,14 @@ class CategoryType extends AbstractType
             ->add('parent')
         ;
     }
-    
+
     /**
      * @param OptionsResolverInterface $resolver
      */
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
         $resolver->setDefaults(array(
-            'data_class' => 'Flowcode\ShopBundle\Entity\Category'
+            'data_class' => 'Amulen\ShopBundle\Entity\Category'
         ));
     }
 

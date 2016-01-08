@@ -1,0 +1,11 @@
+services:
+
+    amulen.shop.form.product:
+        class: Flowcode\ShopBundle\Form\ProductType
+        tags:
+            - { name: form.type, alias: flowcode_shopbundle_product }
+
+    amulen.shop.form.productorder:
+        class: Flowcode\ShopBundle\Form\ProductOrderType
+        tags:
+            - { name: form.type, alias: amulen_shopbundle_productorder }

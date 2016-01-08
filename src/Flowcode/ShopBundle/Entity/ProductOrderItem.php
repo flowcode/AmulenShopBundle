@@ -9,9 +9,6 @@ use Doctrine\ORM\Mapping\OneToOne;
 
 /**
  * ProductOrderItem
- *
- * @ORM\Table(name="shop_order_item")
- * @ORM\Entity
  */
 class ProductOrderItem {
 
@@ -22,33 +19,33 @@ class ProductOrderItem {
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="AUTO")
      */
-    private $id;
-    
+    protected $id;
+
     /**
      * @ManyToOne(targetEntity="ProductOrder", inversedBy="items")
      * @JoinColumn(name="order_id", referencedColumnName="id")
      * */
-    private $order;
-    
+    protected $order;
+
     /**
      * @OneToOne(targetEntity="Product")
      * @JoinColumn(name="product_id", referencedColumnName="id")
      **/
-    private $product;
+    protected $product;
 
     /**
      * @var integer
      *
      * @ORM\Column(name="quantity", type="integer")
      */
-    private $quantity;
+    protected $quantity;
 
-    
+
 
     /**
      * Get id
      *
-     * @return integer 
+     * @return integer
      */
     public function getId() {
         return $this->id;
@@ -69,7 +66,7 @@ class ProductOrderItem {
     /**
      * Get quantity
      *
-     * @return integer 
+     * @return integer
      */
     public function getQuantity() {
         return $this->quantity;
@@ -92,7 +89,7 @@ class ProductOrderItem {
     /**
      * Get order
      *
-     * @return \Flowcode\ShopBundle\Entity\ProductOrder 
+     * @return \Flowcode\ShopBundle\Entity\ProductOrder
      */
     public function getOrder()
     {
@@ -115,7 +112,7 @@ class ProductOrderItem {
     /**
      * Get product
      *
-     * @return \Flowcode\ShopBundle\Entity\Product 
+     * @return \Flowcode\ShopBundle\Entity\Product
      */
     public function getProduct()
     {

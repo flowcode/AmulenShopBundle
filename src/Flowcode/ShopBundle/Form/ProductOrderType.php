@@ -19,14 +19,14 @@ class ProductOrderType extends AbstractType
             ->add('enabled')
         ;
     }
-    
+
     /**
      * @param OptionsResolverInterface $resolver
      */
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
         $resolver->setDefaults(array(
-            'data_class' => 'Flowcode\ShopBundle\Entity\ProductOrder'
+            'data_class' => 'Amulen\ShopBundle\Entity\ProductOrder'
         ));
     }
 
@@ -35,6 +35,6 @@ class ProductOrderType extends AbstractType
      */
     public function getName()
     {
-        return 'flowcode_shopbundle_productorder';
+        return 'amulen_shopbundle_productorder';
     }
 }

@@ -14,8 +14,8 @@ use Symfony\Component\HttpFoundation\Request;
  *
  * @Route("/{_locale}/product")
  */
-class ProductController extends Controller {
-
+class ProductController extends Controller
+{
     /**
      * Lists all Product entities.
      *
@@ -23,9 +23,10 @@ class ProductController extends Controller {
      * @Method("GET")
      * @Template()
      */
-    public function indexAction(Request $request) {
+    public function indexAction(Request $request, $category_slug = null)
+    {
         $em = $this->getDoctrine()->getManager();
-        
+
         /* seo metadata */
         $seoPage = $this->container->get('sonata.seo.page');
         $baseTitle = $seoPage->getTitle();
@@ -34,15 +35,15 @@ class ProductController extends Controller {
 
         /* pagination */
         $pageNumber = $request->get("page", 1);
-        $products = $this->getDoctrine()->getRepository("FlowcodeShopBundle:Product")->findEnabledByPageAndCategory();
+        $products = $this->getDoctrine()->getRepository("AmulenShopBundle:Product")->findEnabledByPageAndCategory($category_slug);
         $paginator = $this->get('knp_paginator');
-        $pagination = $paginator->paginate($products, $this->get('request')->query->get('page', $pageNumber), 2);
+        $pagination = $paginator->paginate($products, $request->get('page', $pageNumber), 2);
 
         return array(
             'pagination' => $pagination,
         );
-        
     }
+
     /**
      * Lists all Product entities.
      *
@@ -50,9 +51,10 @@ class ProductController extends Controller {
      * @Method("GET")
      * @Template("FlowcodeShopBundle:Product:index.html.twig")
      */
-    public function listByCategoryAction(Request $request, $slug) {
+    public function listByCategoryAction(Request $request, $slug)
+    {
         $em = $this->getDoctrine()->getManager();
-        
+
         /* seo metadata */
         $seoPage = $this->container->get('sonata.seo.page');
         $baseTitle = $seoPage->getTitle();
@@ -61,14 +63,13 @@ class ProductController extends Controller {
 
         /* pagination */
         $pageNumber = $request->get("page", 1);
-        $products = $this->getDoctrine()->getRepository("FlowcodeShopBundle:Product")->findEnabledByPageAndCategory($slug);
+        $products = $this->getDoctrine()->getRepository("AmulenShopBundle:Product")->findEnabledByPageAndCategory($slug);
         $paginator = $this->get('knp_paginator');
         $pagination = $paginator->paginate($products, $this->get('request')->query->get('page', $pageNumber), 2);
 
         return array(
             'pagination' => $pagination,
         );
-        
     }
 
     /**
@@ -78,10 +79,11 @@ class ProductController extends Controller {
      * @Method("GET")
      * @Template()
      */
-    public function showAction($slug) {
+    public function showAction($slug)
+    {
         $em = $this->getDoctrine()->getManager();
 
-        $entity = $em->getRepository('FlowcodeShopBundle:Product')->findOneBy(array("slug" => $slug));
+        $entity = $em->getRepository('AmulenShopBundle:Product')->findOneBy(array("slug" => $slug));
 
         if (!$entity) {
             throw $this->createNotFoundException('Unable to find Product entity.');
@@ -96,5 +98,4 @@ class ProductController extends Controller {
             'entity' => $entity,
         );
     }
-
 }

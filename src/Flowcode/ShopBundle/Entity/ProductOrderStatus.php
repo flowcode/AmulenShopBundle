@@ -7,9 +7,6 @@ use Doctrine\ORM\Mapping\OneToMany;
 
 /**
  * ProductOrderStatus
- *
- * @ORM\Table()
- * @ORM\Entity(repositoryClass="ProductOrderStatusRepository")
  */
 class ProductOrderStatus {
 
@@ -20,31 +17,31 @@ class ProductOrderStatus {
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="AUTO")
      */
-    private $id;
+    protected $id;
 
     /**
      * @var string
      *
      * @ORM\Column(name="name", type="string", length=255)
      */
-    private $name;
+    protected $name;
 
     /**
      * @var string
      *
      * @ORM\Column(name="description", type="string", length=255)
      */
-    private $description;
+    protected $description;
 
     /**
      * @OneToMany(targetEntity="ProductOrder", mappedBy="status")
      * */
-    private $productorders;
+    protected $productorders;
 
     /**
      * Get id
      *
-     * @return integer 
+     * @return integer
      */
     public function getId() {
         return $this->id;
@@ -65,7 +62,7 @@ class ProductOrderStatus {
     /**
      * Get name
      *
-     * @return string 
+     * @return string
      */
     public function getName() {
         return $this->name;
@@ -86,7 +83,7 @@ class ProductOrderStatus {
     /**
      * Get description
      *
-     * @return string 
+     * @return string
      */
     public function getDescription() {
         return $this->description;
@@ -123,7 +120,7 @@ class ProductOrderStatus {
     /**
      * Get productorders
      *
-     * @return \Doctrine\Common\Collections\Collection 
+     * @return \Doctrine\Common\Collections\Collection
      */
     public function getProductorders() {
         return $this->productorders;

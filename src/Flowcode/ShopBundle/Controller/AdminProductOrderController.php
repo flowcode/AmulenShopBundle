@@ -7,7 +7,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
-use Flowcode\ShopBundle\Entity\ProductOrder;
+use Amulen\ShopBundle\Entity\ProductOrder;
 use Flowcode\ShopBundle\Form\ProductOrderType;
 
 /**
@@ -29,7 +29,7 @@ class AdminProductOrderController extends Controller
     {
         $em = $this->getDoctrine()->getManager();
 
-        $entities = $em->getRepository('FlowcodeShopBundle:ProductOrder')->findAll();
+        $entities = $em->getRepository('AmulenShopBundle:ProductOrder')->findAll();
 
         return array(
             'entities' => $entities,
@@ -71,7 +71,7 @@ class AdminProductOrderController extends Controller
     */
     private function createCreateForm(ProductOrder $entity)
     {
-        $form = $this->createForm(new ProductOrderType(), $entity, array(
+        $form = $this->createForm($this->get("amulen.shop.form.productorder"), $entity, array(
             'action' => $this->generateUrl('admin_order_create'),
             'method' => 'POST',
         ));
@@ -110,7 +110,7 @@ class AdminProductOrderController extends Controller
     {
         $em = $this->getDoctrine()->getManager();
 
-        $entity = $em->getRepository('FlowcodeShopBundle:ProductOrder')->find($id);
+        $entity = $em->getRepository('AmulenShopBundle:ProductOrder')->find($id);
 
         if (!$entity) {
             throw $this->createNotFoundException('Unable to find ProductOrder entity.');
@@ -135,7 +135,7 @@ class AdminProductOrderController extends Controller
     {
         $em = $this->getDoctrine()->getManager();
 
-        $entity = $em->getRepository('FlowcodeShopBundle:ProductOrder')->find($id);
+        $entity = $em->getRepository('AmulenShopBundle:ProductOrder')->find($id);
 
         if (!$entity) {
             throw $this->createNotFoundException('Unable to find ProductOrder entity.');
@@ -160,7 +160,7 @@ class AdminProductOrderController extends Controller
     */
     private function createEditForm(ProductOrder $entity)
     {
-        $form = $this->createForm(new ProductOrderType(), $entity, array(
+        $form = $this->createForm($this->get("amulen.shop.form.productorder"), $entity, array(
             'action' => $this->generateUrl('admin_order_update', array('id' => $entity->getId())),
             'method' => 'PUT',
         ));
@@ -180,7 +180,7 @@ class AdminProductOrderController extends Controller
     {
         $em = $this->getDoctrine()->getManager();
 
-        $entity = $em->getRepository('FlowcodeShopBundle:ProductOrder')->find($id);
+        $entity = $em->getRepository('AmulenShopBundle:ProductOrder')->find($id);
 
         if (!$entity) {
             throw $this->createNotFoundException('Unable to find ProductOrder entity.');
@@ -215,7 +215,7 @@ class AdminProductOrderController extends Controller
 
         if ($form->isValid()) {
             $em = $this->getDoctrine()->getManager();
-            $entity = $em->getRepository('FlowcodeShopBundle:ProductOrder')->find($id);
+            $entity = $em->getRepository('AmulenShopBundle:ProductOrder')->find($id);
 
             if (!$entity) {
                 throw $this->createNotFoundException('Unable to find ProductOrder entity.');

@@ -4,10 +4,9 @@ namespace Flowcode\ShopBundle\Controller;
 
 use Amulen\MediaBundle\Entity\Gallery;
 use Amulen\MediaBundle\Entity\GalleryItem;
-use Flowcode\MediaBundle\Form\GalleryItemType;
-use Flowcode\MediaBundle\Form\ImageGalleryType;
-use Flowcode\ShopBundle\Entity\Product;
-use Flowcode\ShopBundle\Form\ProductType;
+use Amulen\MediaBundle\Form\GalleryItemType;
+use Amulen\MediaBundle\Form\ImageGalleryType;
+use Amulen\ShopBundle\Entity\Product;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
@@ -32,7 +31,7 @@ class AdminProductController extends Controller {
     public function indexAction() {
         $em = $this->getDoctrine()->getManager();
 
-        $entities = $em->getRepository('FlowcodeShopBundle:Product')->findAll();
+        $entities = $em->getRepository('AmulenShopBundle:Product')->findAll();
 
         return array(
             'entities' => $entities,
@@ -44,7 +43,7 @@ class AdminProductController extends Controller {
      *
      * @Route("/", name="admin_product_create")
      * @Method("POST")
-     * @Template("FlowcodeShopBundle:Product:new.html.twig")
+     * @Template("FlowcodeShopBundle:AdminProduct:new.html.twig")
      */
     public function createAction(Request $request) {
         $entity = new Product();
@@ -94,11 +93,11 @@ class AdminProductController extends Controller {
      * @return Form The form
      */
     private function createCreateForm(Product $entity) {
-        $form = $this->createForm(new ProductType(), $entity, array(
+        $form = $this->createForm($this->get("amulen.shop.form.product"), $entity, array(
             'action' => $this->generateUrl('admin_product_create'),
             'method' => 'POST',
         ));
-            
+
         $form->add('submit', 'submit', array('label' => 'Crear'));
 
         return $form;
@@ -131,7 +130,7 @@ class AdminProductController extends Controller {
     public function showAction($id) {
         $em = $this->getDoctrine()->getManager();
 
-        $entity = $em->getRepository('FlowcodeShopBundle:Product')->find($id);
+        $entity = $em->getRepository('AmulenShopBundle:Product')->find($id);
 
         if (!$entity) {
             throw $this->createNotFoundException('Unable to find Product entity.');
@@ -155,7 +154,7 @@ class AdminProductController extends Controller {
     public function editAction($id) {
         $em = $this->getDoctrine()->getManager();
 
-        $entity = $em->getRepository('FlowcodeShopBundle:Product')->find($id);
+        $entity = $em->getRepository('AmulenShopBundle:Product')->find($id);
 
         if (!$entity) {
             throw $this->createNotFoundException('Unable to find Product entity.');
@@ -179,7 +178,7 @@ class AdminProductController extends Controller {
      * @return Form The form
      */
     private function createEditForm(Product $entity) {
-        $form = $this->createForm(new ProductType(), $entity, array(
+        $form = $this->createForm($this->get("amulen.shop.form.product"), $entity, array(
             'action' => $this->generateUrl('admin_product_update', array('id' => $entity->getId())),
             'method' => 'PUT',
         ));
@@ -212,12 +211,12 @@ class AdminProductController extends Controller {
      *
      * @Route("/{id}", name="admin_product_update")
      * @Method("PUT")
-     * @Template("FlowcodeShopBundle:Product:edit.html.twig")
+     * @Template("FlowcodeShopBundle:AdminProduct:edit.html.twig")
      */
     public function updateAction(Request $request, $id) {
         $em = $this->getDoctrine()->getManager();
 
-        $entity = $em->getRepository('FlowcodeShopBundle:Product')->find($id);
+        $entity = $em->getRepository('AmulenShopBundle:Product')->find($id);
 
         if (!$entity) {
             throw $this->createNotFoundException('Unable to find Product entity.');
@@ -252,7 +251,7 @@ class AdminProductController extends Controller {
 
         if ($form->isValid()) {
             $em = $this->getDoctrine()->getManager();
-            $entity = $em->getRepository('FlowcodeShopBundle:Product')->find($id);
+            $entity = $em->getRepository('AmulenShopBundle:Product')->find($id);
 
             if (!$entity) {
                 throw $this->createNotFoundException('Unable to find Product entity.');
@@ -291,7 +290,7 @@ class AdminProductController extends Controller {
     public function addimageAction($id) {
         $em = $this->getDoctrine()->getManager();
 
-        $product = $em->getRepository('FlowcodeShopBundle:Product')->find($id);
+        $product = $em->getRepository('AmulenShopBundle:Product')->find($id);
         $gallery = $product->getMediaGallery();
         $entity = new GalleryItem();
         $entity->setGallery($gallery);
@@ -315,7 +314,7 @@ class AdminProductController extends Controller {
      *
      * @Route("/", name="admin_product_create_image")
      * @Method("POST")
-     * @Template("FlowcodeProductBundle:Product:addimage.html.twig")
+     * @Template("FlowcodeProductBundle:AdminProduct:addimage.html.twig")
      */
     public function createImageAction(Request $request) {
         $entity = new GalleryItem();
@@ -350,7 +349,7 @@ class AdminProductController extends Controller {
     public function editMediaAction($id) {
         $em = $this->getDoctrine()->getManager();
 
-        $entity = $em->getRepository('FlowcodeShopBundle:Product')->find($id);
+        $entity = $em->getRepository('AmulenShopBundle:Product')->find($id);
 
         if (!$entity) {
             throw $this->createNotFoundException('Unable to find Product entity.');
@@ -364,37 +363,5 @@ class AdminProductController extends Controller {
         );
     }
 
-    /**
-     * Edits an existing Product Gallery entity.
-     *
-     * @Route("/gallery/{id}", name="admin_product_update_gallery")
-     * @Method("PUT")
-     * @Template("FlowcodeShopBundle:Product:edit.html.twig")
-     */
-    public function updateGalleryAction(Request $request, $id) {
-//        $em = $this->getDoctrine()->getManager();
-//
-//        $entity = $em->getRepository('FlowcodeShopBundle:Product')->find($id);
-//
-//        if (!$entity) {
-//            throw $this->createNotFoundException('Unable to find Product entity.');
-//        }
-//
-//        $deleteForm = $this->createDeleteForm($id);
-//        $editForm = $this->createEditForm($entity);
-//        $editForm->handleRequest($request);
-//
-//        if ($editForm->isValid()) {
-//            $em->flush();
-//
-//            return $this->redirect($this->generateUrl('admin_product_edit', array('id' => $id)));
-//        }
-//
-//        return array(
-//            'entity' => $entity,
-//            'edit_form' => $editForm->createView(),
-//            'delete_form' => $deleteForm->createView(),
-//        );
-    }
 
 }

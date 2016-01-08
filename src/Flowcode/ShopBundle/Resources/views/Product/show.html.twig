@@ -6,60 +6,50 @@
 {% endblock %}
 
 
-{% block products -%}
-<div class="product-details"><!--product-details-->
+{% block products %}
+<div class="product-details">
     <div class="col-sm-5">
         <div class="view-product">
             <img src="{{ asset(entity.getImage.getWebPath) }}" alt="" class="img-responsive" />
-            <h3>ZOOM</h3>
         </div>
-        <div id="similar-product" class="carousel slide" data-ride="carousel">
-
-            <!-- Wrapper for slides -->
-            <div class="carousel-inner">
-
-                <div class="item active">
-                {% for galleryItem in entity.getMediaGallery.getGalleryItems %}
-                    <div class="item">
-                        <a href="{{ asset(galleryItem.media.getWebPath) }}">
-                            <img src="{{ asset(galleryItem.media.getWebPath) }}" class="img-responsive">
-                        </a>
-                    </div>
-                {% endfor %}
+        <hr>
+        <div class="row">
+            {% for galleryItem in entity.getMediaGallery.getGalleryItems %}
+                <div class="col-sm-3">
+                    <a href="{{ asset(galleryItem.media.getWebPath) }}" class="thumbnail">
+                        <img src="{{ asset(galleryItem.media.getWebPath) }}" class="img-responsive">
+                    </a>
                 </div>
-            </div>
-
-            <!-- Controls -->
-            <a class="left item-control" href="#similar-product" data-slide="prev">
-                <i class="fa fa-angle-left"></i>
-            </a>
-            <a class="right item-control" href="#similar-product" data-slide="next">
-                <i class="fa fa-angle-right"></i>
-            </a>
+            {% endfor %}
         </div>
-
     </div>
+
     <div class="col-sm-7">
         <div class="product-information"><!--/product-information-->
             <h2>{{ entity.name }}</h2>
             <p>Web ID: {{ entity.id }}</p>
-            <span>
-                <span>$ {{ entity.price }}</span>
-                <label>Quantity:</label>
+            <div>
+                <div>
+                    {{ entity.content|raw }}
+                </div>
+                <div>
+                    <span>$ {{ entity.price }}</span>
+                </div>
+                <label>{{"quantity"|trans|title}}:</label>
                 <input type="text" value="3" />
                 <button type="button" class="btn btn-fefault cart">
                     <i class="fa fa-shopping-cart"></i>
-                    Add to cart
+                    {{"add to cart"|trans|title}}
                 </button>
-            </span>
-            {{ entity.content|raw }}
+            </div>
+
         </div><!--/product-information-->
     </div>
 </div><!--/product-details-->
 
 <div>
     <a href="{{ path('product') }}" class="btn btn-default" >
-        Back to the list
+        {{"back to list"|trans|title}}
     </a>
 </div>
 {% endblock %}

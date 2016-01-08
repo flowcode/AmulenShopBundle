@@ -1,6 +1,6 @@
 <?php
 
-namespace Flowcode\ShopBundle\Entity;
+namespace Flowcode\ShopBundle\Repository;
 
 use Doctrine\ORM\EntityRepository;
 
@@ -11,9 +11,9 @@ use Doctrine\ORM\EntityRepository;
  * repository methods below.
  */
 class CategoryRepository extends EntityRepository {
-    
+
     public function findAll() {
         return parent::findAll();
     }
-    
+
 }

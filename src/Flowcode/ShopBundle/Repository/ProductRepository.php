@@ -1,6 +1,6 @@
 <?php
 
-namespace Flowcode\ShopBundle\Entity;
+namespace Flowcode\ShopBundle\Repository;
 
 use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\Query\Expr\Join;
@@ -16,7 +16,7 @@ class ProductRepository extends EntityRepository {
     public function findEnabledByPageAndCategory($category_slug = null) {
         $query = null;
         if (!is_null($category_slug)) {
-            $query = $this->createQueryBuilder("p")->join("p.category", "c", Join::WITH, "c.slug = :category_slug");
+            $query = $this->createQueryBuilder("p")->innerJoin("p.category", "c", Join::WITH, "c.slug = :category_slug");
             $query->setParameter("category_slug", $category_slug);
         } else {
             $query = $this->createQueryBuilder("p");

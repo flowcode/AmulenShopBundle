@@ -3,7 +3,6 @@
 namespace Flowcode\ShopBundle\Controller;
 
 use Amulen\ClassificationBundle\Entity\Category;
-use Flowcode\ClassificationBundle\Form\CategoryType;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
@@ -28,8 +27,8 @@ class AdminCategoryController extends Controller {
     public function indexAction() {
         $em = $this->getDoctrine()->getManager();
         $rootName = $this->container->getParameter('flowcode_shop.root_category');
-        $root = $em->getRepository('FlowcodeClassificationBundle:Category')->findOneBy(array("name" => $rootName));
-        $entities = $em->getRepository('FlowcodeClassificationBundle:Category')->getChildren($root);
+        $root = $em->getRepository('AmulenClassificationBundle:Category')->findOneBy(array("name" => $rootName));
+        $entities = $em->getRepository('AmulenClassificationBundle:Category')->getChildren($root);
 
         return array(
             'entities' => $entities,
@@ -71,7 +70,7 @@ class AdminCategoryController extends Controller {
      * @return Form The form
      */
     private function createCreateForm(Category $entity) {
-        $form = $this->createForm(new CategoryType(), $entity, array(
+        $form = $this->createForm($this->get("amulen.classification.form.category"), $entity, array(
             'action' => $this->generateUrl('admin_shop_category_create'),
             'method' => 'POST',
         ));
@@ -91,7 +90,7 @@ class AdminCategoryController extends Controller {
     public function newAction($parent_id) {
         $em = $this->getDoctrine()->getManager();
 
-        $parent = $em->getRepository('FlowcodeClassificationBundle:Category')->findOneBy(array("id" => $parent_id));
+        $parent = $em->getRepository('AmulenClassificationBundle:Category')->findOneBy(array("id" => $parent_id));
 
         $entity = new Category();
         $entity->setParent($parent);
@@ -114,8 +113,8 @@ class AdminCategoryController extends Controller {
     public function childrensAction($id) {
         $em = $this->getDoctrine()->getManager();
 
-        $parent = $em->getRepository('FlowcodeClassificationBundle:Category')->findOneBy(array("id" => $id));
-        $childrens = $em->getRepository('FlowcodeClassificationBundle:Category')->getChildren($parent, true);
+        $parent = $em->getRepository('AmulenClassificationBundle:Category')->findOneBy(array("id" => $id));
+        $childrens = $em->getRepository('AmulenClassificationBundle:Category')->getChildren($parent, true);
 
         return array(
             'entities' => $childrens,
@@ -133,7 +132,7 @@ class AdminCategoryController extends Controller {
     public function showAction($id) {
         $em = $this->getDoctrine()->getManager();
 
-        $entity = $em->getRepository('FlowcodeClassificationBundle:Category')->find($id);
+        $entity = $em->getRepository('AmulenClassificationBundle:Category')->find($id);
 
         if (!$entity) {
             throw $this->createNotFoundException('Unable to find Category entity.');
@@ -157,7 +156,7 @@ class AdminCategoryController extends Controller {
     public function editAction($id) {
         $em = $this->getDoctrine()->getManager();
 
-        $entity = $em->getRepository('FlowcodeShopBundle:Category')->find($id);
+        $entity = $em->getRepository('AmulenClassificationBundle:Category')->find($id);
 
         if (!$entity) {
             throw $this->createNotFoundException('Unable to find Category entity.');
@@ -181,7 +180,7 @@ class AdminCategoryController extends Controller {
      * @return Form The form
      */
     private function createEditForm(Category $entity) {
-        $form = $this->createForm(new CategoryType(), $entity, array(
+        $form = $this->createForm($this->get("amulen.classification.form.category"), $entity, array(
             'action' => $this->generateUrl('admin_shop_category_update', array('id' => $entity->getId())),
             'method' => 'PUT',
         ));
@@ -201,7 +200,7 @@ class AdminCategoryController extends Controller {
     public function updateAction(Request $request, $id) {
         $em = $this->getDoctrine()->getManager();
 
-        $entity = $em->getRepository('FlowcodeShopBundle:Category')->find($id);
+        $entity = $em->getRepository('AmulenClassificationBundle:Category')->find($id);
 
         if (!$entity) {
             throw $this->createNotFoundException('Unable to find Category entity.');

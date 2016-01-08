@@ -13,9 +13,6 @@ use Gedmo\Mapping\Annotation as Gedmo;
 
 /**
  * ProductOrder
- *
- * @ORM\Table(name="shop_order")
- * @ORM\Entity(repositoryClass="ProductOrderRepository")
  */
 class ProductOrder {
 
@@ -26,38 +23,38 @@ class ProductOrder {
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="AUTO")
      */
-    private $id;
+    protected $id;
 
     /**
      * @var float
      *
      * @ORM\Column(name="total", type="float")
      */
-    private $total;
+    protected $total;
 
     /**
      * @var boolean
      *
      * @ORM\Column(name="enabled", type="boolean")
      */
-    private $enabled;
+    protected $enabled;
 
     /**
      * @ManyToOne(targetEntity="ProductOrderStatus", inversedBy="productorders")
      * @JoinColumn(name="product_order_status_id", referencedColumnName="id")
      * */
-    private $status;
+    protected $status;
 
     /**
      * @ManyToOne(targetEntity="Amulen\UserBundle\Entity\User", inversedBy="productorders")
      * @JoinColumn(name="user_id", referencedColumnName="id")
      * */
-    private $user;
+    protected $user;
 
     /**
      * @OneToMany(targetEntity="ProductOrderItem", mappedBy="order", cascade={"persist", "remove"})
      * */
-    private $items;
+    protected $items;
 
     /**
      * @var datetime $created
@@ -65,7 +62,7 @@ class ProductOrder {
      * @Gedmo\Timestampable(on="create")
      * @ORM\Column(type="datetime")
      */
-    private $created;
+    protected $created;
 
     /**
      * @var datetime $updated
@@ -73,7 +70,7 @@ class ProductOrder {
      * @Gedmo\Timestampable(on = "update")
      * @ORM\Column(type = "datetime")
      */
-    private $updated;
+    protected $updated;
 
     function __construct() {
         $this->items = new ArrayCollection();

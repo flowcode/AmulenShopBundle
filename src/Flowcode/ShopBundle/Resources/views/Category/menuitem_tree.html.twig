@@ -1,0 +1,11 @@
+
+<ul>
+    {% for entity in entities %}
+        <li>
+            <a href="?category={{entity.slug}}">
+                {{entity.name|title}}
+            </a>
+            {{ include('FlowcodeShopBundle:Category:menuitem_tree.html.twig',{ 'entities': entity.__children }) }}
+        </li>
+    {% endfor %}
+</ul>

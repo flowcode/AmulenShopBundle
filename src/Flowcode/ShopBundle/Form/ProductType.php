@@ -5,7 +5,7 @@ namespace Flowcode\ShopBundle\Form;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
-use Flowcode\ClassificationBundle\Entity\Tag;
+use Amulen\ClassificationBundle\Entity\Tag;
 
 class ProductType extends AbstractType
 {
@@ -22,18 +22,18 @@ class ProductType extends AbstractType
             ->add('price', 'text', array("label" => "Precio"))
             ->add('enabled')
             ->add('tags', 'collection', array("type" => new Tag(), "label" => "Etiquetas"))
-            ->add('mediaGallery', "choice", array("label" => "Galeria de medios"))
+            ->add('mediaGallery', null, array("label" => "Galeria de medios"))
             ->add('content', 'ckeditor')
         ;
     }
-    
+
     /**
      * @param OptionsResolverInterface $resolver
      */
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
         $resolver->setDefaults(array(
-            'data_class' => 'Flowcode\ShopBundle\Entity\Product'
+            'data_class' => 'Amulen\ShopBundle\Entity\Product'
         ));
     }
 

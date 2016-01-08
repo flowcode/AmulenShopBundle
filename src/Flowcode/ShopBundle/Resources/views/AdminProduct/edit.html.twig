@@ -1,16 +1,25 @@
 {% extends 'FlowcodeDashboardBundle:Default:layout.html.twig' %}
 
 {% block body -%}
-<h1>Product edit</h1>
+{{ include('FlowcodeShopBundle:AdminProduct:productsHeader.html.twig') }}
+<section class="content">
+    <div class="box box-solid">
+        <div class="box-header">
+            <h3 class="box-title">{{ "edit"|title }}</h3>
+            <div class="box-tools">
+                <a class="btn btn-link btn-sm" href="{{ path('admin_product') }}">
+                    Back to the list
+                </a>
+                <a class="btn btn-link btn-sm" href="{{ path('admin_product_show', { 'id': entity.id }) }}">
+                    back to view
+                </a>
+                {{ form(delete_form) }}
+            </div>
+        </div>
 
-{{ form(edit_form, { 'style': 'horizontal' }) }}
-
-<ul class="record_actions list-inline">
-    <li>
-        <a href="{{ path('admin_product') }}">
-            Back to the list
-        </a>
-    </li>
-    <li>{{ form(delete_form) }}</li>
-</ul>
+        <div class="box-body">
+        {{ form(edit_form) }}
+        </div>
+    </div>
+</section>
 {% endblock %}

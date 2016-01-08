@@ -1,0 +1,14 @@
+{% extends 'FlowcodeShopBundle::shop.html.twig' %}
+
+{% block products %}
+<h1>{{ page.name }}</h1>
+
+<div>
+{{ page.description }}
+</div>
+
+<div>
+    {{ render(controller("FlowcodeShopBundle:Product:index",{"category_slug":parameterBag.category})) }}
+</div>
+
+{% endblock %}

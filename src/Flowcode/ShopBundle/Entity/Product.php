@@ -13,9 +13,6 @@ use Gedmo\Mapping\Annotation as Gedmo;
 
 /**
  * Product
- *
- * @ORM\Table(name="shop_product")
- * @ORM\Entity(repositoryClass="ProductRepository")
  */
 class Product {
 
@@ -26,14 +23,14 @@ class Product {
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="AUTO")
      */
-    private $id;
+    protected $id;
 
     /**
      * @var string
      *
      * @ORM\Column(name="name", type="string", length=255)
      */
-    private $name;
+    protected $name;
 
     /**
      * @var string
@@ -41,41 +38,41 @@ class Product {
      * @Gedmo\Slug(fields={"name"})
      * @ORM\Column(name="slug", type="string", length=255, unique=true)
      */
-    private $slug;
+    protected $slug;
 
     /**
      * @var string
      *
      * @ORM\Column(name="description", type="text")
      */
-    private $description;
+    protected $description;
 
     /**
      * @var string
      *
      * @ORM\Column(name="content", type="text")
      */
-    private $content;
+    protected $content;
 
     /**
      * @var float
      *
      * @ORM\Column(name="price", type="float", nullable=true)
      */
-    private $price;
+    protected $price;
 
     /**
      * @var boolean
      *
      * @ORM\Column(name="enabled", type="boolean")
      */
-    private $enabled;
+    protected $enabled;
 
     /**
      * @ManyToOne(targetEntity="Amulen\ClassificationBundle\Entity\Category")
      * @JoinColumn(name="category_id", referencedColumnName="id")
      * */
-    private $category;
+    protected $category;
 
     /**
      * @ManyToMany(targetEntity="Amulen\ClassificationBundle\Entity\Tag")
@@ -84,13 +81,13 @@ class Product {
      *      inverseJoinColumns={@JoinColumn(name="tag_id", referencedColumnName="id")}
      *      )
      * */
-    private $tags;
+    protected $tags;
 
     /**
      * @OneToOne(targetEntity="Amulen\MediaBundle\Entity\Gallery")
      * @JoinColumn(name="media_gallery_id", referencedColumnName="id")
      * */
-    private $mediaGallery;
+    protected $mediaGallery;
 
     /**
      * @var datetime $created
@@ -98,7 +95,7 @@ class Product {
      * @Gedmo\Timestampable(on="create")
      * @ORM\Column(type="datetime")
      */
-    private $created;
+    protected $created;
 
     /**
      * @var datetime $updated
@@ -106,7 +103,7 @@ class Product {
      * @Gedmo\Timestampable(on="update")
      * @ORM\Column(type="datetime")
      */
-    private $updated;
+    protected $updated;
 
     function __construct() {
         $this->tags = new ArrayCollection();
