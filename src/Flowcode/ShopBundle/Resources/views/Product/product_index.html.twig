@@ -8,7 +8,11 @@
 </div>
 
 <div>
-    {{ render(controller("FlowcodeShopBundle:Product:index",{"category_slug":parameterBag.category})) }}
+    {% if parameterBag.category is defined %}
+        {{ render(controller("FlowcodeShopBundle:Product:index",{"category_slug":parameterBag.category})) }}
+    {% else %}
+        {{ render(controller("FlowcodeShopBundle:Product:index")) }}
+    {% endif %}
 </div>
 
 {% endblock %}
