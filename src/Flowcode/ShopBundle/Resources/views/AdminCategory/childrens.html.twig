@@ -1,15 +1,11 @@
 {% extends 'FlowcodeDashboardBundle:Default:layout.html.twig' %}
 
 {% block body -%}
-
-<ol class="breadcrumb">
-    <li><a href="{{ path('admin_dashboard') }}">Home</a></li>
-    <li><a href="{{ path('admin_shop_dashboard') }}">Shop Dashboard</a></li>
-    <li>Categorys</li>
-</ol>
-<div class="page-header">
-    <h1>Children categorys </h1>
-</div>
+{{ include('FlowcodeShopBundle:AdminProduct:productsHeader.html.twig') }}
+<section class="content">
+    <div class="box box-solid">
+        <div class="box-header">
+            <h3 class="box-title">{{ "Children categorys"|trans|title }}</h3>
 <div class="row">
     <div class="col-sm-4">
         <ul class="list-unstyled">
@@ -39,4 +35,7 @@
         </ul>
     </div>
 </div>
+</div>
+    </div>
+</section>
 {% endblock %}

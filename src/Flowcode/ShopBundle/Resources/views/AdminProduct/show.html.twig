@@ -9,10 +9,10 @@
             <h3 class="box-title">{{ entity.name|title }}</h3>
             <div class="box-tools">
                 <a class="btn btn-link btn-sm" href="{{ path('admin_product') }}">
-                    Back to the list
+                    {{ "Back to the list"|trans }}
                 </a>
                 <a class="btn btn-link btn-sm" href="{{ path('admin_product_edit', { 'id': entity.id }) }}">
-                    Edit
+                    {{ "edit"|trans }}
                 </a>
             </div>
         </div>
@@ -24,31 +24,31 @@
                         <table class="table table-condensed">
                             <tbody>
                                 <tr>
-                                    <th>Id</th>
+                                    <th>{{ "Id"|trans }}</th>
                                     <td>{{ entity.id }}</td>
                                 </tr>
                                 <tr>
-                                    <th>Name</th>
+                                    <th>{{ "Name"|trans }}</th>
                                     <td>{{ entity.name }}</td>
                                 </tr>
                                 <tr>
-                                    <th>Description</th>
+                                    <th>{{ "Description"|trans }}</th>
                                     <td>{{ entity.description }}</td>
                                 </tr>
                                 <tr>
-                                    <th>Content</th>
+                                    <th>{{ "Content"|trans }}</th>
                                     <td>{{ entity.content|raw }}</td>
                                 </tr>
                                 <tr>
-                                    <th>Category</th>
+                                    <th>{{ "Category"|trans }}</th>
                                     <td>{{ entity.category }}</td>
                                 </tr>
                                 <tr>
-                                    <th>Price</th>
+                                    <th>{{ "Price"|trans }}</th>
                                     <td>{{ entity.price }}</td>
                                 </tr>
                                 <tr>
-                                    <th>Enabled</th>
+                                    <th>{{ "Enabled"|trans }}</th>
                                     <td>{{ entity.enabled }}</td>
                                 </tr>
                             </tbody>

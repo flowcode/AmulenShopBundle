@@ -1,17 +1,22 @@
 {% extends 'FlowcodeDashboardBundle:Default:layout.html.twig' %}
 
 {% block body -%}
-<div class="page-header">
-    <h1>Category edit</h1>
-</div>
-{{ form(edit_form) }}
+{{ include('FlowcodeShopBundle:AdminCategory:categoryHeader.html.twig') }}
+<section class="content">
+    <div class="box box-solid">
+        <div class="box-header">
+            <h3 class="box-title">{{ "edit"|trans|title }}</h3>
+            <div class="box-tools">
+                <a class="btn btn-link btn-sm" href="{{ path('admin_category') }}">
+                    {{ "Back to the list"|trans }}
+                </a>
+                {{ form(delete_form) }}
+            </div>
+        </div>
 
-<ul class="record_actions">
-    <li>
-        <a href="{{ path('admin_category') }}">
-            Back to the list
-        </a>
-    </li>
-    <li>{{ form(delete_form) }}</li>
-</ul>
+        <div class="box-body">
+        {{ form(edit_form) }}
+        </div>
+    </div>
+</section>
 {% endblock %}

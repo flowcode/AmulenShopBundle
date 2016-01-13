@@ -1,4 +1,3 @@
-
 # products
 precio: precio
 Precio: Precio
@@ -9,8 +8,8 @@ Producto: Producto
 producto: producto
 categorias de productos: categorias de productos
 nuevo producto: nuevo producto
-categorias: categorias
-Categorias: Categorias
+categorias: categorías
+Categorias: Categorías
 #Tablero de la tienda: Tablero de la tienda
 Inicio: Inicio
 Nuevo: Nuevo
@@ -21,5 +20,7 @@ Nuevo producto: Nuevo producto
 Crear: Crear
 Categorias de producto: Categorias de producto
 Nueva categoria: Nueva categoria
-
 symbol.money: $
+'Product categories': 'Categorías de producto'
+Parent: 'Categoría superior'
+'Children categorys': 'Categorías inferiores'

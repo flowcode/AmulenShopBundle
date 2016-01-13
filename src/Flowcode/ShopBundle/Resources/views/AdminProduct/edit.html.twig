@@ -5,13 +5,13 @@
 <section class="content">
     <div class="box box-solid">
         <div class="box-header">
-            <h3 class="box-title">{{ "edit"|title }}</h3>
+            <h3 class="box-title">{{ "edit"|trans|title }}</h3>
             <div class="box-tools">
                 <a class="btn btn-link btn-sm" href="{{ path('admin_product') }}">
-                    Back to the list
+                    {{ "Back to the list"|trans }}
                 </a>
                 <a class="btn btn-link btn-sm" href="{{ path('admin_product_show', { 'id': entity.id }) }}">
-                    back to view
+                    {{ "Back to view"|trans }}
                 </a>
                 {{ form(delete_form) }}
             </div>
