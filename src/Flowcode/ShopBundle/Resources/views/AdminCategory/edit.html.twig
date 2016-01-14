@@ -7,15 +7,15 @@
         <div class="box-header">
             <h3 class="box-title">{{ "edit"|trans|title }}</h3>
             <div class="box-tools">
-                <a class="btn btn-link btn-sm" href="{{ path('admin_category') }}">
+                <a class="btn btn-link btn-sm" href="{{ path('admin_shop_category') }}">
                     {{ "Back to the list"|trans }}
                 </a>
-                {{ form(delete_form) }}
             </div>
         </div>
 
         <div class="box-body">
         {{ form(edit_form) }}
+        {{ form(delete_form) }}
         </div>
     </div>
 </section>

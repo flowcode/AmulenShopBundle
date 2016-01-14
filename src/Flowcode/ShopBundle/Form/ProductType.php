@@ -18,11 +18,18 @@ class ProductType extends AbstractType
         $builder
             ->add('name')
             ->add('description')
-            ->add('category')
+            ->add('category', 'y_tree', array(
+                   'class' => "Amulen\ClassificationBundle\Entity\Category",
+                   'orderFields' => array('root' => 'asc','lft' => 'asc'),
+                   'prefixAttributeName' => 'data-level-prefix',
+                   'treeLevelField' => 'lvl',
+                   'required' => false,
+                   'multiple' => false,
+                   'attr' => array("class" => "tall")))
             ->add('price', 'text', array("label" => "Precio"))
             ->add('enabled')
             ->add('tags', 'collection', array("type" => new Tag(), "label" => "Etiquetas"))
-            ->add('mediaGallery', null, array("label" => "Galeria de medios"))
+            ->add('mediaGallery', null, array("label" => "Galería de medios"))
             ->add('content', 'ckeditor')
         ;
     }

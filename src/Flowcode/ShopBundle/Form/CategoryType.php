@@ -18,8 +18,15 @@ class CategoryType extends AbstractType
             ->add('name')
             ->add('description')
             ->add('enabled')
-            ->add('parent')
-        ;
+            ->add('parent', 'y_tree', array(
+                   'class' => "Amulen\ClassificationBundle\Entity\Category",
+                   'orderFields' => array('root' => 'asc','lft' => 'asc'),
+                   'prefixAttributeName' => 'data-level-prefix',
+                   'treeLevelField' => 'lvl',
+                   'required' => false,
+                   'multiple' => false,
+                   'attr' => array("class" => "tall"))
+            );
     }
 
     /**

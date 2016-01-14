@@ -235,7 +235,7 @@ class AdminCategoryController extends Controller {
 
         if ($form->isValid()) {
             $em = $this->getDoctrine()->getManager();
-            $entity = $em->getRepository('FlowcodeShopBundle:Category')->find($id);
+            $entity = $em->getRepository('AmulenClassificationBundle:Category')->find($id);
 
             if (!$entity) {
                 throw $this->createNotFoundException('Unable to find Category entity.');
