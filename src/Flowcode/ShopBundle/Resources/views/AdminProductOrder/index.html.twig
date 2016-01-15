@@ -1,43 +1,39 @@
 {% extends 'FlowcodeDashboardBundle:Default:layout.html.twig' %}
 
 {% block body -%}
-    <h1>ProductOrder list</h1>
+{{ include('FlowcodeShopBundle:AdminProductOrder:productOrderHeader.html.twig') }}
+<section class="content">
 
-    <table class="records_list table table-condensed">
-        <thead>
-            <tr>
-                <th>Id</th>
-                <th>Total</th>
-                <th>Enabled</th>
-                <th>Actions</th>
-            </tr>
-        </thead>
-        <tbody>
-        {% for entity in entities %}
-            <tr>
-                <td><a href="{{ path('admin_order_show', { 'id': entity.id }) }}">{{ entity.id }}</a></td>
-                <td>{{ entity.total }}</td>
-                <td>{{ entity.enabled }}</td>
-                <td>
-                <ul>
-                    <li>
-                        <a href="{{ path('admin_order_show', { 'id': entity.id }) }}">show</a>
-                    </li>
-                    <li>
-                        <a href="{{ path('admin_order_edit', { 'id': entity.id }) }}">edit</a>
-                    </li>
-                </ul>
-                </td>
-            </tr>
-        {% endfor %}
-        </tbody>
-    </table>
+    <div class="box box-solid">
+        <div class="box-header">
+            <h3>{{ "product list"|trans|title }}</h3>
+            <div class="box-tools">
+                <a href="{{ path('admin_order_new') }}" class="btn btn-link btn-sm">
+                    <i class="fa fa-plus"></i> {{ "new"|trans|title }}
+                </a>
+            </div>
+        </div>
 
-        <ul>
-        <li>
-            <a href="{{ path('admin_order_new') }}">
-                Create a new entry
-            </a>
-        </li>
-    </ul>
+        <div class="box-body">
+            <table class="records_list table table-condensed">
+                <thead>
+                    <tr>
+                        <th>{{ "Id"|trans }}</th>
+                        <th>{{ "Total"|trans }}</th>
+                        <th>{{ "Enabled"|trans }}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                {% for entity in entities %}
+                    <tr>
+                        <td><a href="{{ path('admin_order_show', { 'id': entity.id }) }}">{{ entity.id }}</a></td>
+                        <td>{{ entity.total }}</td>
+                        <td>{{ entity.enabled }}</td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</section>
     {% endblock %}
