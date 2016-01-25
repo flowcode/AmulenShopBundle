@@ -127,19 +127,16 @@ class AdminProductController extends Controller {
      * @Method("GET")
      * @Template()
      */
-    public function showAction($id) {
-        $em = $this->getDoctrine()->getManager();
-
-        $entity = $em->getRepository('AmulenShopBundle:Product')->find($id);
-
-        if (!$entity) {
+    public function showAction(Product $product) {
+        
+        if (!$product) {
             throw $this->createNotFoundException('Unable to find Product entity.');
         }
 
-        $deleteForm = $this->createDeleteForm($id);
+        $deleteForm = $this->createDeleteForm($product->getId());
 
         return array(
-            'entity' => $entity,
+            'entity' => $product,
             'delete_form' => $deleteForm->createView(),
         );
     }
@@ -180,24 +177,6 @@ class AdminProductController extends Controller {
     private function createEditForm(Product $entity) {
         $form = $this->createForm($this->get("amulen.shop.form.product"), $entity, array(
             'action' => $this->generateUrl('admin_product_update', array('id' => $entity->getId())),
-            'method' => 'PUT',
-        ));
-
-        $form->add('submit', 'submit', array('label' => 'Update'));
-
-        return $form;
-    }
-
-    /**
-     * Creates a form to edit a Product entity.
-     *
-     * @param Product $entity The entity
-     *
-     * @return Form The form
-     */
-    private function createEditGalleryForm(Gallery $entity) {
-        $form = $this->createForm(new ImageGalleryType(), $entity, array(
-            'action' => $this->generateUrl('admin_product_update_gallery', array('id' => $entity->getId())),
             'method' => 'PUT',
         ));
 
@@ -283,49 +262,60 @@ class AdminProductController extends Controller {
         ;
     }
 
+
+    /**
+     * GALLERY 
+     *
+     */
+
     /**
      * Displays a form to create a new Gallery entity.
      *
      * @Route("/{id}/addimage", name="admin_product_new_image")
      * @Method("GET")
-     * @Template()
+     * @Template("FlowcodeShopBundle:AdminProduct:gallery_add_item.html.twig")
      */
-    public function addimageAction($id) {
+    public function addimageAction(Product $product) {
         $em = $this->getDoctrine()->getManager();
 
-        $product = $em->getRepository('AmulenShopBundle:Product')->find($id);
+        //$product = $em->getRepository('AmulenShopBundle:Product')->find($id);
         $gallery = $product->getMediaGallery();
         $entity = new GalleryItem();
         $entity->setGallery($gallery);
         $position = $gallery->getGalleryItems()->count() + 1;
         $entity->setPosition($position);
 
-        $form = $this->createForm(new GalleryItemType(), $entity, array(
-            'action' => $this->generateUrl('admin_galleryitem_create'),
+        $form = $this->createForm($this->get("amulen.shop.form.product.gallery"), $entity, array(
+            'action' => $this->generateUrl('admin_product_gallery_item_create', array('id' => $product->getId())),
             'method' => 'POST',
         ));
         $form->add('submit', 'submit', array('label' => 'Create'));
 
         return array(
             'entity' => $entity,
+            'product' => $product,
             'form' => $form->createView(),
         );
     }
 
     /**
-     * Creates a new GalleryItem entity.
+     * Creates a new Media entity.
      *
-     * @Route("/", name="admin_product_create_image")
+     * @Route("/item/{id}", name="admin_product_gallery_item_create")
      * @Method("POST")
-     * @Template("FlowcodeProductBundle:AdminProduct:addimage.html.twig")
+     * @Template("FlowcodeShopBundle:AdminProduct:gallery_add_item.html.twig")
      */
-    public function createImageAction(Request $request) {
-        $entity = new GalleryItem();
-        $form = $this->createForm(new GalleryItemType(), $entity, array(
-            'action' => $this->generateUrl('admin_galleryitem_create'),
+    public function createGalleryItemAction($id, Request $request) {
+        $em = $this->getDoctrine()->getManager();
+        $product = $em->getRepository('AmulenShopBundle:Product')->find($id);
+        $entity = new \Amulen\MediaBundle\Entity\GalleryItem();
+
+        $form = $this->createForm($this->get("amulen.shop.form.product.gallery"), $entity, array(
+            'action' => $this->generateUrl('admin_product_gallery_item_create', array('id' => $product->getId())),
             'method' => 'POST',
         ));
         $form->add('submit', 'submit', array('label' => 'Create'));
+
         $form->handleRequest($request);
 
         if ($form->isValid()) {
@@ -333,38 +323,165 @@ class AdminProductController extends Controller {
             $em->persist($entity);
             $em->flush();
 
-            return $this->redirect($this->generateUrl('admin_product_show', array('id' => $entity->getId())));
+            return $this->redirect($this->generateUrl('admin_product_gallery_show', array('id' => $product->getId())));
         }
 
         return array(
             'entity' => $entity,
+            'product' => $product,
             'form' => $form->createView(),
+        );
+    }
+
+
+
+    /**
+     * Finds and displays a Gallery entity.
+     *
+     * @Route("/gallery/{id}", name="admin_product_gallery_show")
+     * @Method("GET")
+     * @Template("FlowcodeShopBundle:AdminProduct:gallery_show.html.twig")
+     */
+    public function showGalleryItemAction($id) {
+        $em = $this->getDoctrine()->getManager();
+
+        $product = $em->getRepository('AmulenShopBundle:Product')->find($id);
+
+        $entity = $product->getMediaGallery();
+
+        if (!$entity) {
+            throw $this->createNotFoundException('Unable to find Gallery entity.');
+        }
+
+        $deleteForm = $this->createDeleteForm($id);
+
+        return array(
+            'entity' => $entity,
+            'product' => $product,
+            'delete_form' => $deleteForm->createView(),
         );
     }
 
     /**
-     * Edit media.
+     * Displays a form to edit an existing GalleryItem entity.
      *
-     * @Route("/{id}/edit-media", name="admin_product_edit_media")
+     * @Route("/gallery/{id}/edit", name="admin_product_gallery_edit")
      * @Method("GET")
-     * @Template()
+     * @Template("FlowcodeShopBundle:AdminProduct:gallery_edit_item.html.twig")
      */
-    public function editMediaAction($id) {
+    public function editGalleryItemAction($id, Request $request) {
         $em = $this->getDoctrine()->getManager();
 
-        $entity = $em->getRepository('AmulenShopBundle:Product')->find($id);
+        $entity = $em->getRepository('AmulenMediaBundle:GalleryItem')->find($id);
+        $product = $em->getRepository('AmulenShopBundle:Product')->find($request->get('product'));
 
         if (!$entity) {
-            throw $this->createNotFoundException('Unable to find Product entity.');
+            throw $this->createNotFoundException('Unable to find GalleryItem entity.');
         }
 
-        $form = $this->createEditGalleryForm($entity->getMediaGallery());
+        $editForm = $this->createEditGalleryItemForm($entity, $product);
+        $deleteForm = $this->createDeleteGalleryItemForm($id);
 
         return array(
             'entity' => $entity,
-            'form' => $form->createView(),
+            'product' => $product,
+            'edit_form' => $editForm->createView(),
+            'delete_form' => $deleteForm->createView(),
         );
     }
 
+    /**
+     * Edits an existing GalleryItem entity.
+     *
+     * @Route("/galleryitem/{entity}/product/{product}", name="admin_product_gallery_update")
+     * @Method("PUT")
+     * @Template("FlowcodeShopBundle:AdminProduct:gallery_edit_item.html.twig")
+     */
+    public function updateGalleryItemAction(Request $request, GalleryItem $entity, Product $product) {
+        $em = $this->getDoctrine()->getManager();
+
+        //$product = $em->getRepository('AmulenShopBundle:Product')->find($request->get('product'));
+        //$entity = $em->getRepository('AmulenMediaBundle:GalleryItem')->find($id);
+
+        if (!$entity) {
+            throw $this->createNotFoundException('Unable to find GalleryItem entity.');
+        }
+
+        $deleteForm = $this->createDeleteGalleryItemForm($entity->getId());
+        $editForm = $this->createEditGalleryItemForm($entity, $product);
+        $editForm->handleRequest($request);
+
+        if ($editForm->isValid()) {
+            $em->flush();
+
+            return $this->redirect($this->generateUrl('admin_product_gallery_show', array('id' => $request->get('product'))));
+        }
+
+        return array(
+            'entity' => $entity,
+            'product' => $product,
+            'edit_form' => $editForm->createView(),
+            'delete_form' => $deleteForm->createView(),
+        );
+    }
+
+    /**
+     * Deletes a GalleryItem entity.
+     *
+     * @Route("/gallery/{id}", name="admin_product_gallery_delete")
+     * @Method("DELETE")
+     */
+    public function deleteGalleryItemAction(Request $request, $id) {
+        $form = $this->createDeleteForm($id);
+        $form->handleRequest($request);
+
+        if ($form->isValid()) {
+            $em = $this->getDoctrine()->getManager();
+            $entity = $em->getRepository('AmulenMediaBundle:GalleryItem')->find($id);
+
+            if (!$entity) {
+                throw $this->createNotFoundException('Unable to find GalleryItem entity.');
+            }
+
+            $em->remove($entity);
+            $em->flush();
+        }
+
+        return $this->redirect($this->generateUrl('admin_product'));
+    }
+
+    /**
+     * Creates a form to edit a GalleryItem entity.
+     *
+     * @param GalleryItem $entity The entity
+     *
+     * @return Form The form
+     */
+    private function createEditGalleryItemForm(GalleryItem $entity, $product) {
+        $form = $this->createForm($this->get("amulen.shop.form.product.gallery"), $entity, array(
+            'action' => $this->generateUrl('admin_product_gallery_update', array('entity' => $entity->getId(), 'product' => $product->getId())),
+            'method' => 'PUT',
+        ));
+
+        $form->add('submit', 'submit', array('label' => 'Update'));
+
+        return $form;
+    }
+
+    /**
+     * Creates a form to delete a GalleryItem entity by id.
+     *
+     * @param mixed $id The entity id
+     *
+     * @return Form The form
+     */
+    private function createDeleteGalleryItemForm($id) {
+        return $this->createFormBuilder()
+                        ->setAction($this->generateUrl('admin_product_gallery_delete', array('id' => $id)))
+                        ->setMethod('DELETE')
+                        ->add('submit', 'submit', array('label' => 'Delete'))
+                        ->getForm()
+        ;
+    }
 
 }

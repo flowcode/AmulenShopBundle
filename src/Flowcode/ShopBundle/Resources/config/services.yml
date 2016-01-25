@@ -20,3 +20,8 @@ services:
        arguments: [ "@doctrine" ]
        tags:
            - { name: form.type_guesser }
+
+    amulen.shop.form.product.gallery:
+        class: Flowcode\ShopBundle\Form\ProductGalleryItemType
+        tags:
+            - { name: form.type, alias: flowcode_shopbundle_product_gallery }

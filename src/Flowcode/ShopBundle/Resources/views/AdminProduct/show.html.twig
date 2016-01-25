@@ -60,7 +60,7 @@
                             </tbody>
                         </table>
                     </div>
-                    <a href="{{ path('admin_gallery_items', { 'id': entity.getMediaGallery.id }) }}" class="btn btn-info">Editar galeria</a>
+                    <a href="{{ path('admin_gallery_items', { 'id': entity.id, 'gallery_id': entity.getMediaGallery.id }) }}" class="btn btn-info">Editar galeria</a>
                     <div class="well">
                         <div class="row">
                             {% for galleryItem in entity.getMediaGallery.getGalleryItems %}

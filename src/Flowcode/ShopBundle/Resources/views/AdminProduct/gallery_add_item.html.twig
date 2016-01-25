@@ -1,0 +1,46 @@
+{% extends 'FlowcodeDashboardBundle:Default:layout.html.twig' %}
+
+{% block stylesheets %}
+{{ parent() }}
+<link href="{{ asset("assets/jquery-ui/themes/pepper-grinder/jquery-ui.min.css")}}" rel="stylesheet" type="text/css">
+<link href="{{ asset("assets/elfinder/dist/css/elfinder.min.css")}}" rel="stylesheet" type="text/css">
+<link href="{{ asset("assets/elfinder/dist/css/theme.css")}}" rel="stylesheet" type="text/css">
+{% endblock %}
+
+{% block body %}
+{{ include('FlowcodeMediaBundle:AdminMedia:mediaHeader.html.twig') }}
+<section class="content">
+    <div class="box box-solid">
+        <div class="box-header">
+            <h3 class="box-title">{{"new item"|trans|title}}</h3>
+            <div class="box-tools">
+                <a href="{{ path('admin_product_gallery_show', { 'id': product.id }) }}" class="btn btn-xs btn-link">
+                    {{"back to gallery"|trans|title}}
+                </a>
+            </div>
+        </div>
+        {{ include("FlowcodeMediaBundle:AdminGallery:gallery_add_form_item.html.twig", {'form': form}) }}
+    </div>
+</section>
+{% endblock %}
+
+
+{% block javascripts %}
+{{ parent() }}
+<script src="{{ asset("assets/jquery-ui/jquery-ui.min.js") }}" ></script>
+<script src="{{ asset("assets/elfinder/dist/js/elfinder.min.js") }}" ></script>
+<script src="{{ asset("assets/elfinder/dist/js/i18n/elfinder.es.js") }}" ></script>
+<script type="text/javascript">
+$('#browser-trigger').click(function() {
+    $('<div id="editor" />').dialogelfinder({
+        url : '{{ path('ef_connect') }}',
+        getFileCallback: function(file) {
+            $("#flowcode_mediabundle_galleryitem_media_path").val(file.path);
+            $('#editor').dialogelfinder('close');
+        }
+    });
+});
+
+</script>
+
+{% endblock %}
