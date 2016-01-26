@@ -20,7 +20,6 @@ class ProductGalleryItemType extends AbstractType
             ->add('page', 'hidden')
             ->add('link')
             ->add('media', new MediaType())
-            ->add('gallery')
         ;
     }
 
@@ -39,6 +38,6 @@ class ProductGalleryItemType extends AbstractType
      */
     public function getName()
     {
-        return 'flowcode_shopbundle_product_gallery';
+        return 'flowcode_shopbundle_product_gallery_item';
     }
 }

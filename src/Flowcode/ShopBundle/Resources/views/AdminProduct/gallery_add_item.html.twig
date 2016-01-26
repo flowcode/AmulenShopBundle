@@ -14,12 +14,34 @@
         <div class="box-header">
             <h3 class="box-title">{{"new item"|trans|title}}</h3>
             <div class="box-tools">
-                <a href="{{ path('admin_product_gallery_show', { 'id': product.id }) }}" class="btn btn-xs btn-link">
-                    {{"back to gallery"|trans|title}}
+                <a href="{{ path('admin_product_show', { 'id': product.id }) }}" class="btn btn-xs btn-link">
+                    {{"back to product"|trans|title}}
                 </a>
             </div>
         </div>
-        {{ include("FlowcodeMediaBundle:AdminGallery:gallery_add_form_item.html.twig", {'form': form}) }}
+        <div class="box-body">
+            {{ form_start(form) }}
+
+            {{ form_row(form.position) }}
+            {{ form_row(form.media.name) }}
+
+            <div class="form-group">
+                {{ form_label(form.media.path) }}
+                <div class="col-lg-5">
+                    {{ form_widget(form.media.path) }}
+                    {{ form_errors(form.media.path) }}
+                </div>
+                <div class="col-lg-4">
+                    <button class="btn btn-default" type="button" id="browser-trigger">
+                        <i class="fa fa-search" ></i>
+                        {{"image"|trans|title}}
+                    </button>
+                </div>
+            </div>
+
+            {{ form_end(form) }}
+
+        </div>
     </div>
 </section>
 {% endblock %}
@@ -35,7 +57,7 @@ $('#browser-trigger').click(function() {
     $('<div id="editor" />').dialogelfinder({
         url : '{{ path('ef_connect') }}',
         getFileCallback: function(file) {
-            $("#flowcode_mediabundle_galleryitem_media_path").val(file.path);
+            $("#flowcode_shopbundle_product_gallery_item_media_path").val(file.path);
             $('#editor').dialogelfinder('close');
         }
     });
