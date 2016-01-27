@@ -30,7 +30,11 @@
                             </tr>
                             <tr>
                                 <th>{{ "Image"|trans }}</th>
-                                <td><img src="{{ asset( entity.image | imagine_filter('thumb_product_gallery') ) }}" alt="" class="product-box-image" /></td>
+                                <td>
+                                    {% if entity.image %}
+                                        <img src="{{ asset( entity.image | imagine_filter('thumb_product_gallery') ) }}" alt="" class="product-box-image" />
+                                    {% endif %}
+                                </td>
                             </tr>
                         </tbody>
                     </table>
