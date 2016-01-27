@@ -1,4 +1,10 @@
 {% block products %}
+<h1>{{ page.name }}</h1>
+
+<div>
+{{ page.description }}
+</div>
+
 <div class="row">
     {% for entity in pagination %}
     <div class="col-sm-4">

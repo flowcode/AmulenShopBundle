@@ -1,18 +1,8 @@
 {% extends 'FlowcodeShopBundle::shop.html.twig' %}
 
 {% block products %}
-<h1>{{ page.name }}</h1>
-
 <div>
-{{ page.description }}
-</div>
-
-<div>
-    {% if parameterBag.category is defined %}
-        {{ render(controller("FlowcodeShopBundle:Product:index",{"category_slug":parameterBag.category})) }}
-    {% else %}
-        {{ render(controller("FlowcodeShopBundle:Product:index")) }}
-    {% endif %}
+    {{ render(controller("FlowcodeShopBundle:Product:index",{"parameter_bag":parameterBag,"page":page})) }}
 </div>
 
 {% endblock %}

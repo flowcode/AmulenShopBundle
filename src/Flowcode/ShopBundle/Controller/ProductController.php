@@ -23,9 +23,21 @@ class ProductController extends Controller
      * @Method("GET")
      * @Template()
      */
-    public function indexAction(Request $request, $category_slug = null)
+    public function indexAction(Request $request, $parameter_bag = null, $page = null)
     {
         $em = $this->getDoctrine()->getManager();
+
+        $category = null;
+        $category_slug = null;
+        if(isset($parameter_bag["category"])){
+            $category_slug = $parameter_bag["category"];
+            $category = $em->getRepository('AmulenClassificationBundle:Category')->findOneBySlug($category_slug);
+        }
+        if(isset($parameter_bag["page"])){
+            $pageNumber = $parameter_bag["page"];
+        } else {
+            $pageNumber = 1;
+        }
 
         /* seo metadata */
         $seoPage = $this->container->get('sonata.seo.page');
@@ -34,13 +46,14 @@ class ProductController extends Controller
         $seoPage->setTitle($title);
 
         /* pagination */
-        $pageNumber = $request->get("page", 1);
         $products = $this->getDoctrine()->getRepository("AmulenShopBundle:Product")->findEnabledByPageAndCategory($category_slug);
         $paginator = $this->get('knp_paginator');
-        $pagination = $paginator->paginate($products, $request->get('page', $pageNumber), 2);
+        $pagination = $paginator->paginate($products, $pageNumber, 4);
 
         return array(
             'pagination' => $pagination,
+            'category' => $category,
+            'page' => $page,
         );
     }
 

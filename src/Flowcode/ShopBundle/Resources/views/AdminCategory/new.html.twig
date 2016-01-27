@@ -1,5 +1,12 @@
 {% extends 'FlowcodeDashboardBundle:Default:layout.html.twig' %}
 
+{% block stylesheets %}
+{{ parent() }}
+<link href="{{ asset("assets/jquery-ui/themes/pepper-grinder/jquery-ui.min.css")}}" rel="stylesheet" type="text/css">
+<link href="{{ asset("assets/elfinder/dist/css/elfinder.min.css")}}" rel="stylesheet" type="text/css">
+<link href="{{ asset("assets/elfinder/dist/css/theme.css")}}" rel="stylesheet" type="text/css">
+{% endblock %}
+
 {% block body -%}
 {{ include('FlowcodeShopBundle:AdminCategory:categoryHeader.html.twig') }}
 <section class="content">
@@ -13,8 +20,47 @@
             </div>
         </div>
         <div class="box-body">
-            {{ form(form) }}
+            {{ form_start(form) }}
+
+            {{ form_row(form.name) }}
+            {{ form_row(form.slug) }}
+            {{ form_row(form.parent) }}
+            <div class="form-group">
+                {{ form_label(form.image) }}
+                <div class="col-lg-5">
+                    {{ form_widget(form.image) }}
+                    {{ form_errors(form.image) }}
+                </div>
+                <div class="col-lg-4">
+                    <button class="btn btn-default" type="button" id="browser-trigger">
+                        <i class="fa fa-search" ></i>
+                        {{"image"|trans|title}}
+                    </button>
+                </div>
+            </div>
+
+            {{ form_end(form) }}
         </div>
     </div>
 </section>
+{% endblock %}
+
+{% block javascripts %}
+{{ parent() }}
+<script src="{{ asset("assets/jquery-ui/jquery-ui.min.js") }}" ></script>
+<script src="{{ asset("assets/elfinder/dist/js/elfinder.min.js") }}" ></script>
+<script src="{{ asset("assets/elfinder/dist/js/i18n/elfinder.es.js") }}" ></script>
+<script type="text/javascript">
+$('#browser-trigger').click(function() {
+    $('<div id="editor" />').dialogelfinder({
+        url : '{{ path('ef_connect') }}',
+        getFileCallback: function(file) {
+            $("#amulen_classificationbundle_category_image").val(file.path);
+            $('#editor').dialogelfinder('close');
+        }
+    });
+});
+
+</script>
+
 {% endblock %}

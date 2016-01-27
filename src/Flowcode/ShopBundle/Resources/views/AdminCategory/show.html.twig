@@ -7,7 +7,7 @@
         <div class="col-sm-6">
             <div class="box box-solid">
                 <div class="box-header">
-                    <h3 class="box-title">{{ entity.name }}</h3>
+                    <h3 class="box-title">{{ entity.name|title }}</h3>
                     <div class="box-tools">
                         <a href="{{ path('admin_shop_category') }}" class="btn btn-xs btn-link">
                             {{ "Back to the list"|trans }}
@@ -27,6 +27,10 @@
                             <tr>
                                 <th>{{ "Name"|trans }}</th>
                                 <td>{{ entity.name }}</td>
+                            </tr>
+                            <tr>
+                                <th>{{ "Image"|trans }}</th>
+                                <td><img src="{{ asset( entity.image | imagine_filter('thumb_product_gallery') ) }}" alt="" class="product-box-image" /></td>
                             </tr>
                         </tbody>
                     </table>
