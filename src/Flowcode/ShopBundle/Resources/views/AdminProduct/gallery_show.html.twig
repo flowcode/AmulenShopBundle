@@ -8,10 +8,10 @@
             <h3 class="box-title">{{ entity.name }}</h3>
             <div class="box-tools">
                 <a href="{{ path('admin_product_show', { 'id' : product.id }) }}" class="btn btn-xs btn-link">
-                    Back to the list
+                    {{ "Back to the list"|trans }}
                 </a>
                 <a href="{{ path('admin_gallery_edit', { 'id': entity.id }) }}" class="btn btn-xs btn-link">
-                    Edit
+                    {{ "edit"|trans }}
                 </a>
             </div>
         </div>

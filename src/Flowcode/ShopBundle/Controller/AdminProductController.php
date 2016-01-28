@@ -444,6 +444,24 @@ class AdminProductController extends Controller {
     }
 
     /**
+     * Displays a form to create a new Gallery entity.
+     *
+     * @Route("/{product}/galleryitem/{id}/remove", name="admin_product_gallery_item_remove")
+     */
+    public function removeitemAction(Product $product, Request $request, GalleryItem $entity) {
+        $em = $this->getDoctrine()->getManager();
+
+        $galleryItem = $em->getRepository('AmulenMediaBundle:GalleryItem')->find($entity->getId());
+
+        $gallery = $galleryItem->getGallery();
+
+        $em->remove($galleryItem);
+        $em->flush();
+
+        return $this->redirect($this->generateUrl('admin_product_show', array('id' => $product->getId())));
+    }
+
+    /**
      * Creates a form to edit a GalleryItem entity.
      *
      * @param GalleryItem $entity The entity
