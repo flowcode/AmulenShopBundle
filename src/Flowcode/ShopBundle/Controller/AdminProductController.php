@@ -594,6 +594,7 @@ class AdminProductController extends Controller {
                 /* set video gallery */
                 $product->setVideoGallery($gallery);
             }
+            $gallery = $product->getVideoGallery();
         } else {
             $gallery = $product->getMediaGallery();
         }
@@ -669,23 +670,24 @@ class AdminProductController extends Controller {
     /**
      * Edits an existing Media entity.
      *
-     * @Route("/{product}/media/{entity}", name="admin_product_media_update")
+     * @Route("/{product}/media/{entity}/{type}", name="admin_product_media_update")
      * @Method("PUT")
      * @Template("FlowcodeShopBundle:AdminProduct:media_edit.html.twig")
      */
     public function updateMediaAction(Request $request, Product $product, Media $entity,$type)
     {
+        $em = $this->getDoctrine()->getManager();
         if (!$entity) {
             throw $this->createNotFoundException('Unable to find Media entity.');
         }
 
-        $editForm = $this->createEditForm($entity, $product, $type);
+        $editForm = $this->mediaCreateEditForm($entity, $product, $type);
         $editForm->handleRequest($request);
 
         if ($editForm->isValid()) {
             $em->flush();
 
-            return $this->redirect($this->generateUrl('admin_product_media_edit', array("product" => $product->getId(), 'entity' => $entity->getId(), "type" => $entity->getMediaType())));
+            return $this->redirect($this->generateUrl('admin_product_show', array("id" => $product->getId())));
         }
 
         return array(
