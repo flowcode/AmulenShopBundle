@@ -17,7 +17,7 @@ class ProductType extends AbstractType
     {
         $builder
             ->add('name')
-            ->add('description')
+            ->add('description', null, array('required' => true))
             ->add('category', 'y_tree', array(
                    'class' => "Amulen\ClassificationBundle\Entity\Category",
                    'orderFields' => array('root' => 'asc','lft' => 'asc'),

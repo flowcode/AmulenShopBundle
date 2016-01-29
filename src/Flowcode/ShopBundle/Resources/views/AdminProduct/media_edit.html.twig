@@ -1,0 +1,70 @@
+{% extends 'FlowcodeDashboardBundle:Default:layout.html.twig' %}
+
+{% block stylesheets %}
+{{ parent() }}
+<link href="{{ asset("assets/jquery-ui/themes/pepper-grinder/jquery-ui.min.css")}}" rel="stylesheet" type="text/css">
+<link href="{{ asset("assets/elfinder/dist/css/elfinder.min.css")}}" rel="stylesheet" type="text/css">
+<link href="{{ asset("assets/elfinder/dist/css/theme.css")}}" rel="stylesheet" type="text/css">
+{% endblock %}
+
+{% block body %}
+{{ include('FlowcodeMediaBundle:AdminMedia:mediaHeader.html.twig') }}
+<section class="content">
+    <div class="box box-solid">
+        <div class="box-header">
+            <h3 class="box-title">{{ type|trans|title }}</h3>
+            <div class="box-tools">
+                <a href="{{ path('admin_product_show', { 'id': product.id }) }}" class="btn btn-xs btn-link">
+                    {{"back to product"|trans|title}}
+                </a>
+            </div>
+        </div>
+
+        <div class="box-body">
+            {{ form_start(edit_form) }}
+
+            {{ form_row(edit_form.name) }}
+
+            <div class="form-group">
+                {{ form_label(edit_form.path) }}
+                <div class="col-lg-5">
+                    {{ form_widget(edit_form.path) }}
+                    {{ form_errors(edit_form.path) }}
+                </div>
+                {% if type == "type_file" %}
+                    <div class="col-lg-4">
+                        <button class="btn btn-default" type="button" id="browser-trigger">
+                            <i class="fa fa-search" ></i>
+                            {{"image"|trans|title}}
+                        </button>
+                    </div>
+                {% endif %}
+            </div>
+
+            {{ form_end(edit_form) }}
+
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+
+{% block javascripts %}
+{{ parent() }}
+<script src="{{ asset("assets/jquery-ui/jquery-ui.min.js") }}" ></script>
+<script src="{{ asset("assets/elfinder/dist/js/elfinder.min.js") }}" ></script>
+<script src="{{ asset("assets/elfinder/dist/js/i18n/elfinder.es.js") }}" ></script>
+<script type="text/javascript">
+$('#browser-trigger').click(function() {
+    $('<div id="editor" />').dialogelfinder({
+        url : '{{ path('ef_connect') }}',
+        getFileCallback: function(file) {
+            $("#flowcode_shopbundle_product_gallery_item_media_path").val(file.path);
+            $('#editor').dialogelfinder('close');
+        }
+    });
+});
+
+</script>
+
+{% endblock %}

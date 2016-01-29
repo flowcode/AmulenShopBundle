@@ -67,6 +67,7 @@
                             </tbody>
                         </table>
                     </div>
+                    <!-- IMAGEN -->
                     <div class="box">
                         <div class="box-header">
                             <h3 class="box-title">{{ "item"|trans }}</h3>
@@ -79,6 +80,17 @@
                         <div class="box-body">
                             <div class="row">
                             {{ include("FlowcodeMediaBundle:AdminGallery:gallery_show_items.html.twig", {'items': entity.getMediaGallery.getGalleryItems, 'edit_route': 'admin_product_gallery_edit', 'product': entity}) }}
+                            </div>
+                        </div>
+                    </div>
+                    <!-- VIDEO -->
+                    <div class="box">
+                        <div class="box-header">
+                            <h3 class="box-title">{{ "video"|trans|title }}</h3>
+                            <div class="box-tools">
+                                <a href="{{ path('admin_product_new_media', { 'id' : entity.id, 'type':"type_video_youtube" }) }}" class="btn btn-xs btn-link">
+                                    <i class="fa fa-plus"></i> {{ "add video"|trans }}
+                                </a>
                             </div>
                         </div>
                     </div>

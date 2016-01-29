@@ -4,6 +4,7 @@ namespace Flowcode\ShopBundle\Controller;
 
 use Amulen\MediaBundle\Entity\Gallery;
 use Amulen\MediaBundle\Entity\GalleryItem;
+use Amulen\MediaBundle\Entity\Media;
 use Amulen\MediaBundle\Form\GalleryItemType;
 use Amulen\MediaBundle\Form\ImageGalleryType;
 use Amulen\ShopBundle\Entity\Product;
@@ -14,6 +15,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\Form\Form;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Finder\SplFileInfo;
 
 /**
  * Product controller.
@@ -344,7 +346,7 @@ class AdminProductController extends Controller {
     /**
      * Finds and displays a Gallery entity.
      *
-     * @Route("/gallery/{id}", name="admin_product_gallery_show")
+     * @Route("/{id}/gallery", name="admin_product_gallery_show")
      * @Method("GET")
      * @Template("FlowcodeShopBundle:AdminProduct:gallery_show.html.twig")
      */
@@ -515,5 +517,182 @@ class AdminProductController extends Controller {
         }
         $em->flush();
         return new Response('ok');
+    }
+
+    /**
+     * MEDIA
+    */
+    /**
+     * Add media.
+     *
+     * @Route("/{id}/addmedia/{type}", name="admin_product_new_media")
+     * @Method("GET")
+     * @Template("FlowcodeShopBundle:AdminProduct:media_new.html.twig")
+     */
+    public function addMediaProductAction(Product $product, $type = null)
+    {
+        if($type == 'type_image_file') {
+            return $this->redirectToRoute('admin_product_new_image', array('id' => $product->getId()));
+        }
+        $entity = new Media();
+        $entity->setMediaType($type);
+        $form = $this->mediaCreateCreateForm($entity, $product);
+
+        return array(
+            'type' => $type,
+            'entity' => $entity,
+            'product' => $product,
+            'form' => $form->createView(),
+        );
+    }
+
+    /**
+     * Creates a form to create a Media entity.
+     *
+     * @param Media $entity The entity
+     *
+     * @return \Symfony\Component\Form\Form The form
+     */
+    private function mediaCreateCreateForm(Media $entity, $product)
+    {
+        $types = $this->container->getParameter('flowcode_media.media_types');
+        $class = $types[$entity->getMediaType()]["class_type"];
+
+        $form = $this->createForm(new $class(), $entity, array(
+            'action' => $this->generateUrl('admin_product_media_create', array("product" => $product->getId(), "type" => $entity->getMediaType())),
+            'method' => 'POST',
+        ));
+
+        $form->add('submit', 'submit', array('label' => 'Create'));
+
+        return $form;
+    }
+
+    /**
+     * Creates a new Media entity.
+     *
+     * @Route("/{product}/media/{type}", name="admin_product_media_create")
+     * @Method("POST")
+     * @Template("FlowcodeShopBundle:AdminProduct:media_new.html.twig")
+     */
+    public function createMediaAction(Product $product,Request $request, $type)
+    {
+        $em = $this->getDoctrine()->getManager();
+        $media = new Media();
+        $media->setMediaType($type);
+        $form = $this->mediaCreateCreateForm($media, $product);
+        $form->handleRequest($request);
+
+        if($type == 'type_video_youtube'){
+            if (is_null($product->getVideoGallery())) {
+                /* create media gallery */
+                $gallery = new Gallery();
+                $gallery->setName($product->getName());
+                $gallery->setEnabled(true);
+                $em->persist($gallery);
+
+                /* set video gallery */
+                $product->setVideoGallery($gallery);
+            }
+        } else {
+            $gallery = $product->getMediaGallery();
+        }
+
+        if ($form->isValid()) {
+            $galleryItem = new GalleryItem();
+            $galleryItem->setGallery($gallery);
+            $position = $gallery->getGalleryItems()->count() + 1;
+            $galleryItem->setPosition($position);
+            $galleryItem->setMedia($media);
+
+
+            $em = $this->getDoctrine()->getManager();
+            $em->persist($media);
+            $em->persist($galleryItem);
+            $em->flush();
+
+            return $this->redirectToRoute('admin_product_show', array('id' => $product->getId()));
+        }
+
+        return array(
+            'entity' => $media,
+            'product' => $product,
+            'form' => $form->createView(),
+        );
+    }
+
+    /**
+     * Displays a form to edit an existing Media entity.
+     *
+     * @Route("/{product}/media/{id}/{type}/edit", name="admin_product_media_edit")
+     * @Method("GET")
+     * @Template("FlowcodeShopBundle:AdminProduct:media_edit.html.twig")
+     */
+    public function editMediaAction(Product $product, Media $entity, $type, Request $request)
+    {
+        if (!$entity) {
+            throw $this->createNotFoundException('Unable to find Media entity.');
+        }
+
+        $editForm = $this->mediaCreateEditForm($entity, $product, $type);
+
+        return array(
+            'entity' => $entity,
+            'type' => $type,
+            'product' => $product,
+            'edit_form' => $editForm->createView(),
+        );
+    }
+
+    /**
+     * Creates a form to edit a Media entity.
+     *
+     * @param Media $entity The entity
+     *
+     * @return \Symfony\Component\Form\Form The form
+     */
+    private function mediaCreateEditForm(Media $entity, $product, $type)
+    {
+        $types = $this->container->getParameter('flowcode_media.media_types');
+        $class = $types[$entity->getMediaType()]["class_type"];
+
+        $form = $this->createForm(new $class(), $entity, array(
+            'action' => $this->generateUrl('admin_product_media_update', array("product" => $product->getId(), 'entity' => $entity->getId(), "type" => $entity->getMediaType())),
+            'method' => 'PUT',
+        ));
+
+        $form->add('submit', 'submit', array('label' => 'Update'));
+
+        return $form;
+    }
+
+    /**
+     * Edits an existing Media entity.
+     *
+     * @Route("/{product}/media/{entity}", name="admin_product_media_update")
+     * @Method("PUT")
+     * @Template("FlowcodeShopBundle:AdminProduct:media_edit.html.twig")
+     */
+    public function updateMediaAction(Request $request, Product $product, Media $entity,$type)
+    {
+        if (!$entity) {
+            throw $this->createNotFoundException('Unable to find Media entity.');
+        }
+
+        $editForm = $this->createEditForm($entity, $product, $type);
+        $editForm->handleRequest($request);
+
+        if ($editForm->isValid()) {
+            $em->flush();
+
+            return $this->redirect($this->generateUrl('admin_product_media_edit', array("product" => $product->getId(), 'entity' => $entity->getId(), "type" => $entity->getMediaType())));
+        }
+
+        return array(
+            'entity' => $entity,
+            'type' => $type,
+            'product' => $product,
+            'edit_form' => $editForm->createView(),
+        );
     }
 }

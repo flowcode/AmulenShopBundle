@@ -10,6 +10,7 @@ use Doctrine\ORM\Mapping\ManyToMany;
 use Doctrine\ORM\Mapping\ManyToOne;
 use Doctrine\ORM\Mapping\OneToOne;
 use Gedmo\Mapping\Annotation as Gedmo;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * Product
@@ -43,6 +44,7 @@ class Product {
     /**
      * @var string
      *
+     * @Assert\NotBlank()
      * @ORM\Column(name="description", type="text")
      */
     protected $description;
@@ -87,7 +89,13 @@ class Product {
      * @OneToOne(targetEntity="Amulen\MediaBundle\Entity\Gallery")
      * @JoinColumn(name="media_gallery_id", referencedColumnName="id")
      * */
-    protected $mediaGallery;
+    protected $mediaGallery;    
+
+    /**
+     * @OneToOne(targetEntity="Amulen\MediaBundle\Entity\Gallery")
+     * @JoinColumn(name="video_gallery_id", referencedColumnName="id")
+     * */
+    protected $videoGallery;
 
     /**
      * @var datetime $created
@@ -371,6 +379,27 @@ class Product {
             $media->setPath("uploads/default.jpg");
         }
         return $media;
+    }
+
+    /**
+     * Set videoGallery
+     *
+     * @param \Amulen\MediaBundle\Entity\Gallery $videoGallery
+     * @return Product
+     */
+    public function setVideoGallery(\Amulen\MediaBundle\Entity\Gallery $videoGallery = null) {
+        $this->videoGallery = $videoGallery;
+
+        return $this;
+    }
+
+    /**
+     * Get videoGallery
+     *
+     * @return \Amulen\MediaBundle\Entity\Gallery
+     */
+    public function getVideoGallery() {
+        return $this->videoGallery;
     }
 
 }
