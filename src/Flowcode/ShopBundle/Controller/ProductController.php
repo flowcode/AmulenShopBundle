@@ -111,40 +111,4 @@ class ProductController extends Controller
             'entity' => $entity,
         );
     }
-
-    /**
-     * Lists all Product entities.
-     *
-     * @Route("/", name="menushowcategory")
-     * @Method("GET")
-     * @Template()
-     */
-    public function menuShowCategoryAction(Request $request, $parameter_bag = null, $page = null)
-    {
-        $em = $this->getDoctrine()->getManager();
-
-        $category = null;
-        $category_slug = null;
-        if(isset($parameter_bag["category"])){
-            $category_slug = $parameter_bag["category"];
-            $category = $em->getRepository('AmulenClassificationBundle:Category')->findOneBySlug($category_slug);
-            if (count($category->getChildren()) > 0){
-                /* Aca cargar nueva vista para vista de subcategorias. */
-            } else {
-                $this->indexAction($request, $parameter_bag = null, $page = null);
-            }
-
-        }
-        if(isset($parameter_bag["page"])){
-            $pageNumber = $parameter_bag["page"];
-        } else {
-            $pageNumber = 1;
-        }
-
-        return array(
-            'pagination' => $pagination,
-            'category' => $category,
-            'page' => $page,
-        );
-    }
 }
