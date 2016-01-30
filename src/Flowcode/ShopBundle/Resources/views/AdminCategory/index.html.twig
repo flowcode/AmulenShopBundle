@@ -3,7 +3,7 @@
 
 {% block body %}
 {{ include('FlowcodeShopBundle:AdminCategory:categoryHeader.html.twig') }}
-<section class="content">
+<section class="container">
     <div class="col-sm-6">
     <div class="box box-solid">
         <div class="box-header">
@@ -28,10 +28,18 @@
                     </tr>
                 </thead>
                 <tbody>
-                    {% for entity in entities %}
+                    {% for entity in rootcategory.getChildren %}
                     <tr>
                         <td><a href="{{ path('admin_shop_category_show', { 'id': entity.id }) }}">{{ entity.name }}</a></td>
                     </tr>
+                    {% if entity.getChildren | length > 0 %}
+                        <tr>
+                            <td>
+                                {{ include('FlowcodeShopBundle:AdminCategory:listChild.html.twig',{ 'entity': entity }) }}
+                            </td>
+                        </tr>
+                    {% endif %}
+                    
                     {% endfor %}
                 </tbody>
             </table>

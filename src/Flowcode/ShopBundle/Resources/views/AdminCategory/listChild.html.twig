@@ -1,0 +1,17 @@
+ <table class="records_list table table-condensed" style="margin-left: 20px; ">
+    <tbody>
+    {% for item in entity.getChildren %}
+	    <tr>
+        	<td><a href="{{ path('admin_shop_category_show', { 'id': item.id }) }}">{{ item.name }}</a></td>
+    	</tr>
+    	{% if item.getChildren | length > 0 %}
+    	<tr>
+    		<td>
+	    		{{ include('FlowcodeShopBundle:AdminCategory:listChild.html.twig',{ 'entity': item }) }}
+    		</td>
+    	</tr>
+    	{% endif %}
+    {% endfor %}
+        
+    </tbody>
+</table>
