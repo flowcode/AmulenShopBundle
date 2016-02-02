@@ -31,6 +31,7 @@ class ProductType extends AbstractType
             ->add('tags', 'collection', array("type" => new Tag(), "label" => "Etiquetas"))
             ->add('mediaGallery', null, array("label" => "Galería de medios"))
             ->add('content', 'ckeditor')
+            ->add('brand')
         ;
     }
 

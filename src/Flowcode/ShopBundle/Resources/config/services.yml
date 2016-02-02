@@ -25,3 +25,8 @@ services:
         class: Flowcode\ShopBundle\Form\ProductGalleryItemType
         tags:
             - { name: form.type, alias: flowcode_shopbundle_product_gallery }
+
+    amulen.shop.form.brand:
+        class: Flowcode\ShopBundle\Form\BrandType
+        tags:
+            - { name: form.type, alias: flowcode_shopbundle_brand }

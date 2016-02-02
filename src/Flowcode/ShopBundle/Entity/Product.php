@@ -98,6 +98,12 @@ class Product {
     protected $videoGallery;
 
     /**
+     * @ManyToOne(targetEntity="Amulen\ShopBundle\Entity\Brand")
+     * @JoinColumn(name="brand_id", referencedColumnName="id")
+     * */
+    protected $brand;
+
+    /**
      * @var datetime $created
      *
      * @Gedmo\Timestampable(on="create")
@@ -400,6 +406,29 @@ class Product {
      */
     public function getVideoGallery() {
         return $this->videoGallery;
+    }
+
+    /**
+     * Set brand
+     *
+     * @param \Amulen\ShopBundle\Entity\Brand $brand
+     * @return Product
+     */
+    public function setBrand(\Amulen\ShopBundle\Entity\Brand $brand = null)
+    {
+        $this->brand = $brand;
+
+        return $this;
+    }
+
+    /**
+     * Get brand
+     *
+     * @return \Amulen\ShopBundle\Entity\Brand 
+     */
+    public function getBrand()
+    {
+        return $this->brand;
     }
 
 }

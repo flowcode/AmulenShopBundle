@@ -1,0 +1,46 @@
+{% extends 'FlowcodeDashboardBundle:Default:layout.html.twig' %}
+
+{% block body -%}
+{{ include('FlowcodeShopBundle:AdminBrand:brandsHeader.html.twig') }}
+<section class="content">
+    <div class="row">
+        <div class="col-sm-6">
+            <div class="box box-solid">
+                <div class="box-header">
+                    <h3 class="box-title">{{ entity.name|title }}</h3>
+                    <div class="box-tools">
+                        <a href="{{ path('admin_brand') }}" class="btn btn-xs btn-link">
+                            {{ "Back to the list"|trans }}
+                        </a>
+                        <a href="{{ path('admin_brand_edit', { 'id': entity.id }) }}" class="btn btn-xs btn-link">
+                            {{ "edit"|trans }}
+                        </a>
+                    </div>
+                </div>
+                <div class="box-body">
+                    <table class="table table-condensed">
+                        <tbody>
+                            <tr>
+                                <th>Id</th>
+                                <td>{{ entity.id }}</td>
+                            </tr>
+                            <tr>
+                                <th>{{ "Name"|trans }}</th>
+                                <td>{{ entity.name }}</td>
+                            </tr>
+                            <tr>
+                                <th>{{ "Image"|trans }}</th>
+                                <td>
+                                    {% if entity.image %}
+                                        <img src="{{ asset( entity.image | imagine_filter('thumb_product_gallery') ) }}" alt="" class="product-box-image" />
+                                    {% endif %}
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
