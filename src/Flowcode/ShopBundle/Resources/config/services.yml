@@ -5,6 +5,10 @@ services:
         tags:
             - { name: form.type, alias: flowcode_shopbundle_product }
 
+    amulen.shop.product.service:
+        class: Flowcode\ShopBundle\Service\ProductService
+        arguments: ['@service_container']
+
     amulen.shop.form.productorder:
         class: Flowcode\ShopBundle\Form\ProductOrderType
         tags:

@@ -23,5 +23,4 @@ class ProductRepository extends EntityRepository {
         }
         return $query;
     }
-
 }
