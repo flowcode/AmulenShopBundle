@@ -31,40 +31,14 @@ class AdminProductController extends Controller {
      * @Method("GET")
      * @Template()
      */
-    public function indexAction(Request $request)
+    public function indexAction()
     {
         $em = $this->getDoctrine()->getManager();
-        $conn = $this->get('database_connection');
-        $filterON= false;
-        
-        /* Selected elements */
-        $selectedProducts = $request->get("categories");
-        $selectedCategories = $request->get("products");
-        $selectedBrands = $request->get("brands");
-        $selectedIndustries = $request->get("industries");
-        $selectedCountries = $request->get("countries");
 
-
-        /* SQL Builder */
-        $result = $this->get('amulen.shop.product.service')->getSQLQuery($selectedProducts, $selectedCategories, $selectedBrands, $selectedIndustries, $selectedCountries, $filterON);
-
-        $products = $conn->fetchAll($result["sql"]);
-        $filterON = $result["filterON"];
-
-        //$products = $em->getRepository('AmulenShopBundle:Product')->findAll();
-        $categories = $em->getRepository('AmulenClassificationBundle:Category')->findAll();
-        //$categories = null;
-        $brands = $em->getRepository('AmulenShopBundle:Brand')->findAll();
-        $industries = $em->getRepository('AppBundle:Industry')->findAll();
-        $countries = $em->getRepository('AppBundle:Country')->findAll();
+        $entities = $em->getRepository('AmulenShopBundle:Product')->findAll();
 
         return array(
-            'products' => $products,
-            'categories' => $categories,
-            'brands' => $brands,
-            'industries' => $industries,
-            'countries' => $countries,
-            'filterON' => $filterON,
+            'entities' => $entities,
         );
     }
 
