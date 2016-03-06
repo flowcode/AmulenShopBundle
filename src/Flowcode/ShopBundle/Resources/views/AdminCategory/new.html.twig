@@ -27,11 +27,11 @@
             {{ form_row(form.parent) }}
             <div class="form-group">
                 {{ form_label(form.image) }}
-                <div class="col-lg-5">
+                <div class="col-xs-5">
                     {{ form_widget(form.image) }}
                     {{ form_errors(form.image) }}
                 </div>
-                <div class="col-lg-4">
+                <div class="col-xs-4">
                     <button class="btn btn-default" type="button" id="browser-trigger">
                         <i class="fa fa-search" ></i>
                         {{"image"|trans|title}}

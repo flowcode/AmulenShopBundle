@@ -25,7 +25,7 @@
         </div>
         <div class="box-body">
             <div class="row">
-                <div class="col-sm-8">
+                <div class="col-sm-12">
                     <div class="panel panel-default">
                         <div class="panel-heading">Datos del producto</div>
                         <table class="table table-condensed">
@@ -64,6 +64,16 @@
                                         {% endif %}
                                     </td>
                                 </tr>
+                                <tr>
+                                    <th>{{ "Portada"|trans }}</th>
+                                    <td>
+                                        <div class="col-sm-4">
+                                        {% if entity.getMediaGallery.getGalleryItems[0] is defined %}
+                                            <img src="{{ asset(entity.getMediaGallery.getGalleryItems[0].media.path|imagine_filter('thumb_product_gallery')) }}">
+                                        {% endif %}
+                                        </div>
+                                    </td>
+                                </tr>
                             </tbody>
                         </table>
                     </div>
@@ -95,9 +105,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-sm-4">
-                    <img src="{{ asset(entity.getImage.getWebPath) }}" alt="{{ entity.getImage.name }}" class="img-responsive">
-                </div>
+
             </div>
         </div>
     </div>
