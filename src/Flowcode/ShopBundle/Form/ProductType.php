@@ -6,10 +6,19 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 use Amulen\ClassificationBundle\Entity\Tag;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 
 class ProductType extends AbstractType
 {
-        /**
+
+    private $categoryService;
+
+    public function __construct($categoryService)
+    {
+        $this->categoryService = $categoryService;
+    }
+    
+    /**
      * @param FormBuilderInterface $builder
      * @param array $options
      */
@@ -18,14 +27,18 @@ class ProductType extends AbstractType
         $builder
             ->add('name')
             ->add('description', null, array('required' => true))
-            ->add('category', 'y_tree', array(
-                   'class' => "Amulen\ClassificationBundle\Entity\Category",
-                   'orderFields' => array('root' => 'asc','lft' => 'asc'),
-                   'prefixAttributeName' => 'data-level-prefix',
-                   'treeLevelField' => 'lvl',
-                   'required' => false,
-                   'multiple' => false,
-                   'attr' => array("class" => "tall")))
+            ->add('category', EntityType::class, array(
+                    'class' => "Amulen\ClassificationBundle\Entity\Category",
+                    'choices' => $this->categoryService->findByRoot("post"),
+                    'choice_label' => function($category, $key, $index) {
+                        $prefix = "";
+                        for($i = 0; $i < $category->getLvl(); $i++){
+                            $prefix .= "-";
+                        }
+                        return strtolower($prefix.$category->getName());
+                    },
+                    'multiple' => false,
+                ))
             ->add('price', 'text', array("label" => "Precio"))
             ->add('enabled')
             ->add('tags', 'collection', array("type" => new Tag(), "label" => "Etiquetas"))

@@ -2,6 +2,7 @@ services:
 
     amulen.shop.form.product:
         class: Flowcode\ShopBundle\Form\ProductType
+        arguments: ['@amulen.classification.category']
         tags:
             - { name: form.type, alias: flowcode_shopbundle_product }
 
