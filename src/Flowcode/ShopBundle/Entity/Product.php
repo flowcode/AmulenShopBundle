@@ -44,8 +44,7 @@ class Product {
     /**
      * @var string
      *
-     * @Assert\NotBlank()
-     * @ORM\Column(name="description", type="text")
+     * @ORM\Column(name="description", type="text", nullable=true)
      */
     protected $description;
 
@@ -68,7 +67,7 @@ class Product {
      *
      * @ORM\Column(name="enabled", type="boolean")
      */
-    protected $enabled;
+    protected $enabled = true;
 
     /**
      * @ManyToOne(targetEntity="Amulen\ClassificationBundle\Entity\Category")

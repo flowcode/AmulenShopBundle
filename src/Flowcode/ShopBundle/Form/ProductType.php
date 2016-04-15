@@ -26,7 +26,7 @@ class ProductType extends AbstractType
     {
         $builder
             ->add('name')
-            ->add('description', null, array('required' => true))
+            ->add('description')
             ->add('category', EntityType::class, array(
                     'class' => "Amulen\ClassificationBundle\Entity\Category",
                     'choices' => $this->categoryService->findByRoot("post"),
