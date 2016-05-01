@@ -1,17 +1,15 @@
- <table class="records_list table table-condensed" style="margin-left: 20px; ">
-    <tbody>
+
     {% for item in entity.getChildren %}
-	    <tr>
-        	<td><a href="{{ path('admin_shop_category_show', { 'id': item.id }) }}">{{ item.name }}</a></td>
+        <tr  data-depth="{{depth}}" class="expand level{{depth}}" style="display: none;">
+        	<td>
+            {% if item.getChildren | length > 0 %}
+                <i class="toggle fa fa-caret-right"></i>
+                <i class="toggle fa fa-caret-down"></i>
+            {% endif %}
+            <a href="{{ path('admin_shop_category_show', { 'id': item.id }) }}">{{ item.name }}</a>
+            </td>
     	</tr>
     	{% if item.getChildren | length > 0 %}
-    	<tr>
-    		<td>
-	    		{{ include('FlowcodeShopBundle:AdminCategory:listChild.html.twig',{ 'entity': item }) }}
-    		</td>
-    	</tr>
+	    		{{ include('FlowcodeShopBundle:AdminCategory:listChild.html.twig',{ 'entity': item , 'depth':depth+1 }) }}
     	{% endif %}
     {% endfor %}
-        
-    </tbody>
-</table>

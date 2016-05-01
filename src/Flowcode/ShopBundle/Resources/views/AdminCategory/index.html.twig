@@ -3,6 +3,7 @@
 
 {% block body %}
 {{ include('FlowcodeShopBundle:AdminCategory:categoryHeader.html.twig') }}
+
 <section class="container">
     <div class="col-sm-6">
     <div class="box box-solid">
@@ -19,9 +20,9 @@
                 </a>
             </div>
         </div>
-
         <div class="box-body">
-            <table class="records_list table table-condensed">
+            <a href="#" id="toogleAll" class="expand">Expandir Todos</a>
+            <table id="treeTable" class="treeTable records_list table table-condensed">
                 <thead>
                     <tr>
                         <th>{{ "Name"|trans }}</th>
@@ -29,15 +30,18 @@
                 </thead>
                 <tbody>
                     {% for entity in rootcategory.getChildren %}
-                    <tr>
-                        <td><a href="{{ path('admin_shop_category_show', { 'id': entity.id }) }}">{{ entity.name }}</a></td>
+                    {% set depth = 0 %}
+                    <tr data-depth="0" class="expand level0">
+                        <td>
+                            {% if entity.getChildren | length > 0 %}
+                                <i class="toggle fa fa-caret-right"></i>
+                                <i class="toggle fa fa-caret-down"></i>
+                            {% endif %}
+                            <a href="{{ path('admin_shop_category_show', { 'id': entity.id }) }}">{{ entity.name }}</a>
+                        </td>
                     </tr>
                     {% if entity.getChildren | length > 0 %}
-                        <tr>
-                            <td>
-                                {{ include('FlowcodeShopBundle:AdminCategory:listChild.html.twig',{ 'entity': entity }) }}
-                            </td>
-                        </tr>
+                                {{ include('FlowcodeShopBundle:AdminCategory:listChild.html.twig',{ 'entity': entity, 'depth':depth+1  }) }}
                     {% endif %}
                     
                     {% endfor %}
@@ -50,3 +54,68 @@
 
 
 {% endblock %}
+
+
+{% block javascripts %}
+{{ parent() }}
+<script type="text/javascript">
+    $(function() {
+                $('#toogleAll').on('click', function () {
+            var elements = $(".toggle");
+            elements.each(function (ix,el) {
+                var tr = $(el).closest('tr'); //Get <tr> parent of toggle button
+                var children = findChildren(tr);
+                if($('#toogleAll').hasClass("expand")){
+                    tr.removeClass('expand').addClass('collapse');
+                    children.show();
+                }else{
+                    tr.removeClass('collapse').addClass('expand');
+                    children.hide();
+                }
+            });
+            if($('#toogleAll').hasClass("expand")){
+                $('#toogleAll').html("Cerrar Todos");
+                $('#toogleAll').removeClass('expand').addClass('collapsed');
+            }else{
+                $('#toogleAll').html("Expandir Todos");
+                $('#toogleAll').removeClass('collapsed').addClass('expand');
+            }
+
+        });
+        function findChildren (tr) {
+            var depth = tr.data('depth');
+            return tr.nextUntil($('tr').filter(function () {
+                return $(this).data('depth') <= depth;
+            }));
+        };
+        $('#treeTable').on('click', '.toggle', function () {
+          
+            var el = $(this);
+            var tr = el.closest('tr'); //Get <tr> parent of toggle button
+            var children = findChildren(tr);
+
+            //Remove already collapsed nodes from children so that we don't
+            //make them visible. 
+            //(Confused? Remove this code and close Item 2, close Item 1 
+            //then open Item 1 again, then you will understand)
+            var subnodes = children.filter('.expand');
+            subnodes.each(function () {
+                var subnode = $(this);
+                var subnodeChildren = findChildren(subnode);
+                children = children.not(subnodeChildren);
+            });
+
+            //Change icon and hide/show children
+            if (tr.hasClass('collapse')) {
+                tr.removeClass('collapse').addClass('expand');
+                children.hide();
+            } else {
+                tr.removeClass('expand').addClass('collapse');
+                children.show();
+            }
+            return children;
+        });
+    });
+</script>
+{% endblock %}
+
