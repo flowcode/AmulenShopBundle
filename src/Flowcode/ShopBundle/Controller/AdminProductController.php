@@ -33,12 +33,16 @@ class AdminProductController extends Controller {
      */
     public function indexAction(Request $request)
     {
-        $em = $this->getDoctrine()->getManager();
 
-        $entities = $em->getRepository('AmulenShopBundle:Product')->findAll();
+        $page = $request->get("page", 1);
+        $em = $this->getDoctrine()->getManager();
+        $dql = "SELECT p FROM AmulenShopBundle:Product p";
+        $query = $em->createQuery($dql);
+        $paginator = $this->get('knp_paginator');
+        $pagination = $paginator->paginate($query, $this->get('request')->query->get('page', $page));
 
         return array(
-            'entities' => $entities,
+            'pagination' => $pagination,
         );
     }
 
@@ -285,7 +289,7 @@ class AdminProductController extends Controller {
         $gallery = $product->getMediaGallery();
         $entity = new GalleryItem();
         $entity->setGallery($gallery);
-        $position = $gallery->getGalleryItems()->count() + 1;
+        $position = $gallery->getGalleryItems()->count();
         $entity->setPosition($position);
 
         $form = $this->createForm($this->get("amulen.shop.form.product.gallery"), $entity, array(
@@ -459,6 +463,13 @@ class AdminProductController extends Controller {
         $gallery = $galleryItem->getGallery();
 
         $em->remove($galleryItem);
+        $em->flush();
+        $i = 0;
+        $galleryItems = $em->getRepository('AmulenMediaBundle:GalleryItem')->findBy(array("gallery" =>  $product->getMediaGallery()),array("position" => "ASC") );
+        foreach ($galleryItems as $item) {
+            $item->setPosition($i);
+            $i++;
+        }
         $em->flush();
 
         return $this->redirect($this->generateUrl('admin_product_show', array('id' => $product->getId())));
