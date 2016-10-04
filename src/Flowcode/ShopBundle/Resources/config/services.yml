@@ -31,3 +31,15 @@ services:
         class: Flowcode\ShopBundle\Form\BrandType
         tags:
             - { name: form.type, alias: flowcode_shopbundle_brand }
+
+    amulen.shop.showmenu_eventsubscriber:
+        class: Flowcode\ShopBundle\Event\ShowMenuSubscriber
+        arguments: ['@router', '@translator']
+        tags:
+            - { name: kernel.event_subscriber }
+
+    amulen.shop.listplugins_eventsubscriber:
+        class: Flowcode\ShopBundle\Event\ListPluginsSubscriber
+        arguments: ['@router', '@translator']
+        tags:
+            - { name: kernel.event_subscriber }
