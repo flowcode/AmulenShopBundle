@@ -1,60 +1,70 @@
 {% extends 'FlowcodeShopBundle::shop.html.twig' %}
 
 {% block stylesheets %}
-<link href="{{ asset('bundles/flowcodeshop/css/lightbox.css')}}" rel="stylesheet" />
+    <link href="{{ asset('bundles/flowcodeshop/css/lightbox.css') }}" rel="stylesheet"/>
     {{ parent() }}
 {% endblock %}
 
 
 {% block products %}
-<div class="product-details">
-    <div class="col-sm-5">
-        <div class="view-product">
-            <img src="{{ asset(entity.getImage.getWebPath) }}" alt="" class="img-responsive" />
+    <div class="product-details">
+        <div class="col-sm-5">
+            <div class="view-product">
+                <img src="{{ asset(entity.getImage.getWebPath) }}" alt="" class="img-responsive"/>
+            </div>
+            <hr>
+            <div class="row">
+                {% for galleryItem in entity.getMediaGallery.getGalleryItems %}
+                    <div class="col-sm-3">
+                        <a href="{{ asset(galleryItem.media.getWebPath) }}" class="thumbnail">
+                            <img src="{{ asset(galleryItem.media.getWebPath) }}" class="img-responsive">
+                        </a>
+                    </div>
+                {% endfor %}
+            </div>
         </div>
-        <hr>
-        <div class="row">
-            {% for galleryItem in entity.getMediaGallery.getGalleryItems %}
-                <div class="col-sm-3">
-                    <a href="{{ asset(galleryItem.media.getWebPath) }}" class="thumbnail">
-                        <img src="{{ asset(galleryItem.media.getWebPath) }}" class="img-responsive">
+
+        <div class="col-sm-7">
+            <div class="product-information"><!--/product-information-->
+                <h2>{{ entity.name }}</h2>
+                <p>Web ID: {{ entity.id }}</p>
+                <div>
+                    <div>
+                        {{ entity.content|raw }}
+                    </div>
+                    <div>
+                        <span>$ {{ entity.price }}</span>
+                    </div>
+                    <label>{{ "quantity"|trans|title }}:</label>
+                    <input id="actualCartQty" type="text" value="{{ productQtyOrder }}"/>
+                    <a id="addToCart" href="{{ path('product_show', { 'slug':entity.slug, 'prodQty': 'value' }) }}"
+                       class="btn btn-default cart">
+                        <i class="fa fa-shopping-cart"></i>
+                        {{ "add"|trans|title }}
                     </a>
                 </div>
-            {% endfor %}
+
+            </div><!--/product-information-->
         </div>
+    </div><!--/product-details-->
+
+    <div>
+        <a href="{{ path('product') }}" class="btn btn-default">
+            {{ "back to list"|trans|title }}
+        </a>
     </div>
-
-    <div class="col-sm-7">
-        <div class="product-information"><!--/product-information-->
-            <h2>{{ entity.name }}</h2>
-            <p>Web ID: {{ entity.id }}</p>
-            <div>
-                <div>
-                    {{ entity.content|raw }}
-                </div>
-                <div>
-                    <span>$ {{ entity.price }}</span>
-                </div>
-                <label>{{"quantity"|trans|title}}:</label>
-                <input type="text" value="3" />
-                <button type="button" class="btn btn-fefault cart">
-                    <i class="fa fa-shopping-cart"></i>
-                    {{"add to cart"|trans|title}}
-                </button>
-            </div>
-
-        </div><!--/product-information-->
-    </div>
-</div><!--/product-details-->
-
-<div>
-    <a href="{{ path('product') }}" class="btn btn-default" >
-        {{"back to list"|trans|title}}
-    </a>
-</div>
 {% endblock %}
 
 {% block javascripts %}
     {{ parent() }}
-<script type="text/javascript" src="{{ asset('bundles/flowcodeshop/js/lightbox.min.js')}}"></script>
+    <script type="text/javascript" src="{{ asset('bundles/flowcodeshop/js/lightbox.min.js') }}"></script>
+    <script>
+        $( "#addToCart" ).click(function() {
+            var val = $( "#actualCartQty").val();
+            val = "prodQty="+val;
+            var str = $( "#addToCart" ).attr('href');
+            var res = str.replace("prodQty=value", val);
+            $( "#addToCart" ).attr('href',res);
+        });
+    </script>
 {% endblock %}

@@ -50,6 +50,25 @@ class ProductController extends Controller
         $paginator = $this->get('knp_paginator');
         $pagination = $paginator->paginate($products, $pageNumber, 4);
 
+        $productService = $this->get("amulen.shop.product");
+        $productOrderService = $this->get("amulen.shop.order");
+        $productOrderItemService = $this->get("amulen.shop.order.item");
+
+        if($productId = $request->get('product')){
+            /* ProductOrder */
+            $session = $request->getSession();
+            $productOrderId = $session->get('productOrderId');
+
+            $productOrder = $productOrderService->getProductOrder($productOrderId);
+            if(!$productOrderId){
+                $session->set('productOrderId', $productOrder->getId());
+            }
+
+            $product = $productService->findById($productId);
+            $productOrderItem = $productOrderService->addProduct($product, $productOrder);
+            $productOrderItemService->create($productOrderItem);
+        }
+
         return array(
             'pagination' => $pagination,
             'category' => $category,
@@ -92,9 +111,13 @@ class ProductController extends Controller
      * @Method("GET")
      * @Template()
      */
-    public function showAction($slug)
+    public function showAction($slug, Request $request)
     {
         $em = $this->getDoctrine()->getManager();
+
+        $productService = $this->get("amulen.shop.product");
+        $productOrderService = $this->get("amulen.shop.order");
+        $productOrderItemService = $this->get("amulen.shop.order.item");
 
         $entity = $em->getRepository('AmulenShopBundle:Product')->findOneBy(array("slug" => $slug));
 
@@ -107,8 +130,24 @@ class ProductController extends Controller
             $seoPage->setTitle($title);
         }
 
+        /* ProductOrder */
+        $session = $request->getSession();
+        $productOrderId = $session->get('productOrderId');
+        //TODO: Refactor
+        $productOrder = $productOrderService->findById($productOrderId);
+        $item = null;
+        if($productOrder){
+            $item = $productOrderService->productQtyOrder($entity, $productOrder);
+            if($prodQty = $request->get('prodQty')){
+                $item->setQuantity($prodQty);
+                $productOrderItemService->update($item);
+                $productOrderService->updateOrderAmount($item, $productOrder);
+            }
+        }
+
         return array(
             'entity' => $entity,
+            'productQtyOrder' => $item->getQuantity(),
         );
     }
 }

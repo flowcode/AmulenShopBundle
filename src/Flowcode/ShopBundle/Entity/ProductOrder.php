@@ -46,7 +46,7 @@ class ProductOrder {
     protected $status;
 
     /**
-     * @ManyToOne(targetEntity="Amulen\UserBundle\Entity\User", inversedBy="productorders")
+     * @ManyToOne(targetEntity="Amulen\UserBundle\Entity\User")
      * @JoinColumn(name="user_id", referencedColumnName="id")
      * */
     protected $user;
@@ -75,6 +75,7 @@ class ProductOrder {
     function __construct() {
         $this->items = new ArrayCollection();
         $this->enabled = true;
+        $this->total = 0;
     }
 
     /**

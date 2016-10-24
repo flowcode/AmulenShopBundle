@@ -1,32 +1,36 @@
+{% extends 'FlowcodeShopBundle::shop.html.twig' %}
 {% block products %}
-<h1>{{ page.name }}</h1>
+    {% if page %}
+        <h1>{{ page.name }}</h1>
 
-<div>
-{{ page.description }}
-</div>
-
-<div class="row">
-    {% for entity in pagination %}
-    <div class="col-sm-4">
-        <div class="thumbnail">
-            <a href="{{ path("product_show", {'slug':entity.slug}) }}">
-                <img src="{{ asset( entity.getImage.getWebPath ) }}" alt="" />
-            </a>
-            <div class="caption">
-                <h2>{{"symbol.money"|trans|title}}{{ entity.price }}</h2>
-                <p>{{ entity.name }}</p>
-                <a href="#" class="btn btn-default add-to-cart">
-                    <i class="fa fa-shopping-cart"></i>{{"add to cart"|trans|title}}
-                </a>
-            </div>
+        <div>
+            {{ page.description }}
         </div>
-    </div>
-    {% else %}
-    <div>no results</div>
-    {% endfor %}
-</div>
+    {% endif %}
 
-<div class="navigation">
-    {{ knp_pagination_render(pagination) }}
-</div>
+    <div class="row">
+        {% for entity in pagination %}
+            <div class="col-sm-4">
+                <div class="thumbnail">
+                    <a href="{{ path("product_show", {'slug':entity.slug}) }}">
+                        {#<img src="{{ asset( entity.getImage.getWebPath ) }}" alt=""/>#}
+                        <img src="https://ugc.kn3.net/i/760x/http://www.diaadia.com.ar/files/nota_edicion_impresa/Cuarteto_MonaJimenez.jpg" alt=""/>
+                    </a>
+                    <div class="caption">
+                        <h2>{{ "symbol.money"|trans|title }}{{ entity.price }}</h2>
+                        <p>{{ entity.name }}</p>
+                        <a href="{{ path('product', { 'product': entity.id }) }}" class="btn btn-default add-to-cart">
+                            <i class="fa fa-shopping-cart"></i>{{ "add to cart"|trans|title }}
+                        </a>
+                    </div>
+                </div>
+            </div>
+        {% else %}
+            <div>no results</div>
+        {% endfor %}
+    </div>
+
+    <div class="navigation">
+        {{ knp_pagination_render(pagination) }}
+    </div>
 {% endblock %}
