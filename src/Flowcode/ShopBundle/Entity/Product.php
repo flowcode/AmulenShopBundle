@@ -9,6 +9,7 @@ use Doctrine\ORM\Mapping\JoinTable;
 use Doctrine\ORM\Mapping\ManyToMany;
 use Doctrine\ORM\Mapping\ManyToOne;
 use Doctrine\ORM\Mapping\OneToOne;
+use Doctrine\ORM\Mapping\OneToMany;
 use Gedmo\Mapping\Annotation as Gedmo;
 use Symfony\Component\Validator\Constraints as Assert;
 
@@ -103,6 +104,11 @@ class Product {
     protected $brand;
 
     /**
+     * @OneToMany(targetEntity="ProductOrderItem", mappedBy="product", cascade={"persist", "remove"})
+     * */
+    protected $items;
+
+    /**
      * @var datetime $created
      *
      * @Gedmo\Timestampable(on="create")
@@ -120,6 +126,7 @@ class Product {
 
     function __construct() {
         $this->tags = new ArrayCollection();
+        $this->items = new ArrayCollection();
     }
 
     /**
@@ -428,6 +435,36 @@ class Product {
     public function getBrand()
     {
         return $this->brand;
+    }
+
+    /**
+     * Add items
+     *
+     * @param ProductOrderItem $items
+     * @return Product
+     */
+    public function addItem(ProductOrderItem $items) {
+        $this->items[] = $items;
+
+        return $this;
+    }
+
+    /**
+     * Remove items
+     *
+     * @param ProductOrderItem $items
+     */
+    public function removeItem(ProductOrderItem $items) {
+        $this->items->removeElement($items);
+    }
+
+    /**
+     * Get items
+     *
+     * @return Collection
+     */
+    public function getItems() {
+        return $this->items;
     }
 
 }

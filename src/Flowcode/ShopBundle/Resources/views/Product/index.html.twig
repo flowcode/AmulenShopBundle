@@ -19,7 +19,7 @@
                     <div class="caption">
                         <h2>{{ "symbol.money"|trans|title }}{{ entity.price }}</h2>
                         <p>{{ entity.name }}</p>
-                        <a href="{{ path('product', { 'product': entity.id }) }}" class="btn btn-default add-to-cart">
+                        <a href="{{ path('order_add', { 'product': entity.id }) }}" class="btn btn-default add-to-cart">
                             <i class="fa fa-shopping-cart"></i>{{ "add to cart"|trans|title }}
                         </a>
                     </div>

@@ -1,0 +1,20 @@
+{% extends 'FlowcodeShopBundle::shop.html.twig' %}
+{% block products %}
+    {% if page %}
+        <h1>{{ page.name }}</h1>
+
+        <div>
+            {{ page.description }}
+        </div>
+    {% endif %}
+
+    <div class="row">
+        <div class="col-sm-8">
+            {% for item in productOrder.items %}
+                <p>
+                    {{ item.quantity }}
+                </p>
+            {% endfor %}
+        </div>
+    </div>
+{% endblock %}

@@ -28,7 +28,7 @@ class ProductOrderItem {
     protected $order;
 
     /**
-     * @OneToOne(targetEntity="Product")
+     * @ManyToOne(targetEntity="Product", inversedBy="items")
      * @JoinColumn(name="product_id", referencedColumnName="id")
      **/
     protected $product;
