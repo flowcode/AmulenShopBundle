@@ -96,6 +96,7 @@ class ProductOrderService
             $total = $product->getPrice() * $quantity;
             $productOrder->setTotal($total);
         }
+        $this->getEm()->persist($item);
         $this->update($productOrder);
 
         return $item;
@@ -110,23 +111,6 @@ class ProductOrderService
             }
         }
         return false;
-    }
-
-    public function productQtyOrder($product, $productOrder)
-    {
-        $item = $this->getProductItem($product, $productOrder);
-        if ($item) {
-            return $item;
-        } else {
-            $item = new ProductOrderItem();
-            $item->setProduct($product);
-            $item->setQuantity(1);
-            $item->setOrder($productOrder);
-            $total = $productOrder->getTotal() + $product->getPrice();
-            $productOrder->setTotal($total);
-            $this->update($productOrder);
-            return $item;
-        }
     }
 
     public function updateOrderAmount($productOrder)

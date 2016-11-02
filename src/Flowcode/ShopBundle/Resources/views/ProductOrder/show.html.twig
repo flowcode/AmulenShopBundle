@@ -65,7 +65,13 @@
                 </div>
             {% endfor %}
             <div class="row">
-                Order total: {{ productOrder.total }}
+                Order total: $ {{ productOrder.total }}
+            </div>
+            <div class="row">
+                <a href="{{ path("product") }}" class="btn btn-default">
+                    <i class="fa fa-cart-plus fa-lg"></i>
+                    {{ "product"|trans|title }}
+                </a>
             </div>
         </div>
     </div>

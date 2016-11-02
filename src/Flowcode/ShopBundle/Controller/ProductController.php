@@ -106,21 +106,23 @@ class ProductController extends Controller
         /* ProductOrder */
         $session = $request->getSession();
         $productOrderId = $session->get('productOrderId');
-        //TODO: Refactor
-        $productOrder = $productOrderService->findById($productOrderId);
-        $item = null;
-        if ($productOrder) {
-            $item = $productOrderService->productQtyOrder($entity, $productOrder);
-            if ($prodQty = $request->get('prodQty')) {
-                $item->setQuantity($prodQty);
-                $productOrderItemService->update($item);
-                $productOrderService->updateOrderAmount($productOrder);
+        $productOrder = $productOrderService->getProductOrder($productOrderId);
+        if (!$productOrderId) {
+            $session->set('productOrderId', $productOrder->getId());
+        }
+        $prodQty = 0;
+        if ($productOrderId) {
+            $productOrder = $productOrderService->findById($productOrderId);
+            if ($productOrder) {
+                $prodQty = $request->get('prodQty') ? $request->get('prodQty') : 1;
+                $item = $productOrderService->addProduct($entity, $productOrder, $prodQty);
+                $prodQty = $item->getQuantity();
             }
         }
 
         return array(
             'entity' => $entity,
-            'productQtyOrder' => $item->getQuantity(),
+            'productQtyOrder' => $prodQty,
         );
     }
 }
