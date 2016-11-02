@@ -23,21 +23,13 @@ class ProductController extends Controller
      * @Method("GET")
      * @Template()
      */
-    public function indexAction(Request $request, $parameter_bag = null, $page = null)
+    public function indexAction(Request $request, $page = null)
     {
         $em = $this->getDoctrine()->getManager();
 
         $category = null;
-        $category_slug = null;
-        if(isset($parameter_bag["category"])){
-            $category_slug = $parameter_bag["category"];
-            $category = $em->getRepository('AmulenClassificationBundle:Category')->findOneBySlug($category_slug);
-        }
-        if(isset($parameter_bag["page"])){
-            $pageNumber = $parameter_bag["page"];
-        } else {
-            $pageNumber = 1;
-        }
+        $category_slug = $request->get('category', null);
+        $category = $em->getRepository('AmulenClassificationBundle:Category')->findOneBySlug($category_slug);
 
         /* seo metadata */
         $seoPage = $this->container->get('sonata.seo.page');
@@ -46,9 +38,9 @@ class ProductController extends Controller
         $seoPage->setTitle($title);
 
         /* pagination */
+        $pageNumber = $request->get('page') ? $request->get('page') : 1;
         $products = $this->getDoctrine()->getRepository("AmulenShopBundle:Product")->findEnabledByPageAndCategory($category_slug);
-        $paginator = $this->get('knp_paginator');
-        $pagination = $paginator->paginate($products, $pageNumber, 4);
+        $pagination = $this->get('knp_paginator')->paginate($products, $pageNumber, 4);
 
         return array(
             'pagination' => $pagination,
@@ -92,9 +84,13 @@ class ProductController extends Controller
      * @Method("GET")
      * @Template()
      */
-    public function showAction($slug)
+    public function showAction($slug, Request $request)
     {
         $em = $this->getDoctrine()->getManager();
+
+        $productService = $this->get("amulen.shop.product");
+        $productOrderService = $this->get("amulen.shop.order");
+        $productOrderItemService = $this->get("amulen.shop.order.item");
 
         $entity = $em->getRepository('AmulenShopBundle:Product')->findOneBy(array("slug" => $slug));
 
@@ -107,8 +103,26 @@ class ProductController extends Controller
             $seoPage->setTitle($title);
         }
 
+        /* ProductOrder */
+        $session = $request->getSession();
+        $productOrderId = $session->get('productOrderId');
+        $productOrder = $productOrderService->getProductOrder($productOrderId);
+        if (!$productOrderId) {
+            $session->set('productOrderId', $productOrder->getId());
+        }
+        $prodQty = 0;
+        if ($productOrderId) {
+            $productOrder = $productOrderService->findById($productOrderId);
+            if ($productOrder) {
+                $prodQty = $request->get('prodQty') ? $request->get('prodQty') : 1;
+                $item = $productOrderService->addProduct($entity, $productOrder, $prodQty);
+                $prodQty = $item->getQuantity();
+            }
+        }
+
         return array(
             'entity' => $entity,
+            'productQtyOrder' => $prodQty,
         );
     }
 }

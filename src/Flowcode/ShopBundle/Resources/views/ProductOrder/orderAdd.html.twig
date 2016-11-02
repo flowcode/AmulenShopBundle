@@ -1,0 +1,44 @@
+{% extends 'FlowcodeShopBundle::shop.html.twig' %}
+{% block products %}
+    {% if page %}
+        <h1>{{ page.name }}</h1>
+
+        <div>
+            {{ page.description }}
+        </div>
+    {% endif %}
+
+    <div class="row" style="margin-top: 200px;">
+        <div class="col-sm-3" style="margin-top: 20px;">
+            <a href="#">
+                {#<img src="{{ asset( entity.getImage.getWebPath ) }}" alt=""/>#}
+                <img class="img-responsive"
+                     src="https://i.ytimg.com/vi/YNh8w1_zpUk/hqdefault.jpg"
+                     alt=""/>
+            </a>
+        </div>
+        <div class="col-sm-9">
+            <div class="product-information"><!--/product-information-->
+                <h3>
+                    <i class="glyphicon glyphicon-ok" style="color: green;"></i>
+                    {{ product.name }} agregado a la canasta!
+                </h3>
+                <p>Web ID: {{ product.id }}</p>
+                <div>
+                    <div>
+                        {{ product.content|raw }}
+                    </div>
+                    <div>
+                        <span>$ {{ product.price }}</span>
+                    </div>
+                    <label>{{ "quantity"|trans|title }}: {{ productQtyOrder }}</label>
+                    <a href="{{ path('order') }}"
+                       class="btn btn-default cart">
+                        <i class="fa fa-shopping-cart"></i>
+                        {{ "order"|trans|title }}
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

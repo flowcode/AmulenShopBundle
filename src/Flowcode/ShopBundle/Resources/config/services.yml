@@ -43,3 +43,27 @@ services:
         arguments: ['@router', '@translator']
         tags:
             - { name: kernel.event_subscriber }
+
+    amulen.shop.repository.order:
+        class: Doctrine\ORM\EntityRepository
+        factory: ["@doctrine.orm.entity_manager", getRepository]
+        arguments:
+            - Amulen\ShopBundle\Entity\ProductOrder
+
+    amulen.shop.repository.order.item:
+        class: Doctrine\ORM\EntityRepository
+        factory: ["@doctrine.orm.entity_manager", getRepository]
+        arguments:
+            - Amulen\ShopBundle\Entity\ProductOrderItem
+
+    amulen.shop.product:
+        class: Flowcode\ShopBundle\Service\ProductService
+        arguments: ["@doctrine.orm.entity_manager"]
+
+    amulen.shop.order:
+        class: Flowcode\ShopBundle\Service\ProductOrderService
+        arguments: ["@doctrine.orm.entity_manager", "@amulen.shop.repository.order"]
+
+    amulen.shop.order.item:
+        class: Flowcode\ShopBundle\Service\ProductOrderItemService
+        arguments: ["@doctrine.orm.entity_manager", "@amulen.shop.repository.order.item"]

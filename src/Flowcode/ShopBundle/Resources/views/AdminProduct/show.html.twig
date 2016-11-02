@@ -55,7 +55,7 @@
                                     <td>{{ entity.price }}</td>
                                 </tr>
                                 <tr>
-                                    <th>{{ "Enabled"|trans }}</th>
+                                    <th>{{ "Enabled"|trans|capitalize }}</th>
                                     <td>
                                         {% if entity.enabled %}
                                             {{'yes'|trans}}
@@ -80,7 +80,7 @@
                     <!-- IMAGEN -->
                     <div class="box">
                         <div class="box-header">
-                            <h3 class="box-title">{{ "item"|trans }}</h3>
+                            <h3 class="box-title">{{ "item"|trans|capitalize }}</h3>
                             <div class="box-tools">
                                 <a href="{{ path('admin_product_new_image', { 'id' : entity.id }) }}" class="btn btn-xs btn-link">
                                     <i class="fa fa-plus"></i> {{ "add item"|trans }}
@@ -89,7 +89,9 @@
                         </div>
                         <div class="box-body">
                             <div class="row">
-                            {{ include("FlowcodeMediaBundle:AdminGallery:gallery_show_items.html.twig", {'items': entity.getMediaGallery.getGalleryItems, 'edit_route': 'admin_product_gallery_edit', 'product': entity}) }}
+                                {% if entity.getMediaGallery %}
+                                    {{ include("FlowcodeMediaBundle:AdminGallery:gallery_show_items.html.twig", {'items': entity.getMediaGallery.getGalleryItems, 'edit_route': 'admin_product_gallery_edit', 'product': entity}) }}
+                                {% endif %}
                             </div>
                         </div>
                     </div>

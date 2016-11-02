@@ -1,0 +1,144 @@
+<?php
+
+namespace Flowcode\ShopBundle\Controller;
+
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
+use Amulen\ShopBundle\Entity\ProductOrder;
+use Flowcode\ShopBundle\Form\ProductOrderType;
+
+/**
+ * ProductOrder controller.
+ *
+ * @Route("/{_locale}/order")
+ */
+class ProductOrderController extends Controller
+{
+
+    /**
+     * Lists all ProductOrder entities.
+     *
+     * @Route("/", name="order")
+     * @Method("GET")
+     * @Template()
+     */
+    public function showAction(Request $request, $page = null)
+    {
+        $session = $request->getSession();
+
+        $productOrderService = $this->get("amulen.shop.order");
+
+        if ($productOrderId = $session->get('productOrderId')) {
+            $productOrder = $productOrderService->getProductOrder($productOrderId);
+        } else {
+            return $this->redirectToRoute('product');
+        }
+
+        return array(
+            'productOrder' => $productOrder,
+            'page' => $page,
+        );
+    }
+
+    /**
+     * Lists all ProductOrder entities.
+     *
+     * @Route("/add", name="order_add")
+     * @Method("GET")
+     * @Template()
+     */
+    public function orderAddAction(Request $request, $page = null)
+    {
+        $session = $request->getSession();
+
+        $productService = $this->get("amulen.shop.product");
+        $productOrderService = $this->get("amulen.shop.order");
+        $productOrderItemService = $this->get("amulen.shop.order.item");
+        $product = null;
+
+        $productOrderId = $session->get('productOrderId');
+        $productOrder = $productOrderService->getProductOrder($productOrderId);
+        if (!$productOrderId) {
+            $session->set('productOrderId', $productOrder->getId());
+        }
+        if ($productId = $request->get('product')) {
+            $quantity = $request->get('prodQty') ? $request->get('prodQty') : 1;
+            $product = $productService->findById($productId);
+            $productOrderItem = $productOrderService->addProduct($product, $productOrder, $quantity);
+            $productOrderItemService->create($productOrderItem);
+        }
+
+        return array(
+            'productQtyOrder' => $productOrderItem->getQuantity(),
+            'product' => $product,
+            'productOrder' => $productOrder,
+            'page' => $page,
+        );
+    }
+
+    /**
+     * Order item remove
+     *
+     * @Route("/update", name="order_item_update")
+     * @Method("GET")
+     * @Template()
+     */
+    public function orderItemUpdateAction(Request $request)
+    {
+        $session = $request->getSession();
+
+        $productOrderService = $this->get("amulen.shop.order");
+        $productOrderItemService = $this->get("amulen.shop.order.item");
+
+        $productOrderId = $session->get('productOrderId');
+        $productOrder = $productOrderService->getProductOrder($productOrderId);
+        if (!$productOrderId || !$productOrder) {
+            /* No hay order en session redirect a listado de productos */
+            return $this->redirectToRoute('product');
+        }
+        if ($itemId = $request->get('item')) {
+            $quantity = $request->get('prodQty') ? $request->get('prodQty') : 0;
+            $item = $productOrderItemService->findById($itemId);
+            $item->setQuantity($quantity);
+            $productOrderItemService->update($item);
+            $productOrderService->updateOrderAmount($productOrder);
+        }
+
+        return $this->redirectToRoute('order');
+    }
+
+    /**
+     * Order item remove
+     *
+     * @Route("/remove", name="order_item_remove")
+     * @Method("GET")
+     * @Template()
+     */
+    public function orderItemRemoveAction(Request $request)
+    {
+        $session = $request->getSession();
+
+        $productOrderService = $this->get("amulen.shop.order");
+        $productOrderItemService = $this->get("amulen.shop.order.item");
+
+        $productOrderId = $session->get('productOrderId');
+        $productOrder = $productOrderService->getProductOrder($productOrderId);
+        if (!$productOrderId || !$productOrder) {
+            /* No hay order en session redirect a listado de productos */
+            return $this->redirectToRoute('product');
+        }
+        if ($itemId = $request->get('item')) {
+            $item = $productOrderItemService->findById($itemId);
+            $productOrderItemService->delete($item);
+            $productOrder->removeItem($item);
+            $productOrderService->update($productOrder);
+            $productOrderService->updateOrderAmount($productOrder);
+        }
+
+        return $this->redirectToRoute('order');
+    }
+
+}
