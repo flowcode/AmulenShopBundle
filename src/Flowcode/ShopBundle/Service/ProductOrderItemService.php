@@ -5,6 +5,7 @@ namespace Flowcode\ShopBundle\Service;
 use Amulen\ShopBundle\Entity\ProductOrderItem;
 use Doctrine\ORM\EntityManager;
 use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\ORM\EntityRepository;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
@@ -19,9 +20,10 @@ class ProductOrderItemService
      */
     protected $em;
 
-    public function __construct(EntityManager $em)
+    public function __construct(EntityManager $em, EntityRepository $productOrderItemRepository)
     {
         $this->em = $em;
+        $this->productOrderItemRepository = $productOrderItemRepository;
     }
 
     /**
@@ -33,7 +35,7 @@ class ProductOrderItemService
     public function findAll($page = 1, $max = 50)
     {
         $offset = (($page-1) * $max);
-        $productOrderItems = $this->getEm()->getRepository("AmulenShopBundle:ProductOrderItem")->findBy(array(), array(), $max, $offset);
+        $productOrderItems = $this->productOrderItemRepository->findBy(array(), array(), $max, $offset);
         return $productOrderItems;
     }
 
@@ -44,7 +46,7 @@ class ProductOrderItemService
      */
     public function findById($id)
     {
-        return $this->getEm()->getRepository("AmulenShopBundle:ProductOrderItem")->find($id);
+        return $this->productOrderItemRepository->find($id);
     }
 
     /**
@@ -64,6 +66,16 @@ class ProductOrderItemService
     {
         $this->getEm()->flush();
         return $productOrderItem;
+    }
+
+    /**
+     * Delete an ProductOrderItem.
+     * @param  ProductOrderItem $productOrderItem the productOrderItem instance.
+     */
+    public function delete(ProductOrderItem $productOrderItem)
+    {
+        $this->getEm()->remove($productOrderItem);
+        $this->getEm()->flush();
     }
 
     public function supportsClass($class)

@@ -13,13 +13,16 @@
             <a href="#">
                 {#<img src="{{ asset( entity.getImage.getWebPath ) }}" alt=""/>#}
                 <img class="img-responsive"
-                     src="https://ugc.kn3.net/i/760x/http://www.diaadia.com.ar/files/nota_edicion_impresa/Cuarteto_MonaJimenez.jpg"
+                     src="https://i.ytimg.com/vi/YNh8w1_zpUk/hqdefault.jpg"
                      alt=""/>
             </a>
         </div>
         <div class="col-sm-9">
             <div class="product-information"><!--/product-information-->
-                <h2>{{ product.name }}</h2>
+                <h3>
+                    <i class="glyphicon glyphicon-ok" style="color: green;"></i>
+                    {{ product.name }} agregado a la canasta!
+                </h3>
                 <p>Web ID: {{ product.id }}</p>
                 <div>
                     <div>
@@ -28,15 +31,13 @@
                     <div>
                         <span>$ {{ product.price }}</span>
                     </div>
-                    <label>{{ "quantity"|trans|title }}:</label>
-                    <input id="actualCartQty" type="text" value="{{ productQtyOrder }}"/>
-                    <a id="addToCart" href="{{ path('product_show', { 'slug':product.slug, 'prodQty': 'value' }) }}"
+                    <label>{{ "quantity"|trans|title }}: {{ productQtyOrder }}</label>
+                    <a href="{{ path('order') }}"
                        class="btn btn-default cart">
                         <i class="fa fa-shopping-cart"></i>
-                        {{ "add"|trans|title }}
+                        {{ "order"|trans|title }}
                     </a>
                 </div>
-
             </div>
         </div>
     </div>

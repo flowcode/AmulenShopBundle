@@ -114,7 +114,7 @@ class ProductController extends Controller
             if ($prodQty = $request->get('prodQty')) {
                 $item->setQuantity($prodQty);
                 $productOrderItemService->update($item);
-                $productOrderService->updateOrderAmount($item, $productOrder);
+                $productOrderService->updateOrderAmount($productOrder);
             }
         }
 

@@ -36,7 +36,7 @@ class ProductOrderService
     public function findAll($page = 1, $max = 50)
     {
         $offset = (($page - 1) * $max);
-        $productOrders = $this->getEm()->getRepository("AmulenShopBundle:ProductOrder")->findBy(array(), array(), $max, $offset);
+        $productOrders = $this->productOrderRepository->findBy(array(), array(), $max, $offset);
         return $productOrders;
     }
 
@@ -47,7 +47,7 @@ class ProductOrderService
      */
     public function findById($id)
     {
-        return $this->getEm()->getRepository("AmulenShopBundle:ProductOrder")->find($id);
+        return $this->productOrderRepository->find($id);
     }
 
     /**
@@ -81,20 +81,19 @@ class ProductOrderService
         return $productOrder;
     }
 
-    public function addProduct($product, $productOrder)
+    public function addProduct($product, $productOrder, $quantity = 1)
     {
-//        $qbValue = $this->productOrderRepository->findProductInOrder($product, $productOrder);
         $item = $this->getProductItem($product, $productOrder);
         if (!$item) {
             $item = new ProductOrderItem();
             $item->setProduct($product);
-            $item->setQuantity(1);
+            $item->setQuantity($quantity);
             $item->setOrder($productOrder);
             $total = $productOrder->getTotal() + $product->getPrice();
             $productOrder->setTotal($total);
         } else {
-            $item->setQuantity($item->getQuantity()+1);
-            $total = $productOrder->getTotal() + $product->getPrice();
+            $item->setQuantity($quantity);
+            $total = $product->getPrice() * $quantity;
             $productOrder->setTotal($total);
         }
         $this->update($productOrder);
@@ -106,7 +105,7 @@ class ProductOrderService
     {
         $productOrder->getItems();
         foreach ($productOrder->getItems() as $item) {
-            if($product->getId() == $item->getProduct()->getId()){
+            if ($product->getId() == $item->getProduct()->getId()) {
                 return $item;
             }
         }
@@ -116,7 +115,7 @@ class ProductOrderService
     public function productQtyOrder($product, $productOrder)
     {
         $item = $this->getProductItem($product, $productOrder);
-        if($item){
+        if ($item) {
             return $item;
         } else {
             $item = new ProductOrderItem();
@@ -130,15 +129,11 @@ class ProductOrderService
         }
     }
 
-    public function updateOrderAmount($itemCurrent, $productOrder)
+    public function updateOrderAmount($productOrder)
     {
         $total = 0;
         foreach ($productOrder->getItems() as $item) {
-            if($itemCurrent->getId() == $item->getId()){
-                $total += $itemCurrent->getQuantity() * $itemCurrent->getProduct()->getPrice();
-            } else {
-                $total += $item->getQuantity() * $item->getProduct()->getPrice();
-            }
+            $total += $item->getQuantity() * $item->getProduct()->getPrice();
         }
         $productOrder->setTotal($total);
         $this->update($productOrder);
