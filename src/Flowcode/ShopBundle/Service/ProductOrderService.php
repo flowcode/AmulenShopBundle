@@ -92,8 +92,9 @@ class ProductOrderService
             $total = $productOrder->getTotal() + $product->getPrice();
             $productOrder->setTotal($total);
         } else {
+            $oldQty = $item->getQuantity();
             $item->setQuantity($quantity);
-            $total = $product->getPrice() * $quantity;
+            $total = $productOrder->getTotal() - $product->getPrice() * $oldQty + $product->getPrice() * $quantity;
             $productOrder->setTotal($total);
         }
         $this->getEm()->persist($item);
@@ -104,7 +105,6 @@ class ProductOrderService
 
     public function getProductItem($product, $productOrder)
     {
-        $productOrder->getItems();
         foreach ($productOrder->getItems() as $item) {
             if ($product->getId() == $item->getProduct()->getId()) {
                 return $item;
