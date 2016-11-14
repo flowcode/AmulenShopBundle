@@ -10,21 +10,7 @@
 
     <div class="row">
         {% for entity in pagination %}
-            <div class="col-sm-4">
-                <div class="thumbnail">
-                    <a href="{{ path("product_show", {'slug':entity.slug}) }}">
-                        {#<img src="{{ asset( entity.getImage.getWebPath ) }}" alt=""/>#}
-                        <img src="http://cfxtras.com/wp-content/uploads/2016/03/el-vino-tinto-sirve-para-la-acidez-que-bebidas-son-buenas-para-la-acidez.jpg" alt=""/>
-                    </a>
-                    <div class="caption">
-                        <h2>{{ "symbol.money"|trans|title }}{{ entity.price }}</h2>
-                        <p>{{ entity.name }}</p>
-                        <a href="{{ path('order_add', { 'product': entity.id, 'prodQty': '1' }) }}" class="btn btn-default add-to-cart">
-                            <i class="fa fa-shopping-cart"></i>{{ "add to cart"|trans|title }}
-                        </a>
-                    </div>
-                </div>
-            </div>
+            {{ include('FlowcodeShopBundle:Product:product_item.html.twig',{'product':entity, hidden:true}) }}
         {% else %}
             <div>no results</div>
         {% endfor %}

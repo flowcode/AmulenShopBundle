@@ -141,4 +141,29 @@ class ProductOrderController extends Controller
         return $this->redirectToRoute('order');
     }
 
+    /**
+     * Order item remove
+     *
+     * @Route("/{id}/checkout", name="order_checkout")
+     * @Method("GET")
+     * @Template()
+     */
+    public function orderCheckoutAction(ProductOrder $productOrder, Request $request)
+    {
+        $em = $this->getDoctrine()->getManager();
+        $session = $request->getSession();
+        $user = $this->getUser();
+        $session->remove('productOrderId');
+
+        if(!$user){
+            return $this->redirectToRoute('amulen_user_login');
+        }
+        if($user && !$productOrder->getUser()){
+            $productOrder->setUser($user);
+            $em->flush();
+        }
+
+        return $this->redirectToRoute('homepage');
+    }
+
 }

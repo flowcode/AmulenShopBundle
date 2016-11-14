@@ -1,0 +1,14 @@
+<div class="col-sm-4">
+	<div class="thumbnail">
+		<a href="{{ path("product_show", {'slug':product.slug}) }}">
+			<img src="{{ asset( product.getImage.getWebPath ) }}" alt=""/>
+		</a>
+		<div class="caption">
+			<h2>{{ "symbol.money"|trans|title }}{{ product.price }}</h2>
+			<p>{{ product.name }}</p>
+			<a href="{{ path('order_add', { 'product': product.id, 'prodQty': '1' }) }}" class="btn btn-default add-to-cart">
+				<i class="fa fa-shopping-cart"></i>{{ "add to cart"|trans|title }}
+			</a>
+		</div>
+	</div>
+</div>

@@ -25,10 +25,7 @@
                 <div class="row" style="margin-bottom: 10px;">
                     <div class="col-sm-2">
                         <a href="#">
-                            {#<img src="{{ asset( entity.getImage.getWebPath ) }}" alt=""/>#}
-                            <img class="img-responsive"
-                                 src="http://cfxtras.com/wp-content/uploads/2016/03/el-vino-tinto-sirve-para-la-acidez-que-bebidas-son-buenas-para-la-acidez.jpg"
-                                 alt=""/>
+                            <img class="img-responsive" src="{{ asset( item.product.getImage.getWebPath ) }}" alt=""/>
                         </a>
                     </div>
                     <div class="col-sm-6">
@@ -70,9 +67,73 @@
             <div class="row">
                 <a href="{{ path("product") }}" class="btn btn-default">
                     <i class="fa fa-cart-plus fa-lg"></i>
-                    {{ "product"|trans|title }}
+                    {{ "more products"|trans|title }}
                 </a>
+                <button type="button" class="btn btn-default" data-toggle="modal" data-target="#myModal">
+                    <i class="fa fa-shopping-basket fa-lg"></i>
+                    {{ "finish"|trans|title }}
+                </button>
             </div>
+        </div>
+    </div>
+
+    <!-- Checkout Modal -->
+    <div id="myModal" class="modal fade" role="dialog">
+        <div class="modal-dialog">
+
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title">Su pedido!</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-sm-3">
+                            <h4>{{ "product"|trans|title }}</h4>
+                        </div>
+                        <div class="col-sm-3">
+                            <h4>{{ "price per unit"|trans|title }}</h4>
+                        </div>
+                        <div class="col-sm-3">
+                            <h4>{{ "quantity"|trans|title }}</h4>
+                        </div>
+                        <div class="col-sm-3">
+                            <h4>{{ "subtotal"|trans|title }}</h4>
+                        </div>
+                    </div>
+                    {% for item in productOrder.items %}
+                        <div class="row">
+                            <div class="col-sm-3">
+                                <h4>{{ item.product.name }}</h4>
+                            </div>
+                            <div class="col-sm-3">
+                                <h4>$ {{ item.product.price }}</h4>
+                            </div>
+                            <div class="col-sm-3">
+                                <h4>{{ item.quantity }}</h4>
+                            </div>
+                            <div class="col-sm-3">
+                                <h4>$ {{ item.product.price|number_format * item.quantity|number_format }}</h4>
+                            </div>
+                        </div>
+                    {% endfor %}
+                    <div class="row">
+                        <div class="col-sm-12 text-right">
+                            <h3>
+                                Su Total: $ {{ productOrder.total }}
+                            </h3>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <a href="{{ path("order_checkout", {'id':productOrder.id}) }}" class="btn btn-default">
+                        <i class="fa fa-shopping-basket fa-lg"></i>
+                        Confirmar pedido
+                    </a>
+                </div>
+            </div>
+
         </div>
     </div>
 {% endblock %}
@@ -82,12 +143,12 @@
     <script>
         $(".addToCart").click(function (e) {
             debugger
-            var elem = '.actualCartQty'+e.currentTarget.id;
+            var elem = '.actualCartQty' + e.currentTarget.id;
             var val = $(elem).val();
             val = "prodQty=" + val;
-            var str = $("#"+e.currentTarget.id).attr('href');
+            var str = $("#" + e.currentTarget.id).attr('href');
             var res = str.replace("prodQty=value", val);
-            $("#"+e.currentTarget.id).attr('href', res);
+            $("#" + e.currentTarget.id).attr('href', res);
         });
     </script>
 {% endblock %}
