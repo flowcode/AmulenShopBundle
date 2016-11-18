@@ -29,7 +29,7 @@ class ProductType extends AbstractType
             ->add('description')
             ->add('category', EntityType::class, array(
                     'class' => "Amulen\ClassificationBundle\Entity\Category",
-                    'choices' => $this->categoryService->findByRoot("post"),
+                    'choices' => $this->categoryService->findByRoot("product"),
                     'choice_label' => function($category, $key, $index) {
                         $prefix = "";
                         for($i = 0; $i < $category->getLvl(); $i++){
