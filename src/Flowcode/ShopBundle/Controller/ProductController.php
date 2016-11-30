@@ -8,6 +8,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 /**
  * Product controller.
@@ -101,6 +102,21 @@ class ProductController extends Controller
             $baseTitle = $seoPage->getTitle();
             $title = ucfirst($entity->getName()) . " - Productos - " . $baseTitle;
             $seoPage->setTitle($title);
+
+            $seoPage->setTitle($title);
+            $seoPage->addMeta('property', "og:url", $this->generateUrl('product_show', [
+                'slug' => $entity->getSlug()
+            ], UrlGeneratorInterface::ABSOLUTE_URL));
+
+            $seoPage->addMeta('property', "og:type", "article");
+            $seoPage->addMeta('property', "og:description", $entity->getDescription());
+
+            if ($entity->getImage()) {
+                $absoluteImageUrl = $this->generateUrl('base_path', [], UrlGeneratorInterface::ABSOLUTE_URL);
+                $absoluteImageUrl .= $entity->getImage()->getPath();
+                $seoPage->addMeta('property', "og:image", $absoluteImageUrl);
+            }
+
         }
 
         /* ProductOrder */
