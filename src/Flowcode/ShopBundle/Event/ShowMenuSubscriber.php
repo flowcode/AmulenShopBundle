@@ -60,6 +60,10 @@ class ShowMenuSubscriber implements EventSubscriberInterface
                     "url" => $this->router->generate('admin_order'),
                     "title" => $this->translator->trans('orders'),
                 ),
+                array(
+                    "url" => $this->router->generate('admin_amulen_shop_setting'),
+                    "title" => $this->translator->trans('settings'),
+                ),
             ),
         );
 
