@@ -101,15 +101,17 @@ class ProductController extends Controller
             $seoPage = $this->container->get('sonata.seo.page');
             $baseTitle = $seoPage->getTitle();
             $title = ucfirst($entity->getName()) . " - Productos - " . $baseTitle;
-            $seoPage->setTitle($title);
 
             $seoPage->setTitle($title);
+            $seoPage->addMeta('property', "og:type", "product");
+            $seoPage->addMeta('property', "og:title", $title);
+            $seoPage->addMeta('property', "og:description", $entity->getDescription());
             $seoPage->addMeta('property', "og:url", $this->generateUrl('product_show', [
                 'slug' => $entity->getSlug()
             ], UrlGeneratorInterface::ABSOLUTE_URL));
+            $seoPage->addMeta('property', "product:price:amount", $entity->getPrice());
+            $seoPage->addMeta('property', "product:price:currency", 'ARS');
 
-            $seoPage->addMeta('property', "og:type", "article");
-            $seoPage->addMeta('property', "og:description", $entity->getDescription());
 
             if ($entity->getImage()) {
                 $absoluteImageUrl = $this->generateUrl('base_path', [], UrlGeneratorInterface::ABSOLUTE_URL);
