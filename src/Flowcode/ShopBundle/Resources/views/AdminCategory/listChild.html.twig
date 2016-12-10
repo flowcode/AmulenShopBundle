@@ -6,7 +6,7 @@
                 <i class="toggle fa fa-caret-right"></i>
                 <i class="toggle fa fa-caret-down"></i>
             {% endif %}
-            <a href="{{ path('admin_shop_category_show', { 'id': item.id }) }}">{{ item.name }}</a>
+            <a href="{{ path('admin_shop_category_show', { 'id': item.id }) }}">{{item.position}} - {{ item.name }}</a>
             </td>
     	</tr>
     	{% if item.getChildren | length > 0 %}

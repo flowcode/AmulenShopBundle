@@ -37,7 +37,7 @@
                                 <i class="toggle fa fa-caret-right"></i>
                                 <i class="toggle fa fa-caret-down"></i>
                             {% endif %}
-                            <a href="{{ path('admin_shop_category_show', { 'id': entity.id }) }}">{{ entity.name }}</a>
+                            <a href="{{ path('admin_shop_category_show', { 'id': entity.id }) }}">{{ entity.position }} - {{ entity.name }}</a>
                         </td>
                     </tr>
                     {% if entity.getChildren | length > 0 %}
