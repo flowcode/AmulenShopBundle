@@ -2,6 +2,7 @@
 
 namespace Flowcode\ShopBundle\Controller;
 
+use Amulen\ShopBundle\Entity\ProductOrderStatus;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
@@ -61,6 +62,14 @@ class ProductOrderController extends Controller
 
         $productOrderId = $session->get('productOrderId');
         $productOrder = $productOrderService->getProductOrder($productOrderId);
+
+        // Get Draft status
+        $em = $this->getDoctrine()->getManager();
+        $draftStatus = $em->getRepository(ProductOrderStatus::class)->findOneBy([
+            'name' => ProductOrderStatus::STATUS_DRAFT
+        ]);
+        $productOrder->setStatus($draftStatus);
+
         if (!$productOrderId) {
             $session->set('productOrderId', $productOrder->getId());
         }

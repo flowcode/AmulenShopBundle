@@ -42,3 +42,9 @@ price per unit: Precio por unidad
 finish: Finalizar
 more products: Más productos
 update: Actualizar
+
+STATUS_DRAFT: Borrador
+STATUS_PENDING: Pendiente
+STATUS_PAYED: Pagado
+STATUS_COMPLETED: Completado
+STATUS_CANCELED: Cancelado

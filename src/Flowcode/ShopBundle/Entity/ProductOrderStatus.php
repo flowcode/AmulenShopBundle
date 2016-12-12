@@ -8,7 +8,14 @@ use Doctrine\ORM\Mapping\OneToMany;
 /**
  * ProductOrderStatus
  */
-class ProductOrderStatus {
+class ProductOrderStatus
+{
+
+    const STATUS_DRAFT = 'STATUS_DRAFT';
+    const STATUS_PENDING = 'STATUS_PENDING';
+    const STATUS_PAYED = 'STATUS_PAYED';
+    const STATUS_COMPLETED = 'STATUS_COMPLETED';
+    const STATUS_CANCELED = 'STATUS_CANCELED';
 
     /**
      * @var integer
@@ -43,7 +50,8 @@ class ProductOrderStatus {
      *
      * @return integer
      */
-    public function getId() {
+    public function getId()
+    {
         return $this->id;
     }
 
@@ -53,7 +61,8 @@ class ProductOrderStatus {
      * @param string $name
      * @return ProductOrderStatus
      */
-    public function setName($name) {
+    public function setName($name)
+    {
         $this->name = $name;
 
         return $this;
@@ -64,7 +73,8 @@ class ProductOrderStatus {
      *
      * @return string
      */
-    public function getName() {
+    public function getName()
+    {
         return $this->name;
     }
 
@@ -74,7 +84,8 @@ class ProductOrderStatus {
      * @param string $description
      * @return ProductOrderStatus
      */
-    public function setDescription($description) {
+    public function setDescription($description)
+    {
         $this->description = $description;
 
         return $this;
@@ -85,14 +96,16 @@ class ProductOrderStatus {
      *
      * @return string
      */
-    public function getDescription() {
+    public function getDescription()
+    {
         return $this->description;
     }
 
     /**
      * Constructor
      */
-    public function __construct() {
+    public function __construct()
+    {
         $this->productorders = new \Doctrine\Common\Collections\ArrayCollection();
     }
 
@@ -102,7 +115,8 @@ class ProductOrderStatus {
      * @param \Flowcode\ShopBundle\Entity\ProductOrder $productorders
      * @return ProductOrderStatus
      */
-    public function addProductorder(\Flowcode\ShopBundle\Entity\ProductOrder $productorders) {
+    public function addProductorder(\Flowcode\ShopBundle\Entity\ProductOrder $productorders)
+    {
         $this->productorders[] = $productorders;
 
         return $this;
@@ -113,7 +127,8 @@ class ProductOrderStatus {
      *
      * @param \Flowcode\ShopBundle\Entity\ProductOrder $productorders
      */
-    public function removeProductorder(\Flowcode\ShopBundle\Entity\ProductOrder $productorders) {
+    public function removeProductorder(\Flowcode\ShopBundle\Entity\ProductOrder $productorders)
+    {
         $this->productorders->removeElement($productorders);
     }
 
@@ -122,11 +137,13 @@ class ProductOrderStatus {
      *
      * @return \Doctrine\Common\Collections\Collection
      */
-    public function getProductorders() {
+    public function getProductorders()
+    {
         return $this->productorders;
     }
 
-    public function __toString() {
+    public function __toString()
+    {
         return $this->name;
     }
 

@@ -4,9 +4,11 @@ namespace Flowcode\ShopBundle\Service;
 
 use Amulen\ShopBundle\Entity\ProductOrder;
 use Amulen\ShopBundle\Entity\ProductOrderItem;
+use Amulen\ShopBundle\Entity\ProductOrderStatus;
 use Doctrine\ORM\EntityManager;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityRepository;
+use Flowcode\ShopBundle\Event\OrderStatusChangedEvent;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
@@ -21,10 +23,16 @@ class ProductOrderService
      */
     protected $em;
 
-    public function __construct(EntityManager $em, EntityRepository $productOrderRepository)
+    protected $productOrderRepository;
+    protected $productOrderStatusRepository;
+    protected $dispatcher;
+
+    public function __construct(EntityManager $em, EntityRepository $productOrderRepository, EntityRepository $productOrderStatusRepository, EventDispatcherInterface $dispatcher)
     {
         $this->em = $em;
         $this->productOrderRepository = $productOrderRepository;
+        $this->productOrderStatusRepository = $productOrderStatusRepository;
+        $this->dispatcher = $dispatcher;
     }
 
     /**
@@ -88,6 +96,7 @@ class ProductOrderService
             $item = new ProductOrderItem();
             $item->setProduct($product);
             $item->setQuantity($quantity);
+            $item->setUnitPrice($product->getPrice());
             $item->setOrder($productOrder);
             $total = $productOrder->getTotal() + $product->getPrice();
             $productOrder->setTotal($total);
@@ -127,6 +136,28 @@ class ProductOrderService
     public function supportsClass($class)
     {
         return $class === 'Amulen\ShopBundle\Entity\ProductOrder';
+    }
+
+    public function changeStatusTo(ProductOrder $order, $statusName)
+    {
+        /* @var ProductOrderStatus $orderStatusTo */
+        $orderStatusTo = $this->productOrderStatusRepository->findOneBy([
+            'name' => $statusName
+        ]);
+
+        if ($orderStatusTo) {
+
+            $order->setStatus($orderStatusTo);
+            $this->update($order);
+
+            $OrderStatusChangedEvent = new OrderStatusChangedEvent($order);
+
+            $this->dispatcher->dispatch(OrderStatusChangedEvent::NAME, $OrderStatusChangedEvent);
+
+            return true;
+        }
+
+        return false;
     }
 
 

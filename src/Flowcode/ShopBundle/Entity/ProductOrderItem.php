@@ -10,7 +10,8 @@ use Doctrine\ORM\Mapping\OneToOne;
 /**
  * ProductOrderItem
  */
-class ProductOrderItem {
+class ProductOrderItem
+{
 
     /**
      * @var integer
@@ -40,6 +41,12 @@ class ProductOrderItem {
      */
     protected $quantity;
 
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="unit_price", type="float")
+     */
+    protected $unitPrice;
 
 
     /**
@@ -47,7 +54,8 @@ class ProductOrderItem {
      *
      * @return integer
      */
-    public function getId() {
+    public function getId()
+    {
         return $this->id;
     }
 
@@ -57,7 +65,8 @@ class ProductOrderItem {
      * @param integer $quantity
      * @return ProductOrderItem
      */
-    public function setQuantity($quantity) {
+    public function setQuantity($quantity)
+    {
         $this->quantity = $quantity;
 
         return $this;
@@ -68,7 +77,8 @@ class ProductOrderItem {
      *
      * @return integer
      */
-    public function getQuantity() {
+    public function getQuantity()
+    {
         return $this->quantity;
     }
 
@@ -118,4 +128,22 @@ class ProductOrderItem {
     {
         return $this->product;
     }
+
+    /**
+     * @return int
+     */
+    public function getUnitPrice()
+    {
+        return $this->unitPrice;
+    }
+
+    /**
+     * @param int $unitPrice
+     */
+    public function setUnitPrice($unitPrice)
+    {
+        $this->unitPrice = $unitPrice;
+    }
+
+
 }
