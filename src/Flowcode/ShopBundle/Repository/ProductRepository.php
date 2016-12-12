@@ -14,6 +14,34 @@ use Doctrine\ORM\Query\Expr\Join;
 class ProductRepository extends EntityRepository
 {
 
+    public function findAllQB()
+    {
+        $qb = $this->createQueryBuilder('p');
+        return $qb;
+    }
+
+    public function findAllFilteredQB($filter)
+    {
+        $qb = $this->findAllQB();
+        $qb->leftJoin('p.category', 'c');
+
+
+        if ($filter['q']) {
+            $qb->andwhere('p.name LIKE :name')->setParameter('name', '%' . $filter['q'] . '%');
+            $qb->orWhere('p.description LIKE :name')->setParameter('name', '%' . $filter['q'] . '%');
+        }
+
+        if ($filter['category']) {
+            $qb->andWhere('c.id =:category_id')->setParameter('category_id', $filter['category']);
+        }
+
+        if ($filter['is_enabled']) {
+            $qb->andWhere('p.enabled = :is_enabled')->setParameter('is_enabled', true);
+        }
+
+        return $qb;
+    }
+
     public function findEnabledByPageAndCategory($category_slug = null)
     {
         $query = null;

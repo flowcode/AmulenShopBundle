@@ -22,7 +22,8 @@ use Symfony\Component\Finder\SplFileInfo;
  *
  * @Route("/admin/product")
  */
-class AdminProductController extends Controller {
+class AdminProductController extends Controller
+{
 
     /**
      * Lists all Product entities.
@@ -33,16 +34,23 @@ class AdminProductController extends Controller {
      */
     public function indexAction(Request $request)
     {
-
         $page = $request->get("page", 1);
         $em = $this->getDoctrine()->getManager();
-        $dql = "SELECT p FROM AmulenShopBundle:Product p";
-        $query = $em->createQuery($dql);
+
+        $filter = [
+            'q' => $request->get('q'),
+            'category' => $request->get('filter_category'),
+            'is_enabled' => $request->get('is_enabled', true),
+        ];
+
+        $qb = $em->getRepository(Product::class)->findAllFilteredQB($filter);
+
         $paginator = $this->get('knp_paginator');
-        $pagination = $paginator->paginate($query, $this->get('request')->query->get('page', $page));
+        $pagination = $paginator->paginate($qb, $page, 40);
 
         return array(
             'pagination' => $pagination,
+            'filter' => $filter,
         );
     }
 
@@ -53,7 +61,8 @@ class AdminProductController extends Controller {
      * @Method("POST")
      * @Template("FlowcodeShopBundle:AdminProduct:new.html.twig")
      */
-    public function createAction(Request $request) {
+    public function createAction(Request $request)
+    {
         $entity = new Product();
         $form = $this->createCreateForm($entity);
         $form->handleRequest($request);
@@ -77,13 +86,13 @@ class AdminProductController extends Controller {
             $em->flush();
 
             $this->get('session')->getFlashBag()->add(
-                    'success', $this->get('translator')->trans('save_success')
+                'success', $this->get('translator')->trans('save_success')
             );
 
             return $this->redirect($this->generateUrl('admin_product_show', array('id' => $entity->getId())));
         } else {
             $this->get('session')->getFlashBag()->add(
-                    'warning', $this->get('translator')->trans('save_fail')
+                'warning', $this->get('translator')->trans('save_fail')
             );
         }
 
@@ -100,7 +109,8 @@ class AdminProductController extends Controller {
      *
      * @return Form The form
      */
-    private function createCreateForm(Product $entity) {
+    private function createCreateForm(Product $entity)
+    {
         $form = $this->createForm($this->get("amulen.shop.form.product"), $entity, array(
             'action' => $this->generateUrl('admin_product_create'),
             'method' => 'POST',
@@ -118,7 +128,8 @@ class AdminProductController extends Controller {
      * @Method("GET")
      * @Template()
      */
-    public function newAction() {
+    public function newAction()
+    {
         $entity = new Product();
         $form = $this->createCreateForm($entity);
 
@@ -135,8 +146,9 @@ class AdminProductController extends Controller {
      * @Method("GET")
      * @Template()
      */
-    public function showAction(Product $product) {
-        
+    public function showAction(Product $product)
+    {
+
         if (!$product) {
             throw $this->createNotFoundException('Unable to find Product entity.');
         }
@@ -156,7 +168,8 @@ class AdminProductController extends Controller {
      * @Method("GET")
      * @Template()
      */
-    public function editAction($id) {
+    public function editAction($id)
+    {
         $em = $this->getDoctrine()->getManager();
 
         $entity = $em->getRepository('AmulenShopBundle:Product')->find($id);
@@ -182,7 +195,8 @@ class AdminProductController extends Controller {
      *
      * @return Form The form
      */
-    private function createEditForm(Product $entity) {
+    private function createEditForm(Product $entity)
+    {
         $form = $this->createForm($this->get("amulen.shop.form.product"), $entity, array(
             'action' => $this->generateUrl('admin_product_update', array('id' => $entity->getId())),
             'method' => 'PUT',
@@ -200,7 +214,8 @@ class AdminProductController extends Controller {
      * @Method("PUT")
      * @Template("FlowcodeShopBundle:AdminProduct:edit.html.twig")
      */
-    public function updateAction(Request $request, $id) {
+    public function updateAction(Request $request, $id)
+    {
         $em = $this->getDoctrine()->getManager();
 
         $entity = $em->getRepository('AmulenShopBundle:Product')->find($id);
@@ -232,7 +247,8 @@ class AdminProductController extends Controller {
      * @Route("/{id}", name="admin_product_delete")
      * @Method("DELETE")
      */
-    public function deleteAction(Request $request, $id) {
+    public function deleteAction(Request $request, $id)
+    {
         $form = $this->createDeleteForm($id);
         $form->handleRequest($request);
 
@@ -258,21 +274,21 @@ class AdminProductController extends Controller {
      *
      * @return Form The form
      */
-    private function createDeleteForm($id) {
+    private function createDeleteForm($id)
+    {
         return $this->createFormBuilder()
-                        ->setAction($this->generateUrl('admin_product_delete', array('id' => $id)))
-                        ->setMethod('DELETE')
-                        ->add('submit', 'submit', array('label' => 'Delete',
-                            'attr' => array(
-                                    'onclick' => 'return confirm("Estás seguro?")'
-                            )))
-                        ->getForm()
-        ;
+            ->setAction($this->generateUrl('admin_product_delete', array('id' => $id)))
+            ->setMethod('DELETE')
+            ->add('submit', 'submit', array('label' => 'Delete',
+                'attr' => array(
+                    'onclick' => 'return confirm("Estás seguro?")'
+                )))
+            ->getForm();
     }
 
 
     /**
-     * GALLERY 
+     * GALLERY
      *
      */
 
@@ -283,7 +299,8 @@ class AdminProductController extends Controller {
      * @Method("GET")
      * @Template("FlowcodeShopBundle:AdminProduct:gallery_add_item.html.twig")
      */
-    public function addimageAction(Product $product) {
+    public function addimageAction(Product $product)
+    {
         $em = $this->getDoctrine()->getManager();
 
         $gallery = $product->getMediaGallery();
@@ -312,7 +329,8 @@ class AdminProductController extends Controller {
      * @Method("POST")
      * @Template("FlowcodeShopBundle:AdminProduct:gallery_add_item.html.twig")
      */
-    public function createGalleryItemAction(Product $product, Request $request) {
+    public function createGalleryItemAction(Product $product, Request $request)
+    {
         $em = $this->getDoctrine()->getManager();
 
         $entity = new \Amulen\MediaBundle\Entity\GalleryItem();
@@ -347,7 +365,6 @@ class AdminProductController extends Controller {
     }
 
 
-
     /**
      * Finds and displays a Gallery entity.
      *
@@ -355,7 +372,8 @@ class AdminProductController extends Controller {
      * @Method("GET")
      * @Template("FlowcodeShopBundle:AdminProduct:gallery_show.html.twig")
      */
-    public function showGalleryItemAction(Product $product) {
+    public function showGalleryItemAction(Product $product)
+    {
         $entity = $product->getMediaGallery();
 
         if (!$entity) {
@@ -378,7 +396,8 @@ class AdminProductController extends Controller {
      * @Method("GET")
      * @Template("FlowcodeShopBundle:AdminProduct:gallery_edit_item.html.twig")
      */
-    public function editGalleryItemAction(GalleryItem $entity, Product $product, Request $request) {
+    public function editGalleryItemAction(GalleryItem $entity, Product $product, Request $request)
+    {
         if (!$entity) {
             throw $this->createNotFoundException('Unable to find GalleryItem entity.');
         }
@@ -401,7 +420,8 @@ class AdminProductController extends Controller {
      * @Method("PUT")
      * @Template("FlowcodeShopBundle:AdminProduct:gallery_edit_item.html.twig")
      */
-    public function updateGalleryItemAction(Request $request, GalleryItem $entity, Product $product) {
+    public function updateGalleryItemAction(Request $request, GalleryItem $entity, Product $product)
+    {
         $em = $this->getDoctrine()->getManager();
 
         if (!$entity) {
@@ -432,7 +452,8 @@ class AdminProductController extends Controller {
      * @Route("/galleryitem/{id}", name="admin_product_gallery_delete")
      * @Method("DELETE")
      */
-    public function deleteGalleryItemAction(Request $request, GalleryItem $entity) {
+    public function deleteGalleryItemAction(Request $request, GalleryItem $entity)
+    {
         $form = $this->createDeleteForm($id);
         $form->handleRequest($request);
 
@@ -455,7 +476,8 @@ class AdminProductController extends Controller {
      *
      * @Route("/{product}/galleryitem/{id}/remove", name="admin_product_gallery_item_remove")
      */
-    public function removeitemAction(Product $product, Request $request, GalleryItem $entity) {
+    public function removeitemAction(Product $product, Request $request, GalleryItem $entity)
+    {
         $em = $this->getDoctrine()->getManager();
 
         $galleryItem = $em->getRepository('AmulenMediaBundle:GalleryItem')->find($entity->getId());
@@ -465,7 +487,7 @@ class AdminProductController extends Controller {
         $em->remove($galleryItem);
         $em->flush();
         $i = 0;
-        $galleryItems = $em->getRepository('AmulenMediaBundle:GalleryItem')->findBy(array("gallery" =>  $product->getMediaGallery()),array("position" => "ASC") );
+        $galleryItems = $em->getRepository('AmulenMediaBundle:GalleryItem')->findBy(array("gallery" => $product->getMediaGallery()), array("position" => "ASC"));
         foreach ($galleryItems as $item) {
             $item->setPosition($i);
             $i++;
@@ -482,7 +504,8 @@ class AdminProductController extends Controller {
      *
      * @return Form The form
      */
-    private function createEditGalleryItemForm(GalleryItem $entity, $product) {
+    private function createEditGalleryItemForm(GalleryItem $entity, $product)
+    {
         $form = $this->createForm($this->get("amulen.shop.form.product.gallery"), $entity, array(
             'action' => $this->generateUrl('admin_product_gallery_update', array('entity' => $entity->getId(), 'id' => $product->getId())),
             'method' => 'PUT',
@@ -500,13 +523,13 @@ class AdminProductController extends Controller {
      *
      * @return Form The form
      */
-    private function createDeleteGalleryItemForm($id) {
+    private function createDeleteGalleryItemForm($id)
+    {
         return $this->createFormBuilder()
-                        ->setAction($this->generateUrl('admin_product_gallery_delete', array('id' => $id)))
-                        ->setMethod('DELETE')
-                        ->add('submit', 'submit', array('label' => 'Delete'))
-                        ->getForm()
-        ;
+            ->setAction($this->generateUrl('admin_product_gallery_delete', array('id' => $id)))
+            ->setMethod('DELETE')
+            ->add('submit', 'submit', array('label' => 'Delete'))
+            ->getForm();
     }
 
     /**
@@ -514,7 +537,7 @@ class AdminProductController extends Controller {
      *
      * @Route("/updatePosItem", name="admin_product_gallery_update_drag_drop")
      * @Method("POST")
-    */
+     */
     public function updateGalleryItemPosition(Request $request)
     {
         $em = $this->getDoctrine()->getManager();
@@ -533,7 +556,7 @@ class AdminProductController extends Controller {
 
     /**
      * MEDIA
-    */
+     */
     /**
      * Add media.
      *
@@ -543,7 +566,7 @@ class AdminProductController extends Controller {
      */
     public function addMediaProductAction(Product $product, $type = null)
     {
-        if($type == 'type_image_file') {
+        if ($type == 'type_image_file') {
             return $this->redirectToRoute('admin_product_new_image', array('id' => $product->getId()));
         }
         $entity = new Media();
@@ -587,7 +610,7 @@ class AdminProductController extends Controller {
      * @Method("POST")
      * @Template("FlowcodeShopBundle:AdminProduct:media_new.html.twig")
      */
-    public function createMediaAction(Product $product,Request $request, $type)
+    public function createMediaAction(Product $product, Request $request, $type)
     {
         $em = $this->getDoctrine()->getManager();
         $media = new Media();
@@ -595,7 +618,7 @@ class AdminProductController extends Controller {
         $form = $this->mediaCreateCreateForm($media, $product);
         $form->handleRequest($request);
 
-        if($type == 'type_video_youtube'){
+        if ($type == 'type_video_youtube') {
             if (is_null($product->getVideoGallery())) {
                 /* create media gallery */
                 $gallery = new Gallery();
@@ -686,7 +709,7 @@ class AdminProductController extends Controller {
      * @Method("PUT")
      * @Template("FlowcodeShopBundle:AdminProduct:media_edit.html.twig")
      */
-    public function updateMediaAction(Request $request, Product $product, Media $entity,$type)
+    public function updateMediaAction(Request $request, Product $product, Media $entity, $type)
     {
         $em = $this->getDoctrine()->getManager();
         if (!$entity) {
