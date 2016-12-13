@@ -12,6 +12,7 @@ class ShopSetting
 {
 
     const CHECKOUT_MAIL = "checkout_mail";
+    const SHOP_AVAILABLE = "shop_available";
 
     /**
      * @var integer

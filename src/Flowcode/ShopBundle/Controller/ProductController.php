@@ -3,6 +3,7 @@
 namespace Flowcode\ShopBundle\Controller;
 
 use Flowcode\ShopBundle\Entity\Product;
+use Flowcode\ShopBundle\Service\SettingsService;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
@@ -38,12 +39,17 @@ class ProductController extends Controller
         $title = "Productos - " . $baseTitle;
         $seoPage->setTitle($title);
 
+        /* @var SettingsService $settingSrv */
+        $settingSrv = $this->get('amulen.shop.settings');
+        $isAvailable = $settingSrv->shopIsAvailable();
+
         /* pagination */
         $pageNumber = $request->get('page') ? $request->get('page') : 1;
         $products = $this->getDoctrine()->getRepository("AmulenShopBundle:Product")->findEnabledByPageAndCategory($category_slug);
         $pagination = $this->get('knp_paginator')->paginate($products, $pageNumber, 4);
 
         return array(
+            'shop_is_available' => $isAvailable,
             'pagination' => $pagination,
             'category' => $category,
             'page' => $page,

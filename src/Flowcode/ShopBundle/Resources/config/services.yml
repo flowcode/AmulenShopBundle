@@ -62,6 +62,12 @@ services:
         arguments:
             - Amulen\ShopBundle\Entity\ProductOrderItem
 
+    amulen.shop.repository.setting:
+        class: Doctrine\ORM\EntityRepository
+        factory: ["@doctrine.orm.entity_manager", getRepository]
+        arguments:
+            - Amulen\ShopBundle\Entity\ShopSetting
+
     amulen.shop.product:
         class: Flowcode\ShopBundle\Service\ProductService
         arguments: ["@doctrine.orm.entity_manager"]
@@ -77,3 +83,8 @@ services:
     amulen.shop.order.item:
         class: Flowcode\ShopBundle\Service\ProductOrderItemService
         arguments: ["@doctrine.orm.entity_manager", "@amulen.shop.repository.order.item"]
+
+
+    amulen.shop.settings:
+        class: Flowcode\ShopBundle\Service\SettingsService
+        arguments: ["@amulen.shop.repository.setting"]

@@ -19,6 +19,7 @@ class ShopSettingType extends AbstractType
             ->add('name', ChoiceType::class, array(
                 'choices' => array(
                     ShopSetting::CHECKOUT_MAIL => ShopSetting::CHECKOUT_MAIL,
+                    ShopSetting::SHOP_AVAILABLE => ShopSetting::SHOP_AVAILABLE,
                 ),
             ))
             ->add('value');
