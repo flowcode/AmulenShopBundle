@@ -2,6 +2,7 @@
 
 namespace Flowcode\ShopBundle\Controller;
 
+use Doctrine\ORM\QueryBuilder;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
@@ -25,16 +26,31 @@ class AdminProductOrderController extends Controller
      * @Method("GET")
      * @Template()
      */
-    public function indexAction()
+    public function indexAction(Request $request)
     {
+        $page = $request->get('page', 1);
+
         $em = $this->getDoctrine()->getManager();
 
-        $entities = $em->getRepository('AmulenShopBundle:ProductOrder')->findAll();
+        $filter['q'] = $request->get('q');
+        $filter['status'] = $request->get('filter_status');
+
+        /* @var QueryBuilder $qb */
+        $qb = $em->getRepository('AmulenShopBundle:ProductOrder')->findAllFilteredQB($filter);
+        $qb->orderBy('po.created', 'DESC');
+        $statuses = $em->getRepository('AmulenShopBundle:ProductOrderStatus')->findAll();
+
+        $paginator = $this->get('knp_paginator');
+
+        $pagination = $paginator->paginate($qb, $page, 40);
 
         return array(
-            'entities' => $entities,
+            'pagination' => $pagination,
+            'filter' => $filter,
+            'statuses' => $statuses,
         );
     }
+
     /**
      * Creates a new ProductOrder entity.
      *
@@ -58,17 +74,17 @@ class AdminProductOrderController extends Controller
 
         return array(
             'entity' => $entity,
-            'form'   => $form->createView(),
+            'form' => $form->createView(),
         );
     }
 
     /**
-    * Creates a form to create a ProductOrder entity.
-    *
-    * @param ProductOrder $entity The entity
-    *
-    * @return \Symfony\Component\Form\Form The form
-    */
+     * Creates a form to create a ProductOrder entity.
+     *
+     * @param ProductOrder $entity The entity
+     *
+     * @return \Symfony\Component\Form\Form The form
+     */
     private function createCreateForm(ProductOrder $entity)
     {
         $form = $this->createForm($this->get("amulen.shop.form.productorder"), $entity, array(
@@ -91,11 +107,11 @@ class AdminProductOrderController extends Controller
     public function newAction()
     {
         $entity = new ProductOrder();
-        $form   = $this->createCreateForm($entity);
+        $form = $this->createCreateForm($entity);
 
         return array(
             'entity' => $entity,
-            'form'   => $form->createView(),
+            'form' => $form->createView(),
         );
     }
 
@@ -119,7 +135,7 @@ class AdminProductOrderController extends Controller
         $deleteForm = $this->createDeleteForm($id);
 
         return array(
-            'entity'      => $entity,
+            'entity' => $entity,
             'delete_form' => $deleteForm->createView(),
         );
     }
@@ -145,19 +161,19 @@ class AdminProductOrderController extends Controller
         $deleteForm = $this->createDeleteForm($id);
 
         return array(
-            'entity'      => $entity,
-            'edit_form'   => $editForm->createView(),
+            'entity' => $entity,
+            'edit_form' => $editForm->createView(),
             'delete_form' => $deleteForm->createView(),
         );
     }
 
     /**
-    * Creates a form to edit a ProductOrder entity.
-    *
-    * @param ProductOrder $entity The entity
-    *
-    * @return \Symfony\Component\Form\Form The form
-    */
+     * Creates a form to edit a ProductOrder entity.
+     *
+     * @param ProductOrder $entity The entity
+     *
+     * @return \Symfony\Component\Form\Form The form
+     */
     private function createEditForm(ProductOrder $entity)
     {
         $form = $this->createForm($this->get("amulen.shop.form.productorder"), $entity, array(
@@ -169,6 +185,7 @@ class AdminProductOrderController extends Controller
 
         return $form;
     }
+
     /**
      * Edits an existing ProductOrder entity.
      *
@@ -197,11 +214,12 @@ class AdminProductOrderController extends Controller
         }
 
         return array(
-            'entity'      => $entity,
-            'edit_form'   => $editForm->createView(),
+            'entity' => $entity,
+            'edit_form' => $editForm->createView(),
             'delete_form' => $deleteForm->createView(),
         );
     }
+
     /**
      * Deletes a ProductOrder entity.
      *
@@ -242,9 +260,8 @@ class AdminProductOrderController extends Controller
             ->setMethod('DELETE')
             ->add('submit', 'submit', array('label' => 'Delete',
                 'attr' => array(
-                        'onclick' => 'return confirm("Estás seguro?")'
+                    'onclick' => 'return confirm("Estás seguro?")'
                 )))
-            ->getForm()
-        ;
+            ->getForm();
     }
 }

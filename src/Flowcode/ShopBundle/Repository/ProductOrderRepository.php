@@ -12,7 +12,33 @@ use Doctrine\ORM\EntityRepository;
  */
 class ProductOrderRepository extends EntityRepository
 {
-    public function findProductInOrder($product, $order) {
+
+    public function findAllQB()
+    {
+        $qb = $this->createQueryBuilder('po');
+        return $qb;
+    }
+
+    public function findAllFilteredQB($filter)
+    {
+        $qb = $this->findAllQB();
+        $qb->leftJoin('po.status', 's');
+        $qb->leftJoin('po.user', 'u');
+
+
+        if ($filter['q']) {
+            $qb->andwhere('u.username LIKE :name')->setParameter('name', '%' . $filter['q'] . '%');
+        }
+
+        if ($filter['status']) {
+            $qb->andWhere('s.id = :status_id')->setParameter('status_id', $filter['status']);
+        }
+
+        return $qb;
+    }
+
+    public function findProductInOrder($product, $order)
+    {
         $query = null;
         if (!is_null($product) && !is_null($order)) {
             $query = $this->createQueryBuilder("o")
