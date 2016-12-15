@@ -13,12 +13,32 @@ use Doctrine\ORM\EntityRepository;
 class ProductOrderRepository extends EntityRepository
 {
 
+    /**
+     * @return \Doctrine\ORM\QueryBuilder
+     */
     public function findAllQB()
     {
         $qb = $this->createQueryBuilder('po');
         return $qb;
     }
 
+    /**
+     * @param int $max
+     * @return array
+     */
+    public function recentOrders($max = 20)
+    {
+        $qb = $this->findAllQB();
+        $qb->orderBy('po.created', 'DESC');
+        $qb->setMaxResults($max);
+
+        return $qb->getQuery()->getResult();
+    }
+
+    /**
+     * @param $filter
+     * @return \Doctrine\ORM\QueryBuilder
+     */
     public function findAllFilteredQB($filter)
     {
         $qb = $this->findAllQB();

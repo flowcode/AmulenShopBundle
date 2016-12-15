@@ -1,0 +1,38 @@
+<table class="table table-condensed">
+    <thead>
+    <tr>
+        <th>#</th>
+        <th>Usuario</th>
+        <th>Total</th>
+        <th>Estado</th>
+        <th>Fecha</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for order in orders %}
+        <tr>
+            <td>
+                <a href="{{ path('admin_order_show', { 'id': order.id }) }}">
+                    {{ order.id }}
+                </a>
+            </td>
+            <td>
+                {{ order.user }}
+            </td>
+            <td>
+                {{ order.total }}
+            </td>
+            <td>
+                {% if order.status %}
+                    {{ include('AmulenShopBundle:ProductOrder:status.html.twig', {
+                        'status':order.status
+                    }) }}
+                {% endif %}
+            </td>
+            <td>
+                {{ order.updated|date("d/m/y") }}
+            </td>
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>
