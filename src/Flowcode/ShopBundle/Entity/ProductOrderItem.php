@@ -145,5 +145,13 @@ class ProductOrderItem
         $this->unitPrice = $unitPrice;
     }
 
+    /**
+     * @return int
+     */
+    public function getSubtotal()
+    {
+        return $this->unitPrice * $this->quantity;
+    }
+
 
 }

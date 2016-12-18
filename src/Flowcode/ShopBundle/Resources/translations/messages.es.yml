@@ -39,9 +39,13 @@ add: Agregar
 quantity: Cantidad
 remove: Quitar
 price per unit: Precio por unidad
-finish: Finalizar
+finish order: Listo, quiero mi pedido!
 more products: Más productos
 update: Actualizar
+keep buying: Seguir comprando
+view my order: Ver mi pedido
+add to cart: ¡Lo quiero!
+Agregar a canasta: ¡Lo quiero!
 
 STATUS_DRAFT: Borrador
 STATUS_PENDING: Pendiente

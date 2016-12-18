@@ -147,6 +147,8 @@ class ProductOrderController extends Controller
             $productOrderService->updateOrderAmount($productOrder);
         }
 
+        $session->set('productOrderCount', $productOrder->getItemTotalCount());
+
         return $this->redirectToRoute('order');
     }
 

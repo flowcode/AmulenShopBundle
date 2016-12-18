@@ -2,6 +2,7 @@
 
 namespace Flowcode\ShopBundle\Service;
 
+use Amulen\ShopBundle\Entity\Product;
 use Amulen\ShopBundle\Entity\ProductOrder;
 use Amulen\ShopBundle\Entity\ProductOrderItem;
 use Amulen\ShopBundle\Entity\ProductOrderStatus;
@@ -89,7 +90,13 @@ class ProductOrderService
         return $productOrder;
     }
 
-    public function addProduct($product, $productOrder, $quantity = 1)
+    /**
+     * @param Product $product
+     * @param ProductOrder $productOrder
+     * @param int $quantity
+     * @return ProductOrderItem|bool
+     */
+    public function addProduct(Product $product, ProductOrder $productOrder, $quantity = 1)
     {
         $item = $this->getProductItem($product, $productOrder);
         if (!$item) {
@@ -102,8 +109,11 @@ class ProductOrderService
             $productOrder->setTotal($total);
         } else {
             $oldQty = $item->getQuantity();
-            $item->setQuantity($quantity);
-            $total = $productOrder->getTotal() - $product->getPrice() * $oldQty + $product->getPrice() * $quantity;
+            $item->setQuantity($quantity + $oldQty);
+
+            $total = $productOrder->getTotal() - $product->getPrice() * $oldQty;
+            $total += $product->getPrice() * ($quantity + $oldQty);
+
             $productOrder->setTotal($total);
         }
         $this->getEm()->persist($item);
@@ -111,6 +121,36 @@ class ProductOrderService
 
         return $item;
     }
+
+    /**
+     * @param Product $product
+     * @param ProductOrder $productOrder
+     * @param int $quantity
+     * @return ProductOrderItem|bool
+     */
+    public function substractQuantity(Product $product, ProductOrder $productOrder, $quantity = 1)
+    {
+        $item = $this->getProductItem($product, $productOrder);
+
+        $oldQty = $item->getQuantity();
+        $newQty = $oldQty - $quantity;
+
+        $item->setQuantity($newQty);
+
+        $total = $productOrder->getTotal() - $product->getPrice() * $oldQty;
+        $total += $product->getPrice() * $newQty;
+
+        $productOrder->setTotal($total);
+
+        if ($newQty <= 0) {
+            $productOrder->getItems()->removeElement($item);
+        }
+
+        $this->update($productOrder);
+
+        return $item;
+    }
+
 
     public function getProductItem($product, $productOrder)
     {

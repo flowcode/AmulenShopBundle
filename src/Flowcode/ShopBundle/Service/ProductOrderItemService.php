@@ -29,12 +29,12 @@ class ProductOrderItemService
     /**
      * Find al ProductOrderItems with pagination options.
      * @param  integer $page [description]
-     * @param  integer $max  [description]
+     * @param  integer $max [description]
      * @return ArrayCollection        ProductOrderItems.
      */
     public function findAll($page = 1, $max = 50)
     {
-        $offset = (($page-1) * $max);
+        $offset = (($page - 1) * $max);
         $productOrderItems = $this->productOrderItemRepository->findBy(array(), array(), $max, $offset);
         return $productOrderItems;
     }
@@ -51,12 +51,27 @@ class ProductOrderItemService
 
     /**
      * Create a new ProductOrderItem.
-     * @param  ProductOrderItem   $productOrderItem the productOrderItem instance.
+     * @param  ProductOrderItem $productOrderItem the productOrderItem instance.
      * @return ProductOrderItem       the productOrderItem instance.
      */
     public function create(ProductOrderItem $productOrderItem)
     {
         $this->getEm()->persist($productOrderItem);
+        $this->getEm()->flush();
+
+        return $productOrderItem;
+    }
+
+    /**
+     * Save or update ProductOrderItem.
+     * @param  ProductOrderItem $productOrderItem the productOrderItem instance.
+     * @return ProductOrderItem       the productOrderItem instance.
+     */
+    public function save(ProductOrderItem $productOrderItem)
+    {
+        if (!$productOrderItem->getId()) {
+            $this->getEm()->persist($productOrderItem);
+        }
         $this->getEm()->flush();
 
         return $productOrderItem;
@@ -91,6 +106,7 @@ class ProductOrderItemService
     {
         $this->em = $em;
     }
+
     /**
      * Get entityManager.
      * @return EntityManager Entity manager.
