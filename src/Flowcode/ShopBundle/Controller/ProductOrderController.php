@@ -74,11 +74,13 @@ class ProductOrderController extends Controller
             $session->set('productOrderId', $productOrder->getId());
         }
         if ($productId = $request->get('product')) {
-            $quantity = $request->get('prodQty') ? $request->get('prodQty') : 1;
+            $quantity = $request->get('prodQty', 1);
             $product = $productService->findById($productId);
             $productOrderItem = $productOrderService->addProduct($product, $productOrder, $quantity);
             $productOrderItemService->create($productOrderItem);
         }
+
+        $session->set('productOrderCount', $productOrder->getItemTotalCount());
 
         return array(
             'productQtyOrder' => $productOrderItem->getQuantity(),

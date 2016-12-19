@@ -106,6 +106,7 @@ class ProductOrderService
             $item->setUnitPrice($product->getPrice());
             $item->setOrder($productOrder);
             $total = $productOrder->getTotal() + $product->getPrice();
+            $productOrder->addItem($item);
             $productOrder->setTotal($total);
         } else {
             $oldQty = $item->getQuantity();
