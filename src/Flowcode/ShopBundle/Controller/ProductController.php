@@ -127,6 +127,8 @@ class ProductController extends Controller
 
         }
 
+        $prodQty = 1;
+        
         /* ProductOrder */
         $session = $request->getSession();
         $productOrderId = $session->get('productOrderId');
@@ -134,15 +136,7 @@ class ProductController extends Controller
         if (!$productOrderId) {
             $session->set('productOrderId', $productOrder->getId());
         }
-        $prodQty = 0;
-        if ($productOrderId) {
-            $productOrder = $productOrderService->findById($productOrderId);
-            if ($productOrder) {
-                $prodQty = $request->get('prodQty') ? $request->get('prodQty') : 1;
-                $item = $productOrderService->addProduct($entity, $productOrder, $prodQty);
-                $prodQty = $item->getQuantity();
-            }
-        }
+
 
         return array(
             'entity' => $entity,
