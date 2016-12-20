@@ -14,7 +14,8 @@ use Gedmo\Mapping\Annotation as Gedmo;
 /**
  * ProductOrder
  */
-class ProductOrder {
+class ProductOrder
+{
 
     /**
      * @var integer
@@ -72,7 +73,8 @@ class ProductOrder {
      */
     protected $updated;
 
-    function __construct() {
+    function __construct()
+    {
         $this->items = new ArrayCollection();
         $this->enabled = true;
         $this->total = 0;
@@ -83,7 +85,8 @@ class ProductOrder {
      *
      * @return integer
      */
-    public function getId() {
+    public function getId()
+    {
         return $this->id;
     }
 
@@ -93,7 +96,8 @@ class ProductOrder {
      * @param float $total
      * @return ProductOrder
      */
-    public function setTotal($total) {
+    public function setTotal($total)
+    {
         $this->total = $total;
 
         return $this;
@@ -104,7 +108,8 @@ class ProductOrder {
      *
      * @return float
      */
-    public function getTotal() {
+    public function getTotal()
+    {
         return $this->total;
     }
 
@@ -114,7 +119,8 @@ class ProductOrder {
      * @param boolean $enabled
      * @return ProductOrder
      */
-    public function setEnabled($enabled) {
+    public function setEnabled($enabled)
+    {
         $this->enabled = $enabled;
 
         return $this;
@@ -125,7 +131,8 @@ class ProductOrder {
      *
      * @return boolean
      */
-    public function getEnabled() {
+    public function getEnabled()
+    {
         return $this->enabled;
     }
 
@@ -135,7 +142,8 @@ class ProductOrder {
      * @param ProductOrderItem $items
      * @return ProductOrder
      */
-    public function addItem(ProductOrderItem $items) {
+    public function addItem(ProductOrderItem $items)
+    {
         $this->items[] = $items;
 
         return $this;
@@ -146,7 +154,8 @@ class ProductOrder {
      *
      * @param ProductOrderItem $items
      */
-    public function removeItem(ProductOrderItem $items) {
+    public function removeItem(ProductOrderItem $items)
+    {
         $this->items->removeElement($items);
     }
 
@@ -155,7 +164,8 @@ class ProductOrder {
      *
      * @return Collection
      */
-    public function getItems() {
+    public function getItems()
+    {
         return $this->items;
     }
 
@@ -165,7 +175,8 @@ class ProductOrder {
      * @param User $user
      * @return ProductOrder
      */
-    public function setUser(User $user = null) {
+    public function setUser(User $user = null)
+    {
         $this->user = $user;
 
         return $this;
@@ -176,7 +187,8 @@ class ProductOrder {
      *
      * @return User
      */
-    public function getUser() {
+    public function getUser()
+    {
         return $this->user;
     }
 
@@ -186,7 +198,8 @@ class ProductOrder {
      * @param \Flowcode\ShopBundle\Entity\ProductOrderStatus $status
      * @return ProductOrder
      */
-    public function setStatus(\Flowcode\ShopBundle\Entity\ProductOrderStatus $status = null) {
+    public function setStatus(\Flowcode\ShopBundle\Entity\ProductOrderStatus $status = null)
+    {
         $this->status = $status;
 
         return $this;
@@ -197,7 +210,8 @@ class ProductOrder {
      *
      * @return \Flowcode\ShopBundle\Entity\ProductOrderStatus
      */
-    public function getStatus() {
+    public function getStatus()
+    {
         return $this->status;
     }
 
@@ -246,5 +260,28 @@ class ProductOrder {
     public function getUpdated()
     {
         return $this->updated;
+    }
+
+    /**
+     * @return array
+     */
+    public function getProductsAdded()
+    {
+        $productIds = [];
+
+        /** @var ProductOrderItem $item */
+        foreach ($this->getItems() as $item) {
+            array_push($productIds, $item->getProduct()->getId());
+        }
+        return $productIds;
+    }
+
+    public function getItemTotalCount()
+    {
+        $count = 0;
+        foreach ($this->getItems() as $item) {
+            $count += $item->getQuantity();
+        }
+        return $count;
     }
 }

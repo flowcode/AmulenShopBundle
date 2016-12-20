@@ -147,6 +147,7 @@ class ProductController extends Controller
         return array(
             'entity' => $entity,
             'productQtyOrder' => $prodQty,
+            'current_products' => $productOrder->getProductsAdded(),
         );
     }
 }
