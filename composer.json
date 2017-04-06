@@ -17,6 +17,7 @@
         "php": ">=5.3.3",
         "flowcode/amulen-classification-bundle": "~0.2",
         "flowcode/amulen-media-bundle": "~0.2",
-        "egeloen/ckeditor-bundle": "~2.0"
+        "egeloen/ckeditor-bundle": "~2.0",
+        "lexik/form-filter-bundle": "^5.0"
     }
 }

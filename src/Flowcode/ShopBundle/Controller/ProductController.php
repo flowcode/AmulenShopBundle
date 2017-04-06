@@ -46,6 +46,18 @@ class ProductController extends Controller
         /* pagination */
         $pageNumber = $request->get('page') ? $request->get('page') : 1;
         $products = $this->getDoctrine()->getRepository("AmulenShopBundle:Product")->findEnabledByPageAndCategory($category_slug);
+
+        /* Filter */
+        $formFilter = $this->createForm($this->get("amulen.shop.form.filter.shop"), null, array(
+            'action' => $this->generateUrl('products_index'),
+            'method' => 'GET',
+        ));
+        $formFilter->handleRequest($request);
+        if ($formFilter->isValid()) {
+            $productService = $this->get("amulen.shop.product");
+            $products = $productService->addFilterConditions($formFilter, $products, $request->get('search'));
+        }
+
         $pagination = $this->get('knp_paginator')->paginate($products, $pageNumber, 4);
 
         return array(
@@ -53,6 +65,7 @@ class ProductController extends Controller
             'pagination' => $pagination,
             'category' => $category,
             'page' => $page,
+            'formFilter' => $formFilter->createView(),
         );
     }
 

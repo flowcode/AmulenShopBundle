@@ -9,6 +9,7 @@
     {% endif %}
 
     <div class="row">
+        {{ include('FlowcodeShopBundle:Product:filter.html.twig',{'formFilter':formFilter}) }}
         {% for entity in pagination %}
             {{ include('FlowcodeShopBundle:Product:product_item.html.twig',{'product':entity, hidden:true}) }}
         {% else %}

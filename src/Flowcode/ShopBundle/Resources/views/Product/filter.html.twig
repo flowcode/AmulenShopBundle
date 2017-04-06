@@ -1,0 +1,55 @@
+<div class="box box-success">
+    <button type="button" class="btn btn-default btn-sm filter collapsed" data-toggle="collapse"
+            data-target="#filter">{{ 'filter'|trans| capitalize }} <i class="fa fa-filter"></i>
+    </button>
+    {% set open = "" %}
+    {% if formFilter.price.left_number.vars.value > 0 or formFilter.price.right_number.vars.value > 0 or formFilter.category.vars.value|length > 0 or search|length > 0 %}
+        {% set open = "in" %}
+    {% endif %}
+    <div class="">
+        <div id="filter" class="collapse {{ open }} row filters-content">
+            <form method="get" class="form-horizontal" id="filter" action="{{ path('products_index') }}">
+                <div class="col-sm-12">
+                    <div class="col-sm-6">
+                        <div class="form-group">
+                            <label class="col-sm-3">
+                                Precio
+                            </label>
+                            <div class="col-sm-4 row">
+                                {{ form_widget(formFilter.price.left_number) }}
+                            </div>
+                            <div class="col-sm-4 row">
+                                {{ form_widget(formFilter.price.right_number) }}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="form-group">
+                            <label class="col-sm-3">
+                                Categoría
+                            </label>
+                            <div class="col-sm-9 row">
+                                {{ form_widget(formFilter.category) }}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="form-group">
+                            <label class="col-sm-3">
+                                Búsqueda
+                            </label>
+                            <div class="col-sm-9 row">
+                                <input type="text" name="search" class="form-control" value="{{ search }}">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-12">
+                        <button class="btn btn-default btn-sm" type="submit" value="Submit">Submit</button>
+                        <a class="btn btn-default btn-sm" href="{{ path('products_index') }}?reset">
+                            <i class="fa fa-times"></i> {{ 'clean' | trans | capitalize }}</a>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

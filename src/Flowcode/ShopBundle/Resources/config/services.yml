@@ -32,6 +32,12 @@ services:
         tags:
             - { name: form.type, alias: flowcode_shopbundle_brand }
 
+    # Form Filters
+    amulen.shop.form.filter.shop:
+        class: Flowcode\ShopBundle\Form\FilterShopType
+        tags:
+            - { name: form.type, alias: flowcode_shopbundle_filtershop }
+
     amulen.shop.showmenu_eventsubscriber:
         class: Flowcode\ShopBundle\Event\ShowMenuSubscriber
         arguments: ['@router', '@translator']
@@ -70,7 +76,9 @@ services:
 
     amulen.shop.product:
         class: Flowcode\ShopBundle\Service\ProductService
-        arguments: ["@doctrine.orm.entity_manager"]
+        arguments:
+          - "@doctrine.orm.entity_manager"
+          - "@lexik_form_filter.query_builder_updater"
 
     amulen.shop.order:
         class: Flowcode\ShopBundle\Service\ProductOrderService

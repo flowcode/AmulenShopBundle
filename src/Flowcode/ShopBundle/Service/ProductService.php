@@ -19,20 +19,23 @@ class ProductService
      */
     protected $em;
 
-    public function __construct(EntityManager $em)
+    protected $lexikQueryBuilderUpdater;
+
+    public function __construct(EntityManager $em, $lexikQueryBuilderUpdater)
     {
         $this->em = $em;
+        $this->lexikQueryBuilderUpdater = $lexikQueryBuilderUpdater;
     }
 
     /**
      * Find al Products with pagination options.
      * @param  integer $page [description]
-     * @param  integer $max  [description]
+     * @param  integer $max [description]
      * @return ArrayCollection        Products.
      */
     public function findAll($page = 1, $max = 50)
     {
-        $offset = (($page-1) * $max);
+        $offset = (($page - 1) * $max);
         $products = $this->getEm()->getRepository("AmulenShopBundle:Product")->findBy(array(), array(), $max, $offset);
         return $products;
     }
@@ -49,7 +52,7 @@ class ProductService
 
     /**
      * Create a new Product.
-     * @param  Product   $product the product instance.
+     * @param  Product $product the product instance.
      * @return Product       the product instance.
      */
     public function create(Product $product)
@@ -65,6 +68,25 @@ class ProductService
         return $class === 'Amulen\ShopBundle\Entity\Product';
     }
 
+    public function addFilterConditions($formFilter, $products, $search)
+    {
+        $this->lexikQueryBuilderUpdater->addFilterConditions($formFilter, $products);
+
+        /* Text input filter */
+        if($search){
+            /* Tags */
+            $products->leftJoin('p.tags', 't');
+            $products->andWhere("p.name LIKE :search");
+            $products->orWhere("t.name LIKE :search");
+            $products->setParameter("search", "%$search%");
+        }
+
+        if(!is_null($formFilter->get('category')->getData())){
+            $products->leftJoin('p.category', 'cat');
+        }
+
+        return $products;
+    }
 
     /**
      * Set entityManager.
@@ -73,6 +95,7 @@ class ProductService
     {
         $this->em = $em;
     }
+
     /**
      * Get entityManager.
      * @return EntityManager Entity manager.
