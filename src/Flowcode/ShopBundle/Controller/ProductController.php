@@ -49,7 +49,7 @@ class ProductController extends Controller
 
         /* Filter */
         $formFilter = $this->createForm($this->get("amulen.shop.form.filter.shop"), null, array(
-            'action' => $this->generateUrl('products_index'),
+            'action' => $this->generateUrl('product'),
             'method' => 'GET',
         ));
         $formFilter->handleRequest($request);
@@ -66,6 +66,8 @@ class ProductController extends Controller
             'category' => $category,
             'page' => $page,
             'formFilter' => $formFilter->createView(),
+            'search' => $request->get('search'),
+            'priceSort' => $request->get('priceSort')
         );
     }
 

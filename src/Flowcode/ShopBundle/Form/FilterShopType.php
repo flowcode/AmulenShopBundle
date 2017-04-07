@@ -37,10 +37,13 @@ class FilterShopType extends AbstractType
             ->add('category', Filters\EntityFilterType::class, array(
                 'class' => "Amulen\ClassificationBundle\Entity\Category",
                 'choice_label' => function ($category) {
-                    return $category->getName();
+                    if(!is_null($category->getParent())){
+                        return $category->getName();
+                    }
+                    return null;
                 },
                 'apply_filter' => function (QueryInterface $filterQuery, $field, $values) {
-                    if (empty($values['value'])) {
+                    if ($values['value']->isEmpty()) {
                         return null;
                     }
 
