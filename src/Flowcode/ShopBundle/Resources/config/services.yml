@@ -35,6 +35,7 @@ services:
     # Form Filters
     amulen.shop.form.filter.shop:
         class: Flowcode\ShopBundle\Form\FilterShopType
+        arguments: ['@amulen.classification.category']
         tags:
             - { name: form.type, alias: flowcode_shopbundle_filtershop }
 
