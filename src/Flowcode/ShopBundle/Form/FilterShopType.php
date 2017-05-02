@@ -2,6 +2,7 @@
 
 namespace Flowcode\ShopBundle\Form;
 
+use Amulen\ClassificationBundle\Entity\Category;
 use Lexik\Bundle\FormFilterBundle\Filter\Condition\ConditionBuilderInterface;
 use Lexik\Bundle\FormFilterBundle\Filter\FilterOperands;
 use Lexik\Bundle\FormFilterBundle\Filter\Query\QueryInterface;
@@ -12,6 +13,14 @@ use Lexik\Bundle\FormFilterBundle\Filter\Form\Type as Filters;
 
 class FilterShopType extends AbstractType
 {
+
+    private $categoryService;
+
+    public function __construct($categoryService)
+    {
+        $this->categoryService = $categoryService;
+    }
+
     /**
      * @param FormBuilderInterface $builder
      * @param array $options
@@ -35,9 +44,10 @@ class FilterShopType extends AbstractType
                 ),
             ))
             ->add('category', Filters\EntityFilterType::class, array(
-                'class' => "Amulen\ClassificationBundle\Entity\Category",
-                'choice_label' => function ($category) {
-                    if(!is_null($category->getParent())){
+                'class' => Category::class,
+                'choices' => $this->categoryService->findByRoot("product"),
+                'choice_label' => function (Category $category) {
+                    if (!is_null($category->getParent())) {
                         return $category->getName();
                     }
                     return null;
