@@ -32,6 +32,11 @@ services:
         tags:
             - { name: form.type, alias: flowcode_shopbundle_brand }
 
+    amulen.shop.form.delivery.option:
+        class: Flowcode\ShopBundle\Form\OrderDeliveryOptionType
+        tags:
+            - { name: form.type, alias: flowcode_shopbundle_order_delivery_option }
+
     # Form Filters
     amulen.shop.form.filter.shop:
         class: Flowcode\ShopBundle\Form\FilterShopType
