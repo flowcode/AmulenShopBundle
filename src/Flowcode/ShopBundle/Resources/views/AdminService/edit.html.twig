@@ -1,16 +1,16 @@
 {% extends 'FlowcodeDashboardBundle:Default:layout.html.twig' %}
 
 {% block body -%}
-{{ include('FlowcodeShopBundle:AdminOrderDeliveryOption:deliveriesHeader.html.twig') }}
+{{ include('FlowcodeShopBundle:AdminService:deliveriesHeader.html.twig') }}
 <section class="content">
     <div class="box box-solid">
         <div class="box-header">
             <h3 class="box-title">{{ "edit"|trans|title }}</h3>
             <div class="box-tools">
-                <a class="btn btn-link btn-sm" href="{{ path('admin_order_delivery') }}">
+                <a class="btn btn-link btn-sm" href="{{ path('admin_service') }}">
                     {{ "Back to the list"|trans }}
                 </a>
-                <a class="btn btn-link btn-sm" href="{{ path('admin_order_delivery_show', { 'id': entity.id }) }}">
+                <a class="btn btn-link btn-sm" href="{{ path('admin_service_show', { 'id': entity.id }) }}">
                     {{ "Back to view"|trans }}
                 </a>
             </div>

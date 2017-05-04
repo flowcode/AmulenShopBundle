@@ -6,7 +6,7 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
-class OrderDeliveryOptionType extends AbstractType
+class ServiceType extends AbstractType
 {
     /**
      * @param FormBuilderInterface $builder
@@ -28,7 +28,7 @@ class OrderDeliveryOptionType extends AbstractType
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
         $resolver->setDefaults(array(
-            'data_class' => 'Amulen\ShopBundle\Entity\OrderDeliveryOption'
+            'data_class' => 'Amulen\ShopBundle\Entity\Service'
         ));
     }
 
@@ -37,6 +37,6 @@ class OrderDeliveryOptionType extends AbstractType
      */
     public function getName()
     {
-        return 'flowcode_shopbundle_order_delivery_option';
+        return 'flowcode_shopbundle_service';
     }
 }

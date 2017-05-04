@@ -1,14 +1,14 @@
 {% extends 'FlowcodeDashboardBundle:Default:layout.html.twig' %}
 
 {% block body -%}
-{{ include('FlowcodeShopBundle:AdminOrderDeliveryOption:deliveriesHeader.html.twig') }}
+{{ include('FlowcodeShopBundle:AdminService:deliveriesHeader.html.twig') }}
 <section class="content">
     <div class="col-sm-6">
     <div class="box box-solid">
         <div class="box-header">
             <h3>{{ "list"|trans|title }}</h3>
             <div class="box-tools">
-                <a href="{{ path('admin_order_delivery_new') }}" class="btn btn-link btn-sm">
+                <a href="{{ path('admin_service_new') }}" class="btn btn-link btn-sm">
                     <i class="fa fa-plus"></i> {{ "new"|trans|title }}
                 </a>
             </div>
@@ -24,7 +24,7 @@
                 <tbody>
                 {% for entity in entities %}
                     <tr>
-                        <td><a href="{{ path('admin_order_delivery_show', { 'id': entity.id }) }}">{{ entity.name }}</a></td>
+                        <td><a href="{{ path('admin_service_show', { 'id': entity.id }) }}">{{ entity.name }}</a></td>
                     </tr>
                 {% endfor %}
                 </tbody>

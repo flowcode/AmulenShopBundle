@@ -7,20 +7,20 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
-use Amulen\ShopBundle\Entity\OrderDeliveryOption;
+use Amulen\ShopBundle\Entity\Service;
 
 /**
- * OrderDeliveryOption controller.
+ * Service controller.
  *
- * @Route("/admin/order/delivery")
+ * @Route("/admin/order/service")
  */
-class AdminOrderDeliveryOptionController extends Controller
+class AdminServiceController extends Controller
 {
 
     /**
      * Lists all Brand entities.
      *
-     * @Route("/", name="admin_order_delivery")
+     * @Route("/", name="admin_service")
      * @Method("GET")
      * @Template()
      */
@@ -28,22 +28,22 @@ class AdminOrderDeliveryOptionController extends Controller
     {
         $em = $this->getDoctrine()->getManager();
 
-        $entities = $em->getRepository('AmulenShopBundle:OrderDeliveryOption')->findAll();
+        $entities = $em->getRepository('AmulenShopBundle:Service')->findAll();
 
         return array(
             'entities' => $entities,
         );
     }
     /**
-     * Creates a new OrderDeliveryOption entity.
+     * Creates a new Service entity.
      *
-     * @Route("/", name="admin_order_delivery_create")
+     * @Route("/", name="admin_service_create")
      * @Method("POST")
-     * @Template("FlowcodeShopBundle:OrderDeliveryOption:new.html.twig")
+     * @Template("FlowcodeShopBundle:Service:new.html.twig")
      */
     public function createAction(Request $request)
     {
-        $entity = new OrderDeliveryOption();
+        $entity = new Service();
         $form = $this->createCreateForm($entity);
         $form->handleRequest($request);
 
@@ -52,7 +52,7 @@ class AdminOrderDeliveryOptionController extends Controller
             $em->persist($entity);
             $em->flush();
 
-            return $this->redirect($this->generateUrl('admin_order_delivery_show', array('id' => $entity->getId())));
+            return $this->redirect($this->generateUrl('admin_service_show', array('id' => $entity->getId())));
         }
 
         return array(
@@ -62,16 +62,16 @@ class AdminOrderDeliveryOptionController extends Controller
     }
 
     /**
-     * Creates a form to create a OrderDeliveryOption entity.
+     * Creates a form to create a Service entity.
      *
-     * @param OrderDeliveryOption $entity The entity
+     * @param Service $entity The entity
      *
      * @return \Symfony\Component\Form\Form The form
      */
-    private function createCreateForm(OrderDeliveryOption $entity)
+    private function createCreateForm(Service $entity)
     {
-        $form = $this->createForm($this->get("amulen.shop.form.delivery.option"), $entity, array(
-            'action' => $this->generateUrl('admin_order_delivery_create'),
+        $form = $this->createForm($this->get("amulen.shop.form.service"), $entity, array(
+            'action' => $this->generateUrl('admin_service_create'),
             'method' => 'POST',
         ));
 
@@ -81,15 +81,15 @@ class AdminOrderDeliveryOptionController extends Controller
     }
 
     /**
-     * Displays a form to create a new OrderDeliveryOption entity.
+     * Displays a form to create a new Service entity.
      *
-     * @Route("/new", name="admin_order_delivery_new")
+     * @Route("/new", name="admin_service_new")
      * @Method("GET")
      * @Template()
      */
     public function newAction()
     {
-        $entity = new OrderDeliveryOption();
+        $entity = new Service();
         $form   = $this->createCreateForm($entity);
 
         return array(
@@ -99,9 +99,9 @@ class AdminOrderDeliveryOptionController extends Controller
     }
 
     /**
-     * Finds and displays a OrderDeliveryOption entity.
+     * Finds and displays a Service entity.
      *
-     * @Route("/{id}", name="admin_order_delivery_show")
+     * @Route("/{id}", name="admin_service_show")
      * @Method("GET")
      * @Template()
      */
@@ -109,10 +109,10 @@ class AdminOrderDeliveryOptionController extends Controller
     {
         $em = $this->getDoctrine()->getManager();
 
-        $entity = $em->getRepository('AmulenShopBundle:OrderDeliveryOption')->find($id);
+        $entity = $em->getRepository('AmulenShopBundle:Service')->find($id);
 
         if (!$entity) {
-            throw $this->createNotFoundException('Unable to find OrderDeliveryOption entity.');
+            throw $this->createNotFoundException('Unable to find Service entity.');
         }
 
         $deleteForm = $this->createDeleteForm($id);
@@ -124,9 +124,9 @@ class AdminOrderDeliveryOptionController extends Controller
     }
 
     /**
-     * Displays a form to edit an existing OrderDeliveryOption entity.
+     * Displays a form to edit an existing Service entity.
      *
-     * @Route("/{id}/edit", name="admin_order_delivery_edit")
+     * @Route("/{id}/edit", name="admin_service_edit")
      * @Method("GET")
      * @Template()
      */
@@ -134,10 +134,10 @@ class AdminOrderDeliveryOptionController extends Controller
     {
         $em = $this->getDoctrine()->getManager();
 
-        $entity = $em->getRepository('AmulenShopBundle:OrderDeliveryOption')->find($id);
+        $entity = $em->getRepository('AmulenShopBundle:Service')->find($id);
 
         if (!$entity) {
-            throw $this->createNotFoundException('Unable to find OrderDeliveryOption entity.');
+            throw $this->createNotFoundException('Unable to find Service entity.');
         }
 
         $editForm = $this->createEditForm($entity);
@@ -151,16 +151,16 @@ class AdminOrderDeliveryOptionController extends Controller
     }
 
     /**
-    * Creates a form to edit a OrderDeliveryOption entity.
+    * Creates a form to edit a Service entity.
     *
-    * @param OrderDeliveryOption $entity The entity
+    * @param Service $entity The entity
     *
     * @return \Symfony\Component\Form\Form The form
     */
-    private function createEditForm(OrderDeliveryOption $entity)
+    private function createEditForm(Service $entity)
     {
-        $form = $this->createForm($this->get("amulen.shop.form.delivery.option"), $entity, array(
-            'action' => $this->generateUrl('admin_order_delivery_update', array('id' => $entity->getId())),
+        $form = $this->createForm($this->get("amulen.shop.form.service"), $entity, array(
+            'action' => $this->generateUrl('admin_service_update', array('id' => $entity->getId())),
             'method' => 'PUT',
         ));
 
@@ -169,20 +169,20 @@ class AdminOrderDeliveryOptionController extends Controller
         return $form;
     }
     /**
-     * Edits an existing OrderDeliveryOption entity.
+     * Edits an existing Service entity.
      *
-     * @Route("/{id}", name="admin_order_delivery_update")
+     * @Route("/{id}", name="admin_service_update")
      * @Method("PUT")
-     * @Template("FlowcodeShopBundle:OrderDeliveryOption:edit.html.twig")
+     * @Template("FlowcodeShopBundle:Service:edit.html.twig")
      */
     public function updateAction(Request $request, $id)
     {
         $em = $this->getDoctrine()->getManager();
 
-        $entity = $em->getRepository('AmulenShopBundle:OrderDeliveryOption')->find($id);
+        $entity = $em->getRepository('AmulenShopBundle:Service')->find($id);
 
         if (!$entity) {
-            throw $this->createNotFoundException('Unable to find OrderDeliveryOption entity.');
+            throw $this->createNotFoundException('Unable to find Service entity.');
         }
 
         $deleteForm = $this->createDeleteForm($id);
@@ -192,7 +192,7 @@ class AdminOrderDeliveryOptionController extends Controller
         if ($editForm->isValid()) {
             $em->flush();
 
-            return $this->redirect($this->generateUrl('admin_order_delivery_edit', array('id' => $id)));
+            return $this->redirect($this->generateUrl('admin_service_edit', array('id' => $id)));
         }
 
         return array(
@@ -202,9 +202,9 @@ class AdminOrderDeliveryOptionController extends Controller
         );
     }
     /**
-     * Deletes a OrderDeliveryOption entity.
+     * Deletes a Service entity.
      *
-     * @Route("/{id}", name="admin_order_delivery_delete")
+     * @Route("/{id}", name="admin_service_delete")
      * @Method("DELETE")
      */
     public function deleteAction(Request $request, $id)
@@ -214,21 +214,21 @@ class AdminOrderDeliveryOptionController extends Controller
 
         if ($form->isValid()) {
             $em = $this->getDoctrine()->getManager();
-            $entity = $em->getRepository('AmulenShopBundle:OrderDeliveryOption')->find($id);
+            $entity = $em->getRepository('AmulenShopBundle:Service')->find($id);
 
             if (!$entity) {
-                throw $this->createNotFoundException('Unable to find OrderDeliveryOption entity.');
+                throw $this->createNotFoundException('Unable to find Service entity.');
             }
 
             $em->remove($entity);
             $em->flush();
         }
 
-        return $this->redirect($this->generateUrl('admin_order_delivery'));
+        return $this->redirect($this->generateUrl('admin_service'));
     }
 
     /**
-     * Creates a form to delete a OrderDeliveryOption entity by id.
+     * Creates a form to delete a Service entity by id.
      *
      * @param mixed $id The entity id
      *
@@ -237,7 +237,7 @@ class AdminOrderDeliveryOptionController extends Controller
     private function createDeleteForm($id)
     {
         return $this->createFormBuilder()
-            ->setAction($this->generateUrl('admin_order_delivery_delete', array('id' => $id)))
+            ->setAction($this->generateUrl('admin_service_delete', array('id' => $id)))
             ->setMethod('DELETE')
             ->add('submit', 'submit', array('label' => 'Delete'))
             ->getForm()

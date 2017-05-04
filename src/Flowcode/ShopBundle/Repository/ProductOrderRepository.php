@@ -71,4 +71,17 @@ class ProductOrderRepository extends EntityRepository
         }
         return $query;
     }
+
+    public function findByIdSorted($id)
+    {
+        $query = $this->createQueryBuilder("o")
+            ->select(array('o', 'i'))
+            ->leftJoin("o.items", "i")
+            ->leftJoin("i.product", "p")
+            ->andWhere("o.id = :order")->setParameter("order", $id)
+            ->orderBy('p.id', 'DESC')
+            ->getQuery()->getOneOrNullResult();
+        return $query;
+    }
+
 }

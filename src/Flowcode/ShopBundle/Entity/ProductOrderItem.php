@@ -35,6 +35,12 @@ class ProductOrderItem
     protected $product;
 
     /**
+     * @ManyToOne(targetEntity="Service", inversedBy="items")
+     * @JoinColumn(name="service_id", referencedColumnName="id")
+     **/
+    protected $service;
+
+    /**
      * @var integer
      *
      * @ORM\Column(name="quantity", type="integer")
@@ -153,5 +159,26 @@ class ProductOrderItem
         return $this->unitPrice * $this->quantity;
     }
 
+    /**
+     * Set service
+     *
+     * @param \Flowcode\ShopBundle\Entity\Service $service
+     * @return ProductOrderItem
+     */
+    public function setService(\Flowcode\ShopBundle\Entity\Service $service = null)
+    {
+        $this->service = $service;
 
+        return $this;
+    }
+
+    /**
+     * Get service
+     *
+     * @return \Flowcode\ShopBundle\Entity\Service
+     */
+    public function getService()
+    {
+        return $this->service;
+    }
 }

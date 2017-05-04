@@ -2,16 +2,17 @@
 
 namespace Flowcode\ShopBundle\Entity;
 
-use Amulen\ShopBundle\Entity\ProductOrder;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\ORM\Mapping\OneToMany;
+use Doctrine\ORM\Mapping\OneToOne;
+use Doctrine\ORM\Mapping\JoinColumn;
 use Gedmo\Mapping\Annotation as Gedmo;
 
 /**
- * OrderDeliveryOption
+ * Service
  */
-class OrderDeliveryOption
+class Service
 {
 
     /**
@@ -60,13 +61,27 @@ class OrderDeliveryOption
     protected $price;
 
     /**
-     * @OneToMany(targetEntity="ProductOrder", mappedBy="orderDelivery", cascade={"persist", "remove"})
+     * @var boolean
+     *
+     * @ORM\Column(name="enabled", type="boolean")
+     */
+    protected $enabled;
+
+    /**
+     * @OneToOne(targetEntity="Amulen\MediaBundle\Entity\Gallery")
+     * @JoinColumn(name="media_gallery_id", referencedColumnName="id")
      * */
-    protected $orders;
+    protected $mediaGallery;
+
+    /**
+     * @OneToMany(targetEntity="ProductOrderItem", mappedBy="service", cascade={"persist", "remove"})
+     */
+    protected $items;
 
     function __construct()
     {
-        $this->orders = new ArrayCollection();
+        $this->enabled = 1;
+        $this->items = new ArrayCollection();
     }
 
     /**
@@ -160,35 +175,79 @@ class OrderDeliveryOption
     }
 
     /**
-     * Add orders
+     * Set enabled
      *
-     * @param ProductOrder $order
-     * @return OrderDeliveryOption
+     * @param boolean $enabled
+     * @return Service
      */
-    public function addOrder(ProductOrder $order)
+    public function setEnabled($enabled)
     {
-        $this->orders[] = $order;
+        $this->enabled = $enabled;
 
         return $this;
     }
 
     /**
-     * Remove orders
+     * Get enabled
      *
-     * @param ProductOrder $order
+     * @return boolean
      */
-    public function removeOrder(ProductOrder $order)
+    public function getEnabled()
     {
-        $this->orders->removeElement($order);
+        return $this->enabled;
     }
 
     /**
-     * Get orders
+     * Add items
+     *
+     * @param ProductOrderItem $items
+     * @return Service
+     */
+    public function addItem(ProductOrderItem $items)
+    {
+        $this->items[] = $items;
+
+        return $this;
+    }
+
+    /**
+     * Remove items
+     *
+     * @param ProductOrderItem $items
+     */
+    public function removeItem(ProductOrderItem $items)
+    {
+        $this->items->removeElement($items);
+    }
+
+    /**
+     * Get items
      *
      * @return Collection
      */
-    public function getOrders()
+    public function getItems()
     {
-        return $this->orders;
+        return $this->items;
+    }
+
+    /**
+     * Set mediaGallery
+     *
+     * @param \Amulen\MediaBundle\Entity\Gallery $mediaGallery
+     * @return Service
+     */
+    public function setMediaGallery(\Amulen\MediaBundle\Entity\Gallery $mediaGallery = null) {
+        $this->mediaGallery = $mediaGallery;
+
+        return $this;
+    }
+
+    /**
+     * Get mediaGallery
+     *
+     * @return \Amulen\MediaBundle\Entity\Gallery
+     */
+    public function getMediaGallery() {
+        return $this->mediaGallery;
     }
 }

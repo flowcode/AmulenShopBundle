@@ -58,12 +58,6 @@ class ProductOrder
     protected $items;
 
     /**
-     * @ManyToOne(targetEntity="OrderDeliveryOption", inversedBy="orders")
-     * @JoinColumn(name="order_delivery_id", referencedColumnName="id")
-     * */
-    protected $orderDelivery;
-
-    /**
      * @var datetime $created
      *
      * @Gedmo\Timestampable(on="create")
@@ -277,7 +271,9 @@ class ProductOrder
 
         /** @var ProductOrderItem $item */
         foreach ($this->getItems() as $item) {
-            array_push($productIds, $item->getProduct()->getId());
+            if ($item->getProduct()) {
+                array_push($productIds, $item->getId());
+            }
         }
         return $productIds;
     }
@@ -286,31 +282,10 @@ class ProductOrder
     {
         $count = 0;
         foreach ($this->getItems() as $item) {
-            $count += $item->getQuantity();
+            if ($item->getProduct()) {
+                $count += $item->getQuantity();
+            }
         }
         return $count;
-    }
-
-    /**
-     * Set orderDelivery
-     *
-     * @param OrderDeliveryOption $orderDelivery
-     * @return ProductOrder
-     */
-    public function setOrderDelivery(OrderDeliveryOption $orderDelivery = null)
-    {
-        $this->orderDelivery = $orderDelivery;
-
-        return $this;
-    }
-
-    /**
-     * Get user
-     *
-     * @return OrderDeliveryOption
-     */
-    public function getOrderDelivery()
-    {
-        return $this->orderDelivery;
     }
 }

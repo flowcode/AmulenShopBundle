@@ -35,7 +35,7 @@ class ProductOrderController extends Controller
         if ($productOrderId = $session->get('productOrderId')) {
             $productOrder = $productOrderService->getProductOrder($productOrderId);
         } else {
-            return $this->redirectToRoute('product');
+            return $this->redirectToRoute('products_index');
         }
 
         return array(
@@ -108,7 +108,7 @@ class ProductOrderController extends Controller
         $productOrder = $productOrderService->getProductOrder($productOrderId);
         if (!$productOrderId || !$productOrder) {
             /* No hay order en session redirect a listado de productos */
-            return $this->redirectToRoute('product');
+            return $this->redirectToRoute('products_index');
         }
         if ($itemId = $request->get('item')) {
             $quantity = $request->get('prodQty') ? $request->get('prodQty') : 0;
@@ -139,7 +139,7 @@ class ProductOrderController extends Controller
         $productOrder = $productOrderService->getProductOrder($productOrderId);
         if (!$productOrderId || !$productOrder) {
             /* No hay order en session redirect a listado de productos */
-            return $this->redirectToRoute('product');
+            return $this->redirectToRoute('products_index');
         }
         if ($itemId = $request->get('item')) {
             $item = $productOrderItemService->findById($itemId);

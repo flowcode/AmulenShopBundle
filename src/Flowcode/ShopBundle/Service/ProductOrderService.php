@@ -6,6 +6,7 @@ use Amulen\ShopBundle\Entity\Product;
 use Amulen\ShopBundle\Entity\ProductOrder;
 use Amulen\ShopBundle\Entity\ProductOrderItem;
 use Amulen\ShopBundle\Entity\ProductOrderStatus;
+use Amulen\ShopBundle\Entity\Service;
 use Doctrine\ORM\EntityManager;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityRepository;
@@ -60,6 +61,16 @@ class ProductOrderService
     }
 
     /**
+     * Find by id.
+     * @param  integer $id
+     * @return ProductOrder        productOrder.
+     */
+    public function findByIdSorted($id)
+    {
+        return $this->productOrderRepository->findByIdSorted($id);
+    }
+
+    /**
      * Create a new productOrder.
      * @param  ProductOrder $productOrder the productOrder instance.
      * @return ProductOrder       the productOrder instance.
@@ -81,7 +92,7 @@ class ProductOrderService
     public function getProductOrder($productOrderId)
     {
         if ($productOrderId) {
-            $productOrder = $this->findById($productOrderId);
+            $productOrder = $this->findByIdSorted($productOrderId);
         } else {
             $productOrder = new ProductOrder();
             $this->create($productOrder);
@@ -124,6 +135,38 @@ class ProductOrderService
     }
 
     /**
+     * @param Service $service
+     * @param ProductOrder $productOrder
+     * @return ProductOrderItem|bool
+     */
+    public function setService(Service $service, ProductOrder $productOrder)
+    {
+        $item = $this->getUniqueServiceItem($productOrder);
+        if (!$item) {
+            $item = new ProductOrderItem();
+            $item->setService($service);
+            $item->setQuantity(1);
+            $item->setUnitPrice($service->getPrice());
+            $item->setOrder($productOrder);
+            $total = $productOrder->getTotal() + $service->getPrice();
+            $productOrder->addItem($item);
+            $productOrder->setTotal($total);
+        } else {
+            $oldService = $item->getService();
+
+            $item->setService($service);
+            $item->setUnitPrice($service->getPrice());
+
+            $total = $productOrder->getTotal() - $oldService->getPrice() + $service->getPrice();
+            $productOrder->setTotal($total);
+        }
+        $this->getEm()->persist($item);
+        $this->update($productOrder);
+
+        return $item;
+    }
+
+    /**
      * @param Product $product
      * @param ProductOrder $productOrder
      * @param int $quantity
@@ -152,15 +195,31 @@ class ProductOrderService
         return $item;
     }
 
-
     public function getProductItem($product, $productOrder)
     {
         foreach ($productOrder->getItems() as $item) {
-            if ($product->getId() == $item->getProduct()->getId()) {
+            if ($item->getProduct()) {
+                if ($product->getId() == $item->getProduct()->getId()) {
+                    return $item;
+                }
+            }
+        }
+        return false;
+    }
+
+    public function getUniqueServiceItem($productOrder)
+    {
+        foreach ($productOrder->getItems() as $item) {
+            if (!is_null($item->getService())) {
                 return $item;
             }
         }
         return false;
+    }
+
+    public function hasShipping($productOrder)
+    {
+        return $this->getUniqueServiceItem($productOrder);
     }
 
     public function updateOrderAmount($productOrder)
