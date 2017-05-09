@@ -11,6 +11,11 @@ services:
         tags:
             - { name: form.type, alias: amulen_shopbundle_productorder }
 
+    amulen.shop.form.productorder.shipping:
+        class: Flowcode\ShopBundle\Form\ProductOrderShippingType
+        tags:
+            - { name: form.type, alias: amulen_shopbundle_productorder_shipping }
+
     symfony.form.type.tree:
        class: Yavin\Symfony\Form\Type\TreeType
        arguments: [ "@property_accessor" ]

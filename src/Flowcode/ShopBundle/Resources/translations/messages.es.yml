@@ -47,6 +47,14 @@ view my order: Ver mi pedido
 add to cart: ¡Lo quiero!
 Agregar a canasta: ¡Lo quiero!
 change delivery: Cambiar delivery
+Street: Calle
+Streetnumber: Altura
+Apartment: Departamento
+Locality: Barrio
+Zip code: Código Postal
+City: Ciudad
+Country: País
+Province: Provincia
 
 STATUS_DRAFT: Borrador
 STATUS_PENDING: Pendiente

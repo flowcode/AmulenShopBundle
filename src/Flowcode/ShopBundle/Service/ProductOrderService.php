@@ -119,6 +119,7 @@ class ProductOrderService
             $total = $productOrder->getTotal() + $product->getPrice();
             $productOrder->addItem($item);
             $productOrder->setTotal($total);
+            $productOrder->setSubTotal($total);
         } else {
             $oldQty = $item->getQuantity();
             $item->setQuantity($quantity + $oldQty);
@@ -127,6 +128,7 @@ class ProductOrderService
             $total += $product->getPrice() * ($quantity + $oldQty);
 
             $productOrder->setTotal($total);
+            $productOrder->setSubTotal($total);
         }
         $this->getEm()->persist($item);
         $this->update($productOrder);
@@ -151,6 +153,7 @@ class ProductOrderService
             $total = $productOrder->getTotal() + $service->getPrice();
             $productOrder->addItem($item);
             $productOrder->setTotal($total);
+            $productOrder->setSubTotal($total);
         } else {
             $oldService = $item->getService();
 
@@ -159,6 +162,7 @@ class ProductOrderService
 
             $total = $productOrder->getTotal() - $oldService->getPrice() + $service->getPrice();
             $productOrder->setTotal($total);
+            $productOrder->setSubTotal($total);
         }
         $this->getEm()->persist($item);
         $this->update($productOrder);
@@ -185,6 +189,7 @@ class ProductOrderService
         $total += $product->getPrice() * $newQty;
 
         $productOrder->setTotal($total);
+        $productOrder->setSubTotal($total);
 
         if ($newQty <= 0) {
             $productOrder->getItems()->removeElement($item);
