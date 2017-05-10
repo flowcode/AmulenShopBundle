@@ -7,6 +7,7 @@ use Amulen\ShopBundle\Entity\ProductOrder;
 use Amulen\ShopBundle\Entity\ProductOrderItem;
 use Amulen\ShopBundle\Entity\ProductOrderStatus;
 use Amulen\ShopBundle\Entity\Service;
+use Amulen\UserBundle\Entity\User;
 use Doctrine\ORM\EntityManager;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityRepository;
@@ -148,22 +149,26 @@ class ProductOrderService
             $item = new ProductOrderItem();
             $item->setService($service);
             $item->setQuantity(1);
-            $item->setUnitPrice($service->getPrice());
             $item->setOrder($productOrder);
-            $total = $productOrder->getTotal() + $service->getPrice();
+            $item->setUnitPrice($service->getPrice());
             $productOrder->addItem($item);
-            $productOrder->setTotal($total);
-            $productOrder->setSubTotal($total);
+            $prevValue = 0;
         } else {
             $oldService = $item->getService();
-
             $item->setService($service);
             $item->setUnitPrice($service->getPrice());
-
-            $total = $productOrder->getTotal() - $oldService->getPrice() + $service->getPrice();
-            $productOrder->setTotal($total);
-            $productOrder->setSubTotal($total);
+            $prevValue = $oldService->getPrice();
         }
+        if ($productOrder->getDiscount()) {
+            $productOrder->setTotalDiscount($service->getPrice());
+        } else {
+            $productOrder->setTotalDiscount(0);
+        }
+        $subTotal = $productOrder->getSubTotal() + $service->getPrice() - $prevValue;
+        $productOrder->setSubTotal($subTotal);
+        $total = $subTotal - $productOrder->getTotalDiscount();
+        $productOrder->setTotal($total);
+
         $this->getEm()->persist($item);
         $this->update($productOrder);
 
@@ -265,6 +270,48 @@ class ProductOrderService
         return false;
     }
 
+    public function checkBonification(User $user, ProductOrder $order, $zone)
+    {
+        $bonification = false;
+        if ($user->getTribeStatus() == User::TRIBE_STATUS_ACCEPTED && $zone == ProductOrder::ZONE_CABA_GBA) {
+            switch ($user->getMembership()) {
+                case User::MEMBERSHIP_COLLECTOR:
+                    $bonification = true;
+                    break;
+                case User::MEMBERSHIP_FANATIC:
+                    // Beneficio por 1año desde membresia
+                    $now = new \DateTime();
+                    $elapsed = $now->diff($user->getMembershipCreated());
+                    if ($elapsed->format('%Y') == 0) {
+                        // Beneficio para 1 solo pedido por mes
+                        if (!$this->productOrderRepository->oneOrderPerMonth($user)) {
+                            $bonification = true;
+                        }
+                    }
+                    break;
+                case User::MEMBERSHIP_EXPLORER:
+                    // Beneficio por 6meses desde membresia
+                    $now = new \DateTime();
+                    $elapsed = $now->diff($user->getMembershipCreated());
+                    if ($elapsed->format('%Y') == 0 && $elapsed->format('%m') < 6) {
+                        // Beneficio para 1 solo pedido por mes
+                        if (!$this->productOrderRepository->oneOrderPerMonth($user)) {
+                            $bonification = true;
+                        }
+                    }
+                    break;
+                default:
+                    $bonification = false;
+            }
+            if ($bonification) {
+                $order->setDiscount(100);
+            } else {
+                $order->setDiscount(null);
+            }
+            $this->update($order);
+        }
+        return $order;
+    }
 
     /**
      * Set entityManager.

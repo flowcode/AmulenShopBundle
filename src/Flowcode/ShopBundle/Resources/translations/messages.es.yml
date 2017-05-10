@@ -55,6 +55,7 @@ Zip code: Código Postal
 City: Ciudad
 Country: País
 Province: Provincia
+Zone: Zona
 
 STATUS_DRAFT: Borrador
 STATUS_PENDING: Pendiente
