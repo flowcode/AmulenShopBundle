@@ -303,13 +303,15 @@ class ProductOrderService
                 default:
                     $bonification = false;
             }
-            if ($bonification) {
-                $order->setDiscount(100);
-            } else {
-                $order->setDiscount(null);
-            }
-            $this->update($order);
         }
+        if ($bonification) {
+            $order->setDiscount(100);
+        } else {
+            $order->setDiscount(null);
+            $order->setTotalDiscount(null);
+            $order->setTotal($order->getSubTotal());
+        }
+        $this->update($order);
         return $order;
     }
 
