@@ -29,7 +29,7 @@ class ProductOrderController extends Controller
     public function showAction(Request $request, $page = null)
     {
         $session = $request->getSession();
-
+        $session->set('_security.frontend.target_path', 'order');
         $productOrderService = $this->get("amulen.shop.order");
 
         if ($productOrderId = $session->get('productOrderId')) {
