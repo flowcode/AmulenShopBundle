@@ -29,13 +29,15 @@ class ProductOrderService
     protected $productOrderRepository;
     protected $productOrderStatusRepository;
     protected $dispatcher;
+    protected $productOrderItemRepository;
 
-    public function __construct(EntityManager $em, EntityRepository $productOrderRepository, EntityRepository $productOrderStatusRepository, EventDispatcherInterface $dispatcher)
+    public function __construct(EntityManager $em, EntityRepository $productOrderRepository, EntityRepository $productOrderStatusRepository, EventDispatcherInterface $dispatcher, EntityRepository $productOrderItemRepository)
     {
         $this->em = $em;
         $this->productOrderRepository = $productOrderRepository;
         $this->productOrderStatusRepository = $productOrderStatusRepository;
         $this->dispatcher = $dispatcher;
+        $this->productOrderItemRepository = $productOrderItemRepository;
     }
 
     /**
@@ -159,15 +161,13 @@ class ProductOrderService
             $item->setUnitPrice($service->getPrice());
             $prevValue = $oldService->getPrice();
         }
-        if ($productOrder->getDiscount()) {
-            $productOrder->setTotalDiscount($service->getPrice());
-        } else {
-            $productOrder->setTotalDiscount(0);
-        }
+
         $subTotal = $productOrder->getSubTotal() + $service->getPrice() - $prevValue;
         $productOrder->setSubTotal($subTotal);
-        $total = $subTotal - $productOrder->getTotalDiscount();
-        $productOrder->setTotal($total);
+        $productOrder->setTotal($subTotal);
+
+        $productOrder->setTotalDiscount(null);
+        $productOrder->setDiscount(null);
 
         $this->getEm()->persist($item);
         $this->update($productOrder);
@@ -219,12 +219,12 @@ class ProductOrderService
 
     public function getUniqueServiceItem($productOrder)
     {
-        foreach ($productOrder->getItems() as $item) {
-            if (!is_null($item->getService())) {
-                return $item;
-            }
+        $service = $this->productOrderItemRepository->findOrderService($productOrder);
+        if($service){
+            return $service[0];
+        } else {
+            return false;
         }
-        return false;
     }
 
     public function hasShipping($productOrder)
@@ -304,12 +304,19 @@ class ProductOrderService
                     $bonification = false;
             }
         }
+        $shipping = $this->hasShipping($order);
+        $shippingPrice = $shipping ? $shipping->getService()->getPrice() : 0;
         if ($bonification) {
             $order->setDiscount(100);
+            $order->setTotalDiscount($shipping->getService()->getPrice());
+            $order->setTotal($order->getSubTotal() - $shippingPrice);
         } else {
+            if($order->getTotalDiscount()){
+                $order->setTotal($order->getSubTotal() - $shippingPrice);
+                $order->setSubTotal($order->getSubTotal() - $shippingPrice);
+            }
             $order->setDiscount(null);
             $order->setTotalDiscount(null);
-            $order->setTotal($order->getSubTotal());
         }
         $this->update($order);
         return $order;

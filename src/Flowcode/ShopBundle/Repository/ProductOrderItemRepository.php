@@ -12,4 +12,19 @@ use Doctrine\ORM\EntityRepository;
  */
 class ProductOrderItemRepository extends EntityRepository
 {
+    public function findAllQB()
+    {
+        $qb = $this->createQueryBuilder('oi');
+        return $qb;
+    }
+
+    public function findOrderService($productOrder)
+    {
+        $qb = $this->findAllQB();
+
+        $qb->andWhere('oi.order = :order')->setParameter('order', $productOrder);
+        $qb->andWhere('oi.service IS NOT NULL');
+
+        return $qb->getQuery()->getResult();
+    }
 }

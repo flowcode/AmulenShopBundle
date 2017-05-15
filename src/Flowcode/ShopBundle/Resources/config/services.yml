@@ -98,6 +98,7 @@ services:
           - "@amulen.shop.repository.order"
           - "@amulen.shop.repository.order_status"
           - "@event_dispatcher"
+          - "@amulen.shop.repository.order.item"
 
     amulen.shop.order.item:
         class: Flowcode\ShopBundle\Service\ProductOrderItemService
