@@ -37,10 +37,12 @@ class ProductOrderController extends Controller
         } else {
             return $this->redirectToRoute('products_index');
         }
+        $shipping = $productOrderService->hasShipping($productOrder);
 
         return array(
             'productOrder' => $productOrder,
             'page' => $page,
+            'shipping' => $shipping,
         );
     }
 

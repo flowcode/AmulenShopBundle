@@ -62,7 +62,12 @@
                 </div>
             {% endfor %}
             <div class="row">
-                Order total: $ {{ productOrder.total }}
+                Order total: $
+                {% if shipping %}
+                    {{ productOrder.subtotal - shipping.service.price }}
+                {% else %}
+                    {{ productOrder.subtotal }}
+                {% endif %}
             </div>
             <div class="row">
                 <a href="{{ path("product") }}" class="btn btn-default">
@@ -122,10 +127,10 @@
                         <div class="col-sm-12 text-right">
                             <h3>
                                 Su Total: $
-                                {% if productOrder.totalDiscount %}
-                                    {{ productOrder.total - productOrder.totalDiscount }}
+                                {% if shipping %}
+                                    {{ productOrder.subtotal - shipping.service.price }}
                                 {% else %}
-                                    {{ productOrder.total }}
+                                    {{ productOrder.subtotal }}
                                 {% endif %}
                             </h3>
                         </div>

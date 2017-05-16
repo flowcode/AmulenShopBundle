@@ -119,19 +119,22 @@ class ProductOrderService
             $item->setQuantity($quantity);
             $item->setUnitPrice($product->getPrice());
             $item->setOrder($productOrder);
-            $total = $productOrder->getTotal() + $product->getPrice();
             $productOrder->addItem($item);
+            $subTotal = $productOrder->getSubTotal() + $product->getPrice();
+            $productOrder->setSubTotal($subTotal);
+            $total = $productOrder->getTotal() + $product->getPrice();
             $productOrder->setTotal($total);
-            $productOrder->setSubTotal($total);
         } else {
             $oldQty = $item->getQuantity();
             $item->setQuantity($quantity + $oldQty);
 
+            $subTotal = $productOrder->getSubTotal() - $product->getPrice() * $oldQty;
+            $subTotal += $product->getPrice() * ($quantity + $oldQty);
+            $productOrder->setSubTotal($subTotal);
+
             $total = $productOrder->getTotal() - $product->getPrice() * $oldQty;
             $total += $product->getPrice() * ($quantity + $oldQty);
-
             $productOrder->setTotal($total);
-            $productOrder->setSubTotal($total);
         }
         $this->getEm()->persist($item);
         $this->update($productOrder);
@@ -190,11 +193,13 @@ class ProductOrderService
 
         $item->setQuantity($newQty);
 
+        $subTotal = $productOrder->getSubTotal() - $product->getPrice() * $oldQty;
+        $subTotal += $product->getPrice() * $newQty;
+        $productOrder->setSubTotal($subTotal);
+
         $total = $productOrder->getTotal() - $product->getPrice() * $oldQty;
         $total += $product->getPrice() * $newQty;
-
         $productOrder->setTotal($total);
-        $productOrder->setSubTotal($total);
 
         if ($newQty <= 0) {
             $productOrder->getItems()->removeElement($item);
@@ -220,7 +225,7 @@ class ProductOrderService
     public function getUniqueServiceItem($productOrder)
     {
         $service = $this->productOrderItemRepository->findOrderService($productOrder);
-        if($service){
+        if ($service) {
             return $service[0];
         } else {
             return false;
@@ -234,13 +239,20 @@ class ProductOrderService
 
     public function updateOrderAmount($productOrder)
     {
-        $total = 0;
+        $productTotal = 0;
+        $serviceTotal = 0;
         foreach ($productOrder->getItems() as $item) {
-            $total += $item->getQuantity() * $item->getProduct()->getPrice();
+            if ($item->getProduct()) {
+                $productTotal += $item->getQuantity() * $item->getProduct()->getPrice();
+            } else {
+                $serviceTotal += $item->getQuantity() * $item->getService()->getPrice();
+            }
+
         }
-        $productOrder->setTotal($total);
+        $productOrder->setSubTotal($productTotal + $serviceTotal);
+        $productOrder->setTotal($productTotal);
         $this->update($productOrder);
-        return $total;
+        return $productTotal + $serviceTotal;
     }
 
     public function supportsClass($class)
@@ -311,7 +323,7 @@ class ProductOrderService
             $order->setTotalDiscount($shipping->getService()->getPrice());
             $order->setTotal($order->getSubTotal() - $shippingPrice);
         } else {
-            if($order->getTotalDiscount()){
+            if ($order->getTotalDiscount()) {
                 $order->setTotal($order->getSubTotal() - $shippingPrice);
                 $order->setSubTotal($order->getSubTotal() - $shippingPrice);
             }
