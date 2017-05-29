@@ -282,39 +282,12 @@ class ProductOrderService
         return false;
     }
 
+    //FIXME: Sacar de amulen y pasar a hanga.
     public function checkBonification(User $user, ProductOrder $order, $zone)
     {
         $bonification = false;
-        if ($user->getTribeStatus() == User::TRIBE_STATUS_ACCEPTED && $zone == ProductOrder::ZONE_CABA_GBA) {
-            switch ($user->getMembership()) {
-                case User::MEMBERSHIP_COLLECTOR:
-                    $bonification = true;
-                    break;
-                case User::MEMBERSHIP_FANATIC:
-                    // Beneficio por 1año desde membresia
-                    $now = new \DateTime();
-                    $elapsed = $now->diff($user->getMembershipCreated());
-                    if ($elapsed->format('%Y') == 0) {
-                        // Beneficio para 1 solo pedido por mes
-                        if (!$this->productOrderRepository->oneOrderPerMonth($user)) {
-                            $bonification = true;
-                        }
-                    }
-                    break;
-                case User::MEMBERSHIP_EXPLORER:
-                    // Beneficio por 6meses desde membresia
-                    $now = new \DateTime();
-                    $elapsed = $now->diff($user->getMembershipCreated());
-                    if ($elapsed->format('%Y') == 0 && $elapsed->format('%m') < 6) {
-                        // Beneficio para 1 solo pedido por mes
-                        if (!$this->productOrderRepository->oneOrderPerMonth($user)) {
-                            $bonification = true;
-                        }
-                    }
-                    break;
-                default:
-                    $bonification = false;
-            }
+        if ($user->getTribeStatus() == User::TRIBE_STATUS_ACCEPTED && $zone == ProductOrder::ZONE_CABA_GBA && $user->getMembership() == User::MEMBERSHIP_COLLECTOR) {
+            $bonification = true;
         }
         $shipping = $this->hasShipping($order);
         $shippingPrice = $shipping ? $shipping->getService()->getPrice() : 0;
@@ -331,6 +304,21 @@ class ProductOrderService
             $order->setTotalDiscount(null);
         }
         $this->update($order);
+        return $order;
+    }
+
+    public function clearShippingAddress(ProductOrder $order)
+    {
+        $order->setStreet(null);
+        $order->setStreetNumber(null);
+        $order->setApartment(null);
+        $order->setLocality(null);
+        $order->setZipCode(null);
+        $order->setProvince(null);
+        $order->setCity(null);
+        $order->setCountry(null);
+        $this->update($order);
+
         return $order;
     }
 
