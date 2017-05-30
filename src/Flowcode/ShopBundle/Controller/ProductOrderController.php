@@ -169,6 +169,7 @@ class ProductOrderController extends Controller
         $session = $request->getSession();
         $user = $this->getUser();
         $session->remove('productOrderId');
+        $session->remove('productOrderCount');
 
         if(!$user){
             return $this->redirectToRoute('amulen_user_login');

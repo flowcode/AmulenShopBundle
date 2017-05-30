@@ -27,4 +27,15 @@ class ProductOrderItemRepository extends EntityRepository
 
         return $qb->getQuery()->getResult();
     }
+
+    public function findRemovableProducts($order)
+    {
+        $qb = $this->findAllQB();
+
+        $qb->andWhere('oi.order = :order')->setParameter('order', $order);
+        $qb->andWhere('oi.service IS NULL');
+        $qb->andWhere("oi.quantity = 0");
+
+        return $qb->getQuery()->getResult();
+    }
 }

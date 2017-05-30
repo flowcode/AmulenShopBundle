@@ -83,7 +83,7 @@ class ProductOrder
     protected $user;
 
     /**
-     * @OneToMany(targetEntity="ProductOrderItem", mappedBy="order", cascade={"persist", "remove"})
+     * @OneToMany(targetEntity="ProductOrderItem", mappedBy="order", cascade={"persist", "remove"}, orphanRemoval=true)
      * */
     protected $items;
 
@@ -167,6 +167,7 @@ class ProductOrder
      * @ORM\Column(name="shippingTime", type="datetime", nullable=true)
      */
     protected $shippingTime;
+
     /**
      * Fecha de envio definida por vendedor
      *
@@ -175,6 +176,13 @@ class ProductOrder
      * @ORM\Column(name="delivery_date", type="datetime", nullable=true)
      */
     protected $deliveryDate;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="comment", type="text", length=255, nullable=true)
+     */
+    protected $comment;
 
     function __construct()
     {
@@ -715,5 +723,21 @@ class ProductOrder
             }
         }
         return $count;
+    }
+
+    /**
+     * @return string
+     */
+    public function getComment()
+    {
+        return $this->comment;
+    }
+
+    /**
+     * @param string $comment
+     */
+    public function setComment($comment)
+    {
+        $this->comment = $comment;
     }
 }

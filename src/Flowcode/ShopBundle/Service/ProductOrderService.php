@@ -322,6 +322,16 @@ class ProductOrderService
         return $order;
     }
 
+    public function removeEmptyItems($order)
+    {
+        $items = $this->productOrderItemRepository->findRemovableProducts($order);
+        foreach ($items as $item) {
+            $order->removeItem($item);
+        }
+        $this->update($order);
+        return $order;
+    }
+
     /**
      * Set entityManager.
      */
