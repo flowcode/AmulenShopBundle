@@ -39,6 +39,8 @@ class ProductRepository extends EntityRepository
             $qb->andWhere('p.enabled = :is_enabled')->setParameter('is_enabled', true);
         }
 
+        $qb->addOrderBy("p.featured", "DESC");
+
         return $qb;
     }
 
@@ -52,6 +54,7 @@ class ProductRepository extends EntityRepository
             $query = $this->createQueryBuilder("p");
         }
         $query->andWhere("p.enabled = 1");
+        $query->addOrderBy("p.featured", "DESC");
         $query->addOrderBy("p.updated", "DESC");
         return $query;
     }

@@ -1,26 +1,26 @@
 {% extends 'FlowcodeDashboardBundle:Default:layout.html.twig' %}
 
 {% block body -%}
-{{ include('FlowcodeShopBundle:AdminProduct:productsHeader.html.twig') }}
-<section class="content">
-    <div class="box box-solid">
-        <div class="box-header">
-            <h3 class="box-title">{{ "edit"|trans|title }}</h3>
-            <div class="box-tools">
-                <a class="btn btn-link btn-sm" href="{{ path('admin_product') }}">
-                    {{ "Back to the list"|trans }}
-                </a>
-                <a class="btn btn-link btn-sm" href="{{ path('admin_product_show', { 'id': entity.id }) }}">
-                    {{ "Back to view"|trans }}
-                </a>
+    {{ include('FlowcodeShopBundle:AdminProduct:productsHeader.html.twig') }}
+    <section class="content">
+        <div class="box box-solid">
+            <div class="box-header">
+                <h3 class="box-title">{{ "edit"|trans|title }}</h3>
+                <div class="box-tools">
+                    <a class="btn btn-link btn-sm" href="{{ path('admin_product') }}">
+                        {{ "Back to the list"|trans }}
+                    </a>
+                    <a class="btn btn-link btn-sm" href="{{ path('admin_product_show', { 'id': entity.id }) }}">
+                        {{ "Back to view"|trans }}
+                    </a>
+                </div>
+            </div>
+            <div class="box-body">
+                {{ form(edit_form) }}
+                {{ form(delete_form) }}
             </div>
         </div>
-        <div class="box-body">
-        {{ form(edit_form) }}
-        {{ form(delete_form) }}
-        </div>
-    </div>
-</section>
+    </section>
 {% endblock %}
 {% block javascripts %}
     {{ parent() }}

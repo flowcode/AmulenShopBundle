@@ -16,7 +16,8 @@ use Symfony\Component\Validator\Constraints as Assert;
 /**
  * Product
  */
-class Product {
+class Product
+{
 
     /**
      * @var integer
@@ -71,6 +72,13 @@ class Product {
     protected $enabled = true;
 
     /**
+     * @var boolean
+     *
+     * @ORM\Column(name="is_featured", type="boolean")
+     */
+    protected $featured;
+
+    /**
      * @ManyToOne(targetEntity="Amulen\ClassificationBundle\Entity\Category")
      * @JoinColumn(name="category_id", referencedColumnName="id")
      * */
@@ -89,7 +97,7 @@ class Product {
      * @OneToOne(targetEntity="Amulen\MediaBundle\Entity\Gallery")
      * @JoinColumn(name="media_gallery_id", referencedColumnName="id")
      * */
-    protected $mediaGallery;    
+    protected $mediaGallery;
 
     /**
      * @OneToOne(targetEntity="Amulen\MediaBundle\Entity\Gallery")
@@ -124,9 +132,11 @@ class Product {
      */
     protected $updated;
 
-    function __construct() {
+    function __construct()
+    {
         $this->tags = new ArrayCollection();
         $this->items = new ArrayCollection();
+        $this->featured = false;
     }
 
     /**
@@ -134,7 +144,8 @@ class Product {
      *
      * @return integer
      */
-    public function getId() {
+    public function getId()
+    {
         return $this->id;
     }
 
@@ -144,7 +155,8 @@ class Product {
      * @param string $name
      * @return Product
      */
-    public function setName($name) {
+    public function setName($name)
+    {
         $this->name = $name;
 
         return $this;
@@ -155,7 +167,8 @@ class Product {
      *
      * @return string
      */
-    public function getName() {
+    public function getName()
+    {
         return $this->name;
     }
 
@@ -165,7 +178,8 @@ class Product {
      * @param string $description
      * @return Product
      */
-    public function setDescription($description) {
+    public function setDescription($description)
+    {
         $this->description = $description;
 
         return $this;
@@ -176,7 +190,8 @@ class Product {
      *
      * @return string
      */
-    public function getDescription() {
+    public function getDescription()
+    {
         return $this->description;
     }
 
@@ -186,7 +201,8 @@ class Product {
      * @param string $content
      * @return Product
      */
-    public function setContent($content) {
+    public function setContent($content)
+    {
         $this->content = $content;
 
         return $this;
@@ -197,7 +213,8 @@ class Product {
      *
      * @return string
      */
-    public function getContent() {
+    public function getContent()
+    {
         return $this->content;
     }
 
@@ -207,7 +224,8 @@ class Product {
      * @param float $price
      * @return Product
      */
-    public function setPrice($price) {
+    public function setPrice($price)
+    {
         $this->price = $price;
 
         return $this;
@@ -218,7 +236,8 @@ class Product {
      *
      * @return float
      */
-    public function getPrice() {
+    public function getPrice()
+    {
         return $this->price;
     }
 
@@ -228,7 +247,8 @@ class Product {
      * @param boolean $enabled
      * @return Product
      */
-    public function setEnabled($enabled) {
+    public function setEnabled($enabled)
+    {
         $this->enabled = $enabled;
 
         return $this;
@@ -239,7 +259,8 @@ class Product {
      *
      * @return boolean
      */
-    public function getEnabled() {
+    public function getEnabled()
+    {
         return $this->enabled;
     }
 
@@ -249,7 +270,8 @@ class Product {
      * @param \Amulen\ClassificationBundle\Entity\Category $category
      * @return Product
      */
-    public function setCategory(\Amulen\ClassificationBundle\Entity\Category $category = null) {
+    public function setCategory(\Amulen\ClassificationBundle\Entity\Category $category = null)
+    {
         $this->category = $category;
 
         return $this;
@@ -260,7 +282,8 @@ class Product {
      *
      * @return \Amulen\ClassificationBundle\Entity\Category
      */
-    public function getCategory() {
+    public function getCategory()
+    {
         return $this->category;
     }
 
@@ -270,7 +293,8 @@ class Product {
      * @param \Amulen\ClassificationBundle\Entity\Tag $tags
      * @return Product
      */
-    public function addTag(\Amulen\ClassificationBundle\Entity\Tag $tags) {
+    public function addTag(\Amulen\ClassificationBundle\Entity\Tag $tags)
+    {
         $this->tags[] = $tags;
 
         return $this;
@@ -281,7 +305,8 @@ class Product {
      *
      * @param \Amulen\ClassificationBundle\Entity\Tag $tags
      */
-    public function removeTag(\Amulen\ClassificationBundle\Entity\Tag $tags) {
+    public function removeTag(\Amulen\ClassificationBundle\Entity\Tag $tags)
+    {
         $this->tags->removeElement($tags);
     }
 
@@ -290,7 +315,8 @@ class Product {
      *
      * @return \Doctrine\Common\Collections\Collection
      */
-    public function getTags() {
+    public function getTags()
+    {
         return $this->tags;
     }
 
@@ -300,7 +326,8 @@ class Product {
      * @param \Amulen\MediaBundle\Entity\Gallery $mediaGallery
      * @return Product
      */
-    public function setMediaGallery(\Amulen\MediaBundle\Entity\Gallery $mediaGallery = null) {
+    public function setMediaGallery(\Amulen\MediaBundle\Entity\Gallery $mediaGallery = null)
+    {
         $this->mediaGallery = $mediaGallery;
 
         return $this;
@@ -311,11 +338,13 @@ class Product {
      *
      * @return \Amulen\MediaBundle\Entity\Gallery
      */
-    public function getMediaGallery() {
+    public function getMediaGallery()
+    {
         return $this->mediaGallery;
     }
 
-    public function __toString() {
+    public function __toString()
+    {
         return $this->name;
     }
 
@@ -325,7 +354,8 @@ class Product {
      * @param string $slug
      * @return Product
      */
-    public function setSlug($slug) {
+    public function setSlug($slug)
+    {
         $this->slug = $slug;
 
         return $this;
@@ -336,7 +366,8 @@ class Product {
      *
      * @return string
      */
-    public function getSlug() {
+    public function getSlug()
+    {
         return $this->slug;
     }
 
@@ -346,7 +377,8 @@ class Product {
      * @param \DateTime $created
      * @return Product
      */
-    public function setCreated($created) {
+    public function setCreated($created)
+    {
         $this->created = $created;
 
         return $this;
@@ -357,7 +389,8 @@ class Product {
      *
      * @return \DateTime
      */
-    public function getCreated() {
+    public function getCreated()
+    {
         return $this->created;
     }
 
@@ -367,7 +400,8 @@ class Product {
      * @param \DateTime $updated
      * @return Product
      */
-    public function setUpdated($updated) {
+    public function setUpdated($updated)
+    {
         $this->updated = $updated;
 
         return $this;
@@ -378,14 +412,16 @@ class Product {
      *
      * @return \DateTime
      */
-    public function getUpdated() {
+    public function getUpdated()
+    {
         return $this->updated;
     }
 
-    public function getImage() {
+    public function getImage()
+    {
         if (!is_null($this->mediaGallery) && $this->mediaGallery->getGalleryItems()->count() > 0) {
             $media = $this->getMediaGallery()->getGalleryItems()->first()->getMedia();
-        }else{
+        } else {
             $media = new \Amulen\MediaBundle\Entity\Media();
             $media->setName("default image");
             $media->setPath("uploads/default.jpg");
@@ -399,7 +435,8 @@ class Product {
      * @param \Amulen\MediaBundle\Entity\Gallery $videoGallery
      * @return Product
      */
-    public function setVideoGallery(\Amulen\MediaBundle\Entity\Gallery $videoGallery = null) {
+    public function setVideoGallery(\Amulen\MediaBundle\Entity\Gallery $videoGallery = null)
+    {
         $this->videoGallery = $videoGallery;
 
         return $this;
@@ -410,7 +447,8 @@ class Product {
      *
      * @return \Amulen\MediaBundle\Entity\Gallery
      */
-    public function getVideoGallery() {
+    public function getVideoGallery()
+    {
         return $this->videoGallery;
     }
 
@@ -430,7 +468,7 @@ class Product {
     /**
      * Get brand
      *
-     * @return \Amulen\ShopBundle\Entity\Brand 
+     * @return \Amulen\ShopBundle\Entity\Brand
      */
     public function getBrand()
     {
@@ -443,7 +481,8 @@ class Product {
      * @param ProductOrderItem $items
      * @return Product
      */
-    public function addItem(ProductOrderItem $items) {
+    public function addItem(ProductOrderItem $items)
+    {
         $this->items[] = $items;
 
         return $this;
@@ -454,7 +493,8 @@ class Product {
      *
      * @param ProductOrderItem $items
      */
-    public function removeItem(ProductOrderItem $items) {
+    public function removeItem(ProductOrderItem $items)
+    {
         $this->items->removeElement($items);
     }
 
@@ -463,8 +503,26 @@ class Product {
      *
      * @return Collection
      */
-    public function getItems() {
+    public function getItems()
+    {
         return $this->items;
     }
+
+    /**
+     * @return boolean
+     */
+    public function isFeatured()
+    {
+        return $this->featured;
+    }
+
+    /**
+     * @param boolean $featured
+     */
+    public function setFeatured($featured)
+    {
+        $this->featured = $featured;
+    }
+
 
 }

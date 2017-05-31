@@ -2,6 +2,8 @@
 
 namespace Flowcode\ShopBundle\Form;
 
+use Amulen\ClassificationBundle\Entity\Category;
+use Amulen\ShopBundle\Entity\Product;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
@@ -17,7 +19,7 @@ class ProductType extends AbstractType
     {
         $this->categoryService = $categoryService;
     }
-    
+
     /**
      * @param FormBuilderInterface $builder
      * @param array $options
@@ -28,24 +30,24 @@ class ProductType extends AbstractType
             ->add('name')
             ->add('description')
             ->add('category', EntityType::class, array(
-                    'class' => "Amulen\ClassificationBundle\Entity\Category",
-                    'choices' => $this->categoryService->findByRoot("product"),
-                    'choice_label' => function($category, $key, $index) {
-                        $prefix = "";
-                        for($i = 0; $i < $category->getLvl(); $i++){
-                            $prefix .= "-";
-                        }
-                        return strtolower($prefix.$category->getName());
-                    },
-                    'multiple' => false,
-                ))
+                'class' => Category::class,
+                'choices' => $this->categoryService->findByRoot("product"),
+                'choice_label' => function ($category, $key, $index) {
+                    $prefix = "";
+                    for ($i = 0; $i < $category->getLvl(); $i++) {
+                        $prefix .= "-";
+                    }
+                    return strtolower($prefix . $category->getName());
+                },
+                'multiple' => false,
+            ))
             ->add('price', 'text', array("label" => "Precio"))
             ->add('enabled')
+            ->add('featured')
             ->add('tags', 'collection', array("type" => new Tag(), "label" => "Etiquetas"))
             ->add('mediaGallery', null, array("label" => "Galería de medios"))
             ->add('content', 'ckeditor')
-            ->add('brand')
-        ;
+            ->add('brand');
     }
 
     /**
@@ -54,7 +56,7 @@ class ProductType extends AbstractType
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
         $resolver->setDefaults(array(
-            'data_class' => 'Amulen\ShopBundle\Entity\Product'
+            'data_class' => Product::class
         ));
     }
 
