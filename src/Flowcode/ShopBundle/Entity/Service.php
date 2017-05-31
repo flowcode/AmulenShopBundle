@@ -4,6 +4,7 @@ namespace Flowcode\ShopBundle\Entity;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\ORM\Mapping\ManyToOne;
 use Doctrine\ORM\Mapping\OneToMany;
 use Doctrine\ORM\Mapping\OneToOne;
 use Doctrine\ORM\Mapping\JoinColumn;
@@ -77,6 +78,12 @@ class Service
      * @OneToMany(targetEntity="ProductOrderItem", mappedBy="service", cascade={"persist", "remove"})
      */
     protected $items;
+
+    /**
+     * @ManyToOne(targetEntity="Amulen\ClassificationBundle\Entity\Category")
+     * @JoinColumn(name="category_id", referencedColumnName="id")
+     * */
+    protected $category;
 
     function __construct()
     {
@@ -236,7 +243,8 @@ class Service
      * @param \Amulen\MediaBundle\Entity\Gallery $mediaGallery
      * @return Service
      */
-    public function setMediaGallery(\Amulen\MediaBundle\Entity\Gallery $mediaGallery = null) {
+    public function setMediaGallery(\Amulen\MediaBundle\Entity\Gallery $mediaGallery = null)
+    {
         $this->mediaGallery = $mediaGallery;
 
         return $this;
@@ -247,7 +255,31 @@ class Service
      *
      * @return \Amulen\MediaBundle\Entity\Gallery
      */
-    public function getMediaGallery() {
+    public function getMediaGallery()
+    {
         return $this->mediaGallery;
+    }
+
+    /**
+     * Set category
+     *
+     * @param \Amulen\ClassificationBundle\Entity\Category $category
+     * @return Service
+     */
+    public function setCategory(\Amulen\ClassificationBundle\Entity\Category $category = null)
+    {
+        $this->category = $category;
+
+        return $this;
+    }
+
+    /**
+     * Get category
+     *
+     * @return \Amulen\ClassificationBundle\Entity\Category
+     */
+    public function getCategory()
+    {
+        return $this->category;
     }
 }
