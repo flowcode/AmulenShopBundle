@@ -20,6 +20,7 @@ class ShopSettingType extends AbstractType
                 'choices' => array(
                     ShopSetting::CHECKOUT_MAIL => ShopSetting::CHECKOUT_MAIL,
                     ShopSetting::SHOP_AVAILABLE => ShopSetting::SHOP_AVAILABLE,
+                    ShopSetting::BUTTON_PAYMENT_METHOD => ShopSetting::BUTTON_PAYMENT_METHOD
                 ),
             ))
             ->add('value');

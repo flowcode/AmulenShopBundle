@@ -13,6 +13,7 @@ class ShopSetting
 
     const CHECKOUT_MAIL = "checkout_mail";
     const SHOP_AVAILABLE = "shop_available";
+    const BUTTON_PAYMENT_METHOD = "button_payment_method";
 
     /**
      * @var integer
