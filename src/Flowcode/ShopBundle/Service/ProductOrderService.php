@@ -8,6 +8,7 @@ use Amulen\ShopBundle\Entity\ProductOrderItem;
 use Amulen\ShopBundle\Entity\ProductOrderStatus;
 use Amulen\ShopBundle\Entity\Service;
 use Amulen\UserBundle\Entity\User;
+use Amulen\UserBundle\Entity\UserAddress;
 use Doctrine\ORM\EntityManager;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityRepository;
@@ -304,6 +305,20 @@ class ProductOrderService
             $order->setTotalDiscount(null);
         }
         $this->update($order);
+        return $order;
+    }
+
+    public function setShippingAddress(ProductOrder $order, UserAddress $address)
+    {
+        $order = $this->clearShippingAddress($order);
+        $order->setStreet($address->getStreet());
+        $order->setApartment($address->getApartment());
+        $order->setZipCode($address->getPostalCode());
+        $order->setProvince($address->getState());
+        $order->setCity($address->getCity());
+        $order->setCountry($address->getCountry());
+        $this->update($order);
+
         return $order;
     }
 
