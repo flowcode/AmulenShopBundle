@@ -1,0 +1,213 @@
+{% extends "FlowerCoreBundle::layout.html.twig" %}
+
+{% block title %}StockTransfer - {{ parent() }}{% endblock %}
+
+{% block app_menu %}
+    {{ include("FlowerStockBundle::appnav.html.twig", { 'app_transactions': true, 'app_transactions_transfers': true }) }}
+{% endblock %}
+
+{% block body %}
+    <section class="content-header">
+        <h1>
+            <a href="{{ path('stock_transfers') }}"> {{ 'StockTransfer list'|trans({'StockTransfer': 'StockTransfer'}, 'StockTransfer') }}</a>
+            /
+            {{ 'StockTransfer' | trans({}, 'StockTransfer') }}
+        </h1>
+    </section>
+    <section class="content">
+        <div class="box" id='showStockTransfer'>
+            <div class="box-header">
+                <h3>
+
+                </h3>
+                <div class="box-tools  pull-right">
+                    {{ form_start(delete_form) }}
+                    {{ form_widget(delete_form) }}
+
+                    <div class="btn-group record_actions">
+                        {% if stocktransfer.status == 0 %}
+                            <a class="btn btn-warning"
+                               href="{{ path('stock_transfers_confirm',{'id':stocktransfer.id}) }}">
+                                Confirmar
+                            </a>
+                        {% endif %}
+                        <button class="btn btn-link btn-sm"
+                                type="submit"> {{ 'Delete'|trans({}, 'StockTransfer') }}</button>
+                        <input name="modal" type="hidden" value="0">
+
+                        <a class="btn btn-link  btn-sm" onclick="showEdit(true)">
+                            {{ 'Edit'|trans({}, 'StockTransfer') }}
+                        </a>
+                    </div>
+                    <input name="modal" type="hidden" value="0">
+                    {{ form_end(delete_form) }}
+
+                </div>
+            </div>
+            <div class="box-body">
+                <div class="row">
+                    <div class="col-md-8">
+                        <table class="table">
+                            <tbody>
+                            <tr>
+                                <th scope="row">{{ 'Code'|trans({}, 'StockTransfer') }}</th>
+                                <td>{{ stocktransfer.code }}</td>
+                            </tr>
+                            <tr>
+                                <th scope="row">{{ 'Date'|trans({}, 'StockTransfer') }}</th>
+                                <td>{{ stocktransfer.date|date('Y-m-d H:i:s') }}</td>
+                            </tr>
+                            <tr>
+                                <th scope="row">{{ 'From'|trans({}, 'StockTransfer') }}</th>
+                                <td>{{ stocktransfer.warehouseFrom }}</td>
+                            </tr>
+                            <tr>
+                                <th scope="row">{{ 'To'|trans({}, 'StockTransfer') }}</th>
+                                <td>{{ stocktransfer.warehouseTo }}</td>
+                            </tr>
+                            <tr>
+                                <th scope="row">{{ 'Status'|trans({}, 'StockTransfer') }}</th>
+                                <td>
+                                    {% if stocktransfer.status == 0 %}
+                                        <span class="text-muted">
+                                    BORRADOR
+                                </span>
+                                    {% else %}
+                                        <span class="text-success">
+                                    CONFIRMADO
+                                </span>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="col-md-4">
+                        <table class="table table-hover record_properties">
+                            <tbody>
+                            <tr>
+                                <th scope="row">{{ 'Created'|trans({}, 'StockTransfer') }}</th>
+                                <td>{{ stocktransfer.created|date('Y-m-d H:i:s') }}</td>
+                            </tr>
+                            <tr>
+                                <th scope="row">{{ 'Updated'|trans({}, 'StockTransfer') }}</th>
+                                <td>{{ stocktransfer.updated|date('Y-m-d H:i:s') }}</td>
+                            </tr>
+                            <tr>
+                                <th scope="row">{{ 'User'|trans({}, 'StockTransfer') }}</th>
+                                <td>{{ stocktransfer.user.happyName }}</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+            </div>
+            <div class="box-footer">
+
+            </div>
+        </div>
+        <div class="box" id='editFormStockTransfer' style="display: none;">
+            <div class="box-header">
+                <div class="box-tools">
+                    {{ form_start(delete_form) }}
+                    {{ form_widget(delete_form) }}
+                    <div class="btn-group record_actions">
+                        <button class="btn btn-link btn-sm"
+                                type="submit"> {{ 'Delete'|trans({}, 'StockTransfer') }}</button>
+                        <a class="btn btn-link  btn-sm" onclick="showEdit(false)">
+                            {{ 'Cancel'|trans({}, 'Account') }}
+                        </a>
+                    </div>
+                    <input name="modal" type="hidden" value="0">
+                    {{ form_end(delete_form) }}
+                </div>
+            </div>
+            <div class="box-body">
+
+                {{ form_start(edit_form) }}
+                {{ form_widget(edit_form) }}
+                <p>
+                    <button class="btn-default btn" type="submit">{{ 'save'|trans | capitalize }}</button>
+                </p>
+                {{ form_end(edit_form) }}
+            </div>
+            <div class="box-footer">
+            </div>
+        </div>
+
+        <div class="box">
+            <div class="box-header">
+                <h3 class="items">Items</h3>
+                <div class="box-tools">
+                    {% if stocktransfer.status == 0 %}
+                        <a href="{{ path('stock_transfersitem_new',{id:stocktransfer.id}) }}" class="btn btn-default">
+                            Agregar producto
+                        </a>
+                    {% endif %}
+                </div>
+            </div>
+            <div class="box-body">
+                <table class="table">
+                    <thead>
+                    <tr>
+                        <th>{{ 'Code' | trans({}, 'Product') }}</th>
+                        <th>{{ 'Product' | trans({}, 'Product') }}</th>
+                        <th>{{ 'Units' | trans({}, 'Product') }}</th>
+                        <th>{{ 'MeasureUnit' | trans({}, 'Product') }}</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for transferItem in stocktransfer.items %}
+                        <tr>
+                            <td>{{ transferItem.product.code }}</td>
+                            <td>{{ transferItem.product }}</td>
+                            <td>{{ transferItem.units }}</td>
+                            <td>{{ transferItem.measureUnit }}</td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+    </section>
+
+    <div class="btn-group record_actions"></div>
+
+    <div id="delete_confirm" class="modal fade">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    <h3>{{ 'Confirm delete'|trans({}, 'StockTransfer') }}</h3>
+                </div>
+                <div class="modal-body">
+                    <p>{{ 'You are about to delete an item'|trans({}, 'StockTransfer') }}
+                        , {{ 'this procedure is irreversible'|trans({}, 'StockTransfer') }}.</p>
+                    <p>{{ 'Do you want to proceed?'|trans({}, 'StockTransfer') }}</p>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-danger">{{ 'Yes'|trans({}, 'StockTransfer') }}</button>
+                    <button class="btn btn-default" data-dismiss="modal">{{ 'No'|trans({}, 'StockTransfer') }}</button>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+{% block javascripts %}
+
+    {{ parent() }}
+    <script type="text/javascript">
+        function showEdit(show) {
+            if (show) {
+                $('#showStockTransfer').hide();
+                $('#editFormStockTransfer').show();
+            } else {
+                $('#showStockTransfer').show();
+                $('#editFormStockTransfer').hide();
+            }
+        }
+
+    </script>
+{% endblock %}

@@ -46,6 +46,47 @@ class ProductOrderStatus
     protected $productorders;
 
     /**
+     * @var boolean
+     *
+     * @ORM\Column(name="order_modificable", type="boolean")
+     */
+    protected $orderModificable;
+
+    /**
+     * @var boolean
+     *
+     * @ORM\Column(name="stock_modifier", type="boolean")
+     */
+    protected $stockModifier;
+
+    /**
+     * @var boolean
+     *
+     * @ORM\Column(name="order_deleted", type="boolean")
+     */
+    protected $orderDeleted;
+
+    /**
+     * @var boolean
+     *
+     * @ORM\Column(name="order_canceled", type="boolean")
+     */
+    protected $orderCanceled;
+
+    /**
+     * Constructor
+     */
+    public function __construct()
+    {
+        $this->productorders = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->orderCanceled = false;
+        $this->orderDeleted = false;
+        $this->stockModifier = false;
+        $this->orderModificable = true;
+    }
+
+
+    /**
      * Get id
      *
      * @return integer
@@ -101,13 +142,6 @@ class ProductOrderStatus
         return $this->description;
     }
 
-    /**
-     * Constructor
-     */
-    public function __construct()
-    {
-        $this->productorders = new \Doctrine\Common\Collections\ArrayCollection();
-    }
 
     /**
      * Add productorders
@@ -146,5 +180,70 @@ class ProductOrderStatus
     {
         return $this->name;
     }
+
+    /**
+     * @return bool
+     */
+    public function isOrderModificable(): bool
+    {
+        return $this->orderModificable;
+    }
+
+    /**
+     * @param bool $orderModificable
+     */
+    public function setOrderModificable(bool $orderModificable)
+    {
+        $this->orderModificable = $orderModificable;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isStockModifier(): bool
+    {
+        return $this->stockModifier;
+    }
+
+    /**
+     * @param bool $stockModifier
+     */
+    public function setStockModifier(bool $stockModifier)
+    {
+        $this->stockModifier = $stockModifier;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isOrderDeleted(): bool
+    {
+        return $this->orderDeleted;
+    }
+
+    /**
+     * @param bool $orderDeleted
+     */
+    public function setOrderDeleted(bool $orderDeleted)
+    {
+        $this->orderDeleted = $orderDeleted;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isOrderCanceled(): bool
+    {
+        return $this->orderCanceled;
+    }
+
+    /**
+     * @param bool $orderCanceled
+     */
+    public function setOrderCanceled(bool $orderCanceled)
+    {
+        $this->orderCanceled = $orderCanceled;
+    }
+
 
 }

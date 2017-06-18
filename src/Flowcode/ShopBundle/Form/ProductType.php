@@ -43,6 +43,7 @@ class ProductType extends AbstractType
             ))
             ->add('price', 'text', array("label" => "Precio"))
             ->add('enabled')
+            ->add('warehouse')
             ->add('featured')
             ->add('tags', 'collection', array("type" => new Tag(), "label" => "Etiquetas"))
             ->add('mediaGallery', null, array("label" => "Galería de medios"))

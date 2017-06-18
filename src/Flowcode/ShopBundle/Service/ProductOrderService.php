@@ -30,15 +30,17 @@ class ProductOrderService
     protected $productOrderRepository;
     protected $productOrderStatusRepository;
     protected $dispatcher;
+    protected $stockService;
     protected $productOrderItemRepository;
 
-    public function __construct(EntityManager $em, EntityRepository $productOrderRepository, EntityRepository $productOrderStatusRepository, EventDispatcherInterface $dispatcher, EntityRepository $productOrderItemRepository)
+    public function __construct(EntityManager $em, EntityRepository $productOrderRepository, EntityRepository $productOrderStatusRepository, EventDispatcherInterface $dispatcher, EntityRepository $productOrderItemRepository, $stockService)
     {
         $this->em = $em;
         $this->productOrderRepository = $productOrderRepository;
         $this->productOrderStatusRepository = $productOrderStatusRepository;
         $this->dispatcher = $dispatcher;
         $this->productOrderItemRepository = $productOrderItemRepository;
+        $this->stockService = $stockService;
     }
 
     /**
@@ -276,6 +278,17 @@ class ProductOrderService
             $OrderStatusChangedEvent = new OrderStatusChangedEvent($order);
 
             $this->dispatcher->dispatch(OrderStatusChangedEvent::NAME, $OrderStatusChangedEvent);
+
+            /* Stock management */
+            /* @var StockService $stockService */
+            $stockService = $this->stockService;
+
+            /* @var ProductOrderItem $item */
+            foreach ($order->getItems() as $item) {
+                if ($item->getProduct()) {
+                    $stockService->exitStock($item->getProduct()->getWarehouse(), $item->getProduct(), $item->getQuantity(), $order);
+                }
+            }
 
             return true;
         }

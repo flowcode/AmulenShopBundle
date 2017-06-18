@@ -1,0 +1,111 @@
+{% extends "FlowerCoreBundle::layout.html.twig" %}
+
+{% block title %}InventoryItem - {{ parent() }}{% endblock %}
+
+{% block body %}
+    <section class="content-header">
+        <h1>
+            <a href="{{ path('stock_inventoryitem') }}"> {{ 'InventoryItem list'|trans({'InventoryItem': 'InventoryItem'}, 'InventoryItem') }}</a>
+            /
+            {{ 'InventoryItem' | trans({}, 'InventoryItem')}}
+        </h1>
+    </section>
+    <section class="content">    
+        <div class="box"  id='showInventoryItem'>
+            <div class="box-header">
+                <div class="box-tools  pull-right">
+                            {{ form_start(delete_form) }}
+        {{ form_widget(delete_form) }}
+
+        <div class="btn-group record_actions">            <button class="btn btn-link btn-sm" type="submit"> {{ 'Delete'|trans({}, 'InventoryItem') }}</button>
+            <input name="modal" type="hidden" value="0">
+            
+                <a class="btn btn-link  btn-sm" onclick="showEdit(true)">
+                    {{ 'Edit'|trans({}, 'InventoryItem') }}
+                </a>
+</div>
+            <input name="modal" type="hidden" value="0">
+        {{ form_end(delete_form) }}
+
+</div>
+            </div>
+            <div class="box-body">
+                <table class="table table-hover record_properties">
+                    <tbody>                            
+                        <tr>
+                            <th scope="row">{{'Stock'|trans({}, 'InventoryItem')}}</th>
+                            <td>{{ inventoryitem.stock }}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="box-footer">
+            
+            </div>
+        </div>
+        <div class="box" id='editFormInventoryItem'  style="display: none;">
+            <div class="box-header">
+                <div class="box-tools">
+                    {{ form_start(delete_form) }}
+                    {{ form_widget(delete_form) }}
+                    <div class="btn-group record_actions">
+                        <button class="btn btn-link btn-sm" type="submit"> {{ 'Delete'|trans({}, 'InventoryItem') }}</button>
+                        <a class="btn btn-link  btn-sm" onclick="showEdit(false)">
+                        {{ 'Cancel'|trans({}, 'Account') }}
+                        </a>
+                    </div>
+                    <input name="modal" type="hidden" value="0">
+                    {{ form_end(delete_form) }}
+                </div>
+            </div>
+            <div class="box-body">
+
+            {{ form_start(edit_form) }}
+                {{ form_widget(edit_form) }}
+                <p>
+                    <button class="btn-default btn" type="submit">{{ 'save'|trans | capitalize}}</button>
+                </p>
+            {{ form_end(edit_form) }}
+            </div>
+            <div class="box-footer">
+            </div>
+        </div>
+    </section>
+
+        <div class="btn-group record_actions"></div>
+
+        <div id="delete_confirm" class="modal fade">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                        <h3>{{ 'Confirm delete'|trans({}, 'InventoryItem') }}</h3>
+                    </div>
+                    <div class="modal-body">
+                        <p>{{ 'You are about to delete an item'|trans({}, 'InventoryItem') }}, {{ 'this procedure is irreversible'|trans({}, 'InventoryItem') }}.</p>
+                        <p>{{ 'Do you want to proceed?'|trans({}, 'InventoryItem') }}</p>
+                    </div>
+                    <div class="modal-footer">
+                        <button class="btn btn-danger">{{ 'Yes'|trans({}, 'InventoryItem') }}</button>
+                        <button class="btn btn-default" data-dismiss="modal">{{ 'No'|trans({}, 'InventoryItem') }}</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+{% endblock %}
+{% block javascripts %}
+
+    {{ parent() }}
+    <script type="text/javascript">
+        function showEdit(show){
+            if(show){
+                $('#showInventoryItem').hide();
+                $('#editFormInventoryItem').show();
+            }else{
+                $('#showInventoryItem').show();
+                $('#editFormInventoryItem').hide();
+            }
+        }
+        
+    </script>
+{% endblock %}

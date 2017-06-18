@@ -1,0 +1,42 @@
+{% extends "FlowerCoreBundle::layout.html.twig" %}
+
+{% block title %}{{ '%entity% creation'|trans({'%entity%': 'InventoryItem'}, 'InventoryItem') }} - {{ parent() }}{% endblock %}
+
+{% block app_menu %}
+    {{ include("FlowerStockBundle::appnav.html.twig", { 'app_inventory': true }) }}
+{% endblock %}
+
+{% block body %}
+    <section class="content-header">
+        <h1>
+            <a href="{{ path('stock_inventory') }}">
+                {{ 'Inventories'|trans({}, 'Inventory') }}
+            </a>
+            /
+            <a href="{{ path('stock_inventory_show',{id:inventoryitem.inventory.id}) }}">
+                {{ inventoryitem.inventory }}
+            </a>
+            /
+            {{ 'InventoryItem' | trans({}, 'InventoryItem') }}
+        </h1>
+
+    </section>
+    <section class="content">
+        <div class="box">
+            <div class="box-body">
+                {{ form_start(form, {action: path('stock_inventoryitem_create')}) }}
+                {{ form_widget(form) }}
+
+                <div class="col-md-8 col-md-offset-2">
+                    <button class="btn btn-primary btn-outline" type="submit">
+                        {{ 'save'|trans|capitalize }}
+                    </button>
+                    <a class="btn btn-link" href="{{ path('stock_inventory_show',{id:inventoryitem.inventory.id}) }}">
+                        {{ 'cancel'|trans|capitalize }}
+                    </a>
+                </div>
+                {{ form_end(form) }}
+            </div>
+        </div>
+    </section>
+{% endblock %}

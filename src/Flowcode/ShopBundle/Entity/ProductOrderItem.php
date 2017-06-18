@@ -3,9 +3,6 @@
 namespace Flowcode\ShopBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
-use Doctrine\ORM\Mapping\JoinColumn;
-use Doctrine\ORM\Mapping\ManyToOne;
-use Doctrine\ORM\Mapping\OneToOne;
 
 /**
  * ProductOrderItem
@@ -23,20 +20,20 @@ class ProductOrderItem
     protected $id;
 
     /**
-     * @ManyToOne(targetEntity="ProductOrder", inversedBy="items")
-     * @JoinColumn(name="order_id", referencedColumnName="id")
+     * @ORM\ManyToOne(targetEntity="\Amulen\ShopBundle\Entity\ProductOrder", inversedBy="items")
+     * @ORM\JoinColumn(name="order_id", referencedColumnName="id")
      * */
     protected $order;
 
     /**
-     * @ManyToOne(targetEntity="Product", inversedBy="items")
-     * @JoinColumn(name="product_id", referencedColumnName="id")
+     * @ORM\ManyToOne(targetEntity="\Amulen\ShopBundle\Entity\Product", inversedBy="items")
+     * @ORM\JoinColumn(name="product_id", referencedColumnName="id")
      **/
     protected $product;
 
     /**
-     * @ManyToOne(targetEntity="Service", inversedBy="items")
-     * @JoinColumn(name="service_id", referencedColumnName="id")
+     * @ORM\ManyToOne(targetEntity="Service", inversedBy="items")
+     * @ORM\JoinColumn(name="service_id", referencedColumnName="id")
      **/
     protected $service;
 
@@ -92,10 +89,10 @@ class ProductOrderItem
     /**
      * Set order
      *
-     * @param \Flowcode\ShopBundle\Entity\ProductOrder $order
+     * @param \Amulen\ShopBundle\Entity\ProductOrder $order
      * @return ProductOrderItem
      */
-    public function setOrder(\Flowcode\ShopBundle\Entity\ProductOrder $order = null)
+    public function setOrder(\Amulen\ShopBundle\Entity\ProductOrder $order = null)
     {
         $this->order = $order;
 
@@ -105,7 +102,7 @@ class ProductOrderItem
     /**
      * Get order
      *
-     * @return \Flowcode\ShopBundle\Entity\ProductOrder
+     * @return \Amulen\ShopBundle\Entity\ProductOrder
      */
     public function getOrder()
     {
@@ -115,10 +112,10 @@ class ProductOrderItem
     /**
      * Set product
      *
-     * @param \Flowcode\ShopBundle\Entity\Product $product
+     * @param \Amulen\ShopBundle\Entity\Product $product
      * @return ProductOrderItem
      */
-    public function setProduct(\Flowcode\ShopBundle\Entity\Product $product = null)
+    public function setProduct(\Amulen\ShopBundle\Entity\Product $product = null)
     {
         $this->product = $product;
 
@@ -128,7 +125,7 @@ class ProductOrderItem
     /**
      * Get product
      *
-     * @return \Flowcode\ShopBundle\Entity\Product
+     * @return \Amulen\ShopBundle\Entity\Product
      */
     public function getProduct()
     {

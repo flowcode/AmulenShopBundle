@@ -11,6 +11,7 @@ services:
         tags:
             - { name: form.type, alias: amulen_shopbundle_productorder }
 
+
     amulen.shop.form.productorder.shipping:
         class: Flowcode\ShopBundle\Form\ProductOrderShippingType
         tags:
@@ -41,6 +42,51 @@ services:
         class: Flowcode\ShopBundle\Form\ServiceType
         tags:
             - { name: form.type, alias: flowcode_shopbundle_service }
+
+    # Repositories
+    amulen.shop.repository.product:
+            class: Doctrine\ORM\EntityRepository
+            factory_service: doctrine.orm.default_entity_manager
+            factory_method: getRepository
+            arguments:
+                - Amulen\ShopBundle\Entity\Product
+
+    amulen.shop.repository.stock_change_log:
+        class: Doctrine\ORM\EntityRepository
+        factory_service: doctrine.orm.default_entity_manager
+        factory_method: getRepository
+        arguments:
+            - Flowcode\ShopBundle\Entity\StockChangeLog
+
+    amulen.shop.repository.warehouse_product:
+        class: Doctrine\ORM\EntityRepository
+        factory_service: doctrine.orm.default_entity_manager
+        factory_method: getRepository
+        arguments:
+            - Flowcode\ShopBundle\Entity\WarehouseProduct
+
+    amulen.shop.repository.stock_transfer:
+        class: Doctrine\ORM\EntityRepository
+        factory_service: doctrine.orm.default_entity_manager
+        factory_method: getRepository
+        arguments:
+            - Flowcode\ShopBundle\Entity\StockTransfer
+
+    amulen.shop.repository.inventory:
+        class: Doctrine\ORM\EntityRepository
+        factory_service: doctrine.orm.default_entity_manager
+        factory_method: getRepository
+        arguments:
+            - Flowcode\ShopBundle\Entity\Inventory
+
+    amulen.shop.repository.inventory_item:
+        class: Doctrine\ORM\EntityRepository
+        factory_service: doctrine.orm.default_entity_manager
+        factory_method: getRepository
+        arguments:
+            - Flowcode\ShopBundle\Entity\InventoryItem
+
+
 
     # Form Filters
     amulen.shop.form.filter.shop:
@@ -99,6 +145,7 @@ services:
           - "@amulen.shop.repository.order_status"
           - "@event_dispatcher"
           - "@amulen.shop.repository.order.item"
+          - "@amulen.shop.service.stock"
 
     amulen.shop.order.item:
         class: Flowcode\ShopBundle\Service\ProductOrderItemService
@@ -108,3 +155,35 @@ services:
     amulen.shop.settings:
         class: Flowcode\ShopBundle\Service\SettingsService
         arguments: ["@amulen.shop.repository.setting"]
+        
+    amulen.shop.service.stock_transfer:
+        class: Flowcode\ShopBundle\Service\StockTransferService
+        arguments:
+          - "@amulen.shop.repository.stock_transfer"
+          - "@amulen.shop.service.stock"
+          
+    amulen.shop.service.inventory:
+        class: Flowcode\ShopBundle\Service\InventoryService
+        arguments:
+          - "@amulen.shop.repository.inventory"
+          - "@amulen.shop.repository.inventory_item"
+          - "@amulen.shop.repository.product"
+          - "@amulen.shop.service.warehouse_product"          
+
+    amulen.shop.service.stock_change_log:
+        class: Flowcode\ShopBundle\Service\StockChangeLogService
+        arguments: ['@amulen.shop.repository.stock_change_log']
+
+    amulen.shop.service.warehouse_product:
+        class: Flowcode\ShopBundle\Service\WarehouseProductService
+        arguments: ['@amulen.shop.repository.warehouse_product']
+
+    amulen.shop.service.stock:
+        class: Flowcode\ShopBundle\Service\StockService
+        arguments:
+          - "@amulen.shop.service.warehouse_product"
+          - "@amulen.shop.service.stock_change_log"
+          - "@amulen.shop.repository.product"
+        calls:
+          - [setContainer, ["@service_container"]]
+        

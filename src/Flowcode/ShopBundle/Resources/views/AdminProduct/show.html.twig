@@ -2,34 +2,34 @@
 
 
 {% block stylesheets %}
-{{parent()}}
-<link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
+    {{ parent() }}
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
 {% endblock -%}
 
 
 {% block body -%}
-{{ include('FlowcodeShopBundle:AdminProduct:productsHeader.html.twig') }}
+    {{ include('FlowcodeShopBundle:AdminProduct:productsHeader.html.twig') }}
 
-<section class="content">
-    <div class="box box-solid">
-        <div class="box-header">
-            <h3 class="box-title">{{ entity.name|title }}</h3>
-            <div class="box-tools">
-                <a class="btn btn-link btn-sm" href="{{ path('admin_product') }}">
-                    {{ "Back to the list"|trans }}
-                </a>
-                <a class="btn btn-link btn-sm" href="{{ path('admin_product_edit', { 'id': entity.id }) }}">
-                    {{ "edit"|trans }}
-                </a>
+    <section class="content">
+        <div class="box box-solid">
+            <div class="box-header">
+                <h3 class="box-title">{{ entity.name|title }}</h3>
+                <div class="box-tools">
+                    <a class="btn btn-link btn-sm" href="{{ path('admin_product') }}">
+                        {{ "Back to the list"|trans }}
+                    </a>
+                    <a class="btn btn-link btn-sm" href="{{ path('admin_product_edit', { 'id': entity.id }) }}">
+                        {{ "edit"|trans }}
+                    </a>
+                </div>
             </div>
-        </div>
-        <div class="box-body">
-            <div class="row">
-                <div class="col-sm-12">
-                    <div class="panel panel-default">
-                        <div class="panel-heading">Datos del producto</div>
-                        <table class="table table-condensed">
-                            <tbody>
+            <div class="box-body">
+                <div class="row">
+                    <div class="col-sm-12">
+                        <div class="panel panel-default">
+                            <div class="panel-heading">Datos del producto</div>
+                            <table class="table table-condensed">
+                                <tbody>
                                 <tr>
                                     <th>{{ "Id"|trans }}</th>
                                     <td>{{ entity.id }}</td>
@@ -55,12 +55,20 @@
                                     <td>{{ entity.price }}</td>
                                 </tr>
                                 <tr>
+                                    <th>{{ "Stock"|trans }}</th>
+                                    <td>{{ entity.stock }}</td>
+                                </tr>
+                                <tr>
+                                    <th>{{ "Warehouse"|trans }}</th>
+                                    <td>{{ entity.warehouse }}</td>
+                                </tr>
+                                <tr>
                                     <th>{{ "Enabled"|trans|capitalize }}</th>
                                     <td>
                                         {% if entity.enabled %}
-                                            {{'yes'|trans}}
+                                            {{ 'yes'|trans }}
                                         {% else %}
-                                            {{'no'|trans}}
+                                            {{ 'no'|trans }}
                                         {% endif %}
                                     </td>
                                 </tr>
@@ -68,9 +76,9 @@
                                     <th>{{ "Featured"|trans|capitalize }}</th>
                                     <td>
                                         {% if entity.featured %}
-                                            {{'yes'|trans}}
+                                            {{ 'yes'|trans }}
                                         {% else %}
-                                            {{'no'|trans}}
+                                            {{ 'no'|trans }}
                                         {% endif %}
                                     </td>
                                 </tr>
@@ -78,48 +86,50 @@
                                     <th>{{ "Portada"|trans }}</th>
                                     <td>
                                         <div class="col-sm-4">
-                                        {% if entity.getMediaGallery.getGalleryItems[0] is defined %}
-                                            <img src="{{ asset(entity.getMediaGallery.getGalleryItems[0].media.path|imagine_filter('thumb_product_gallery')) }}">
-                                        {% endif %}
+                                            {% if entity.getMediaGallery.getGalleryItems[0] is defined %}
+                                                <img src="{{ asset(entity.getMediaGallery.getGalleryItems[0].media.path|imagine_filter('thumb_product_gallery')) }}">
+                                            {% endif %}
                                         </div>
                                     </td>
                                 </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                    <!-- IMAGEN -->
-                    <div class="box">
-                        <div class="box-header">
-                            <h3 class="box-title">{{ "item"|trans|capitalize }}</h3>
-                            <div class="box-tools">
-                                <a href="{{ path('admin_product_new_image', { 'id' : entity.id }) }}" class="btn btn-xs btn-link">
-                                    <i class="fa fa-plus"></i> {{ "add item"|trans }}
-                                </a>
+                                </tbody>
+                            </table>
+                        </div>
+                        <!-- IMAGEN -->
+                        <div class="box">
+                            <div class="box-header">
+                                <h3 class="box-title">{{ "item"|trans|capitalize }}</h3>
+                                <div class="box-tools">
+                                    <a href="{{ path('admin_product_new_image', { 'id' : entity.id }) }}"
+                                       class="btn btn-xs btn-link">
+                                        <i class="fa fa-plus"></i> {{ "add item"|trans }}
+                                    </a>
+                                </div>
+                            </div>
+                            <div class="box-body">
+                                <div class="row">
+                                    {% if entity.getMediaGallery %}
+                                        {{ include("FlowcodeMediaBundle:AdminGallery:gallery_show_items.html.twig", {'items': entity.getMediaGallery.getGalleryItems, 'edit_route': 'admin_product_gallery_edit', 'product': entity}) }}
+                                    {% endif %}
+                                </div>
                             </div>
                         </div>
-                        <div class="box-body">
-                            <div class="row">
-                                {% if entity.getMediaGallery %}
-                                    {{ include("FlowcodeMediaBundle:AdminGallery:gallery_show_items.html.twig", {'items': entity.getMediaGallery.getGalleryItems, 'edit_route': 'admin_product_gallery_edit', 'product': entity}) }}
-                                {% endif %}
+                        <!-- VIDEO -->
+                        <div class="box">
+                            <div class="box-header">
+                                <h3 class="box-title">{{ "video"|trans|title }}</h3>
+                                <div class="box-tools">
+                                    <a href="{{ path('admin_product_new_media', { 'id' : entity.id, 'type':"type_video_youtube" }) }}"
+                                       class="btn btn-xs btn-link">
+                                        <i class="fa fa-plus"></i> {{ "add video"|trans }}
+                                    </a>
+                                </div>
                             </div>
                         </div>
                     </div>
-                    <!-- VIDEO -->
-                    <div class="box">
-                        <div class="box-header">
-                            <h3 class="box-title">{{ "video"|trans|title }}</h3>
-                            <div class="box-tools">
-                                <a href="{{ path('admin_product_new_media', { 'id' : entity.id, 'type':"type_video_youtube" }) }}" class="btn btn-xs btn-link">
-                                    <i class="fa fa-plus"></i> {{ "add video"|trans }}
-                                </a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
 
+                </div>
             </div>
         </div>
-    </div>
-</section>
+    </section>
 {% endblock %}

@@ -1,0 +1,51 @@
+<pdf>
+    <dynamic-page>
+        <table>
+            <tr>
+
+                <td border.type="none">
+                    <h3 text-align="left" padding="0px">INVENTARIO DE MERCADERIA </h3>
+                    <h3></h3>
+                    <h4 text-align="left" padding="0px"> {{ inventory.name | upper }} </h4>
+                    <h4 text-align="left" padding="0px">FECHA {{ inventory.date | date("fullDateTime"| trans) }} </h4>
+                    <h4 text-align="left" padding="0px">DEPÓSITO {{ inventory.warehouse | upper }} </h4>
+                    <h4 text-align="left" padding="0px">CREADO POR {{ inventory.user | upper }} </h4>
+                </td>
+                {# Tomar la info de la organización que se esté utilizando y remplazarla por tenat #}
+                {#<td>#}
+                    {#<h4 text-align="center" padding="3px"> {{ tenant.name | upper }} </h4>#}
+                    {#<hr></hr>#}
+                    {#{% if tenant.cuit is defined %}#}
+                    {#<h4 text-align="center" padding="0px"> CUIT:  {{ tenant.cuit | upper }} </h4>#}
+                    {#{% endif %}#}
+                    {#<h4 text-align="center" padding="0px">  {{ tenant.address | upper }} </h4>#}
+                    {#<h4 text-align="center" padding="0px">  {{ tenant.contactEmail | upper }} </h4>#}
+                {#</td>#}
+            </tr>
+        </table>
+        <hr></hr>
+        <table class="table table-striped table-hover table-bordered records_list">
+
+            <tr>
+                <td background.color="lightgray" padding="5px">Producto</td>
+                <td background.color="lightgray" padding="5px">Cantidad</td>
+                <td background.color="lightgray" padding="5px">Unidad de medida</td>
+            </tr>
+            {% for item in inventory.items %}
+                <tr>
+                    <td padding="5px">{{ item.id }} # {{ item.product.name }}</td>
+                    <td padding="5px">{{ item.stock }}</td>
+                    <td padding="5px">{{ item.measureUnit }}</td>
+                </tr>
+
+            {% endfor %}
+
+        </table>
+        <hr></hr>
+        <div>
+            <img width="50px" float='' padding-bottom="5px" text-align="center" margin="auto"
+                 src="{{ pdf_image('FlowerCoreBundle:assets/flowr.png') }}"/>
+        </div>
+
+    </dynamic-page>
+</pdf>

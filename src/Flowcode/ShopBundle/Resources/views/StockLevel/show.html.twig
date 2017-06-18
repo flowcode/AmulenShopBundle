@@ -1,0 +1,123 @@
+{% extends "FlowerCoreBundle::layout.html.twig" %}
+
+{% block title %}StockLevel - {{ parent() }}{% endblock %}
+
+{% block app_menu %}
+    {{ include("FlowerStockBundle::appnav.html.twig", { 'app_product': true, 'app_stock_level': true }) }}
+{% endblock %}
+
+{% block body %}
+    <section class="content-header">
+        <h1>
+            <a href="{{ path('stock_stocklevel') }}"> {{ 'StockLevel list'|trans({'StockLevel': 'StockLevel'}, 'StockLevel') }}</a>
+            /
+            {{ 'StockLevel' | trans({}, 'StockLevel') }}
+        </h1>
+    </section>
+    <section class="content">
+        <div class="box" id='showStockLevel'>
+            <div class="box-header">
+                <div class="box-tools  pull-right">
+                    {{ form_start(delete_form) }}
+                    {{ form_widget(delete_form) }}
+
+                    <div class="btn-group record_actions">
+                        <button class="btn btn-link btn-sm"
+                                type="submit"> {{ 'Delete'|trans({}, 'StockLevel') }}</button>
+                        <input name="modal" type="hidden" value="0">
+
+                        <a class="btn btn-link  btn-sm" onclick="showEdit(true)">
+                            {{ 'Edit'|trans({}, 'StockLevel') }}
+                        </a>
+                    </div>
+                    <input name="modal" type="hidden" value="0">
+                    {{ form_end(delete_form) }}
+
+                </div>
+            </div>
+            <div class="box-body">
+                <table class="table table-hover record_properties">
+                    <tbody>
+                    <tr>
+                        <th scope="row">{{ 'Name'|trans({}, 'StockLevel') }}</th>
+                        <td>{{ stocklevel.name }}</td>
+                    </tr>
+                    <tr>
+                        <th scope="row">{{ 'Stock'|trans({}, 'StockLevel') }}</th>
+                        <td>{{ stocklevel.stock }}</td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="box-footer">
+
+            </div>
+        </div>
+        <div class="box" id='editFormStockLevel' style="display: none;">
+            <div class="box-header">
+                <div class="box-tools">
+                    {{ form_start(delete_form) }}
+                    {{ form_widget(delete_form) }}
+                    <div class="btn-group record_actions">
+                        <button class="btn btn-link btn-sm"
+                                type="submit"> {{ 'Delete'|trans({}, 'StockLevel') }}</button>
+                        <a class="btn btn-link  btn-sm" onclick="showEdit(false)">
+                            {{ 'Cancel'|trans({}, 'Account') }}
+                        </a>
+                    </div>
+                    <input name="modal" type="hidden" value="0">
+                    {{ form_end(delete_form) }}
+                </div>
+            </div>
+            <div class="box-body">
+
+                {{ form_start(edit_form) }}
+                {{ form_widget(edit_form) }}
+                <p>
+                    <button class="btn-default btn" type="submit">{{ 'save'|trans | capitalize }}</button>
+                </p>
+                {{ form_end(edit_form) }}
+            </div>
+            <div class="box-footer">
+            </div>
+        </div>
+    </section>
+
+    <div class="btn-group record_actions"></div>
+
+    <div id="delete_confirm" class="modal fade">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    <h3>{{ 'Confirm delete'|trans({}, 'StockLevel') }}</h3>
+                </div>
+                <div class="modal-body">
+                    <p>{{ 'You are about to delete an item'|trans({}, 'StockLevel') }}
+                        , {{ 'this procedure is irreversible'|trans({}, 'StockLevel') }}.</p>
+                    <p>{{ 'Do you want to proceed?'|trans({}, 'StockLevel') }}</p>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-danger">{{ 'Yes'|trans({}, 'StockLevel') }}</button>
+                    <button class="btn btn-default" data-dismiss="modal">{{ 'No'|trans({}, 'StockLevel') }}</button>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+{% block javascripts %}
+
+    {{ parent() }}
+    <script type="text/javascript">
+        function showEdit(show) {
+            if (show) {
+                $('#showStockLevel').hide();
+                $('#editFormStockLevel').show();
+            } else {
+                $('#showStockLevel').show();
+                $('#editFormStockLevel').hide();
+            }
+        }
+
+    </script>
+{% endblock %}

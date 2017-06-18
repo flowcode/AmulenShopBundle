@@ -117,7 +117,29 @@ class Product
     protected $items;
 
     /**
-     * @var datetime $created
+     * @var float
+     *
+     * @ORM\Column(name="stock", type="integer")
+     */
+    protected $stock;
+
+    /**
+     * Es el defecto por el producto.
+     *
+     * @ORM\ManyToOne(targetEntity="\Flowcode\ShopBundle\Entity\Warehouse")
+     * @ORM\JoinColumn(name="warehouse_id", referencedColumnName="id")
+     */
+    protected $warehouse;
+
+    /**
+     * @var boolean
+     *
+     * @ORM\Column(name="isPack", type="boolean")
+     */
+    protected $pack;
+
+    /**
+     * @var \DateTime $created
      *
      * @Gedmo\Timestampable(on="create")
      * @ORM\Column(type="datetime")
@@ -125,7 +147,7 @@ class Product
     protected $created;
 
     /**
-     * @var datetime $updated
+     * @var \DateTime $updated
      *
      * @Gedmo\Timestampable(on="update")
      * @ORM\Column(type="datetime")
@@ -137,6 +159,7 @@ class Product
         $this->tags = new ArrayCollection();
         $this->items = new ArrayCollection();
         $this->featured = false;
+        $this->pack = false;
     }
 
     /**
@@ -522,6 +545,54 @@ class Product
     public function setFeatured($featured)
     {
         $this->featured = $featured;
+    }
+
+    /**
+     * @return Warehouse
+     */
+    public function getWarehouse()
+    {
+        return $this->warehouse;
+    }
+
+    /**
+     * @param Warehouse $warehouse
+     */
+    public function setWarehouse(Warehouse $warehouse)
+    {
+        $this->warehouse = $warehouse;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isPack(): bool
+    {
+        return $this->pack;
+    }
+
+    /**
+     * @param bool $pack
+     */
+    public function setPack(bool $pack)
+    {
+        $this->pack = $pack;
+    }
+
+    /**
+     * @return float
+     */
+    public function getStock(): float
+    {
+        return $this->stock;
+    }
+
+    /**
+     * @param float $stock
+     */
+    public function setStock(float $stock)
+    {
+        $this->stock = $stock;
     }
 
 

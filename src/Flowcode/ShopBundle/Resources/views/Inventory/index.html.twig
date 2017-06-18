@@ -1,0 +1,85 @@
+{% extends "FlowerCoreBundle::layout.html.twig" %}
+
+{% block title %}{{ '%entity% list'|trans({'%entity%': 'Inventory'}, 'Inventory') }} - {{ parent() }}{% endblock %}
+{% macro thead(name, field, label) %}
+    {% spaceless %}
+        {% set sort = app.session.get('sort.' ~ name) %}
+        {% if sort and sort.field == field %}
+            {% if sort.type == 'DESC' %}
+                <a href="{{ path('stock_inventory_sort', {field: field, type: 'ASC'}) }}">{{ label | trans({},'Inventory') }}
+                    <i class="fa fa-sort-down"></i></a>
+            {% elseif sort.type == 'ASC' %}
+                <a href="{{ path('stock_inventory_sort', {field: field, type: 'DESC'}) }}">{{ label | trans({},'Inventory') }}
+                    <i class="fa fa-sort-up"></i></a>
+            {% endif %}
+        {% else %}
+            <a href="{{ path('stock_inventory_sort', {field: field, type: 'ASC'}) }}">{{ label | trans({},'Inventory') }}
+                <i class="fa fa-sort"></i></a>
+        {% endif %}
+    {% endspaceless %}
+{% endmacro %}
+
+{% from _self import thead %}
+
+{% block app_menu %}
+    {{ include("FlowerStockBundle::appnav.html.twig", { 'app_inventory': true }) }}
+{% endblock %}
+
+{% block body %}
+    <section class="content-header">
+        <h1>
+            {{ 'Inventories'|trans({}, 'Inventory') }}
+        </h1>
+    </section>
+    <section class="content">
+        <div class="box">
+            <div class="box-header">
+                <div class="box-tools pull-right">
+                    <a class="btn btn-link btn-sm" href={{ path('stock_inventory_new') }}>
+                        <i class="fa fa-plus"></i> {{ 'Add new'|trans({}, 'Inventory') }}
+                    </a>
+                </div>
+            </div>
+            <div class="box-body">
+                <table class="table table-hover records_list table-condensed">
+                    <thead>
+                    <tr>
+                        <th scope="col">{{ thead('inventory', 'code', 'Code') }}</th>
+                        <th scope="col">{{ thead('inventory', 'warehouse', 'Warehouse') }}</th>
+                        <th scope="col">{{ thead('inventory', 'name', 'Name') }}</th>
+                        <th scope="col">{{ thead('inventory', 'status', 'Status') }}</th>
+                        <th scope="col">{{ thead('inventory', 'date', 'Date') }}</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for inventory in paginator %}
+                        <tr>
+                            <td>
+                                <a href="{{ path('stock_inventory_show', {id: inventory.id}) }}">
+                                    {{ inventory.code }}
+                                </a>
+                            </td>
+                            <td>{{ inventory.warehouse }}</td>
+                            <td>{{ inventory.name }}</td>
+                            <td>
+                                {% if inventory.status == 0 %}
+                                    <span class="text-muted">{{ 'STATUS_DRAFT'|trans({}, 'Inventory') }}</span>
+                                {% else %}
+                                    <span class="text-success">{{ 'STATUS_CONFIRMED'|trans({}, 'Inventory') }}</span>
+                                {% endif %}
+                            </td>
+                            <td>{{ inventory.date|date('Y-m-d H:i:s') }}</td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+
+                {{ knp_pagination_render(paginator) }}
+            </div>
+            <div class="box-footer">
+
+            </div>
+
+    </section>
+
+{% endblock %}

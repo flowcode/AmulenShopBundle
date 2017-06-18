@@ -1,0 +1,377 @@
+{% extends "FlowerCoreBundle::layout.html.twig" %}
+
+{% block title %}Inventory - {{ parent() }}{% endblock %}
+
+{% block app_menu %}
+    {{ include("FlowerStockBundle::appnav.html.twig", { 'app_inventory': true }) }}
+{% endblock %}
+
+{% block body %}
+    <section class="content-header">
+        <h1>
+            <a href="{{ path('stock_inventory') }}">
+                {{ 'Inventories'|trans({}, 'Inventory') }}
+            </a>
+            /
+            {{ 'Inventory' | trans({}, 'Inventory') }}
+        </h1>
+    </section>
+    <section class="content">
+        <div class="box" id='showInventory'>
+            <div class="box-header">
+                <h3 class="box-title">
+                    {{ inventory.code }} {{ inventory.name }}
+                    {% if inventory.status == 0 %}
+                        <span class="label label-default">
+                                    Borrador
+                                </span>
+                    {% else %}
+                        <span class="label label-success">
+                                    Confirmado
+                                </span>
+                    {% endif %}
+                </h3>
+                <div class="box-tools">
+                    {% if inventory.status == 0 %}
+                        <div class="" id="confirm-btn" style="display: inline-block;margin-right: 20px;">
+                            <button class="btn btn-warning btn-outline"
+                                    onClick="confirmInventory()">
+                                {{ 'Confirm'|trans({}, 'Inventory') }}
+                            </button>
+
+                        </div>
+                    {% endif %}
+                    <input name="modal" type="hidden" value="0">
+                    <div class="btn-group box-options ">
+                        <button type="button" class="btn btn-link btn-xs dropdown-toggle"
+                                data-toggle="dropdown"
+                                aria-haspopup="true" aria-expanded="false">
+                            <i class="ionicons ion-android-more-vertical"></i>
+                        </button>
+                        <ul class="dropdown-menu dropdown-menu-right">
+                            {% if inventory.status == 0 %}
+                                <li>
+                                    <button class="btn btn-link btn-xs" type="submit"
+                                            onClick="$('#delete-btn').click();">
+                                        {{ 'Delete'|trans({}, 'Inventory') }}
+                                    </button>
+                                </li>
+                                <li>
+                                    <a class="btn btn-link btn-xs" onclick="showEdit(true)">
+                                        {{ 'Edit'|trans({}, 'Inventory') }}
+                                    </a>
+                                </li>
+                            {% endif %}
+                            <li>
+                                <button class="btn btn-link btn-xs" type="button">
+                                    {{ 'Invalidate'|trans({}, 'Inventory') }}
+                                </button>
+                            </li>
+                            <li>
+                                <a href="{{ path('inventory_pdf_export', {id: inventory.id}) }}"
+                                   class="btn btn-link btn-xs" type="button">
+                                    {{ 'Print Inventory'|trans({}, 'Inventory') }}
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+
+                </div>
+            </div>
+
+            <div class="box-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <table class="table table-condensed">
+                            <tbody>
+                            <tr>
+                                <th scope="row">{{ 'Warehouse'|trans({}, 'Inventory') }}</th>
+                                <td>{{ inventory.warehouse }}</td>
+                            </tr>
+                            <tr>
+                                <th scope="row">{{ 'Date'|trans({}, 'Inventory') }}</th>
+                                <td>{{ inventory.date|date('Y-m-d H:i:s') }}</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="col-md-6">
+                        <table class="table table-condensed">
+                            <tbody>
+                            <tr>
+                                <th scope="row">{{ 'Created'|trans({}, 'Inventory') }}</th>
+                                <td>{{ inventory.created|date('Y-m-d H:i:s') }}</td>
+                            </tr>
+                            <tr>
+                                <th scope="row">{{ 'Updated'|trans({}, 'Inventory') }}</th>
+                                <td>{{ inventory.updated|date('Y-m-d H:i:s') }}</td>
+                            </tr>
+                            <tr>
+                                <th scope="row">{{ 'User'|trans({}, 'Inventory') }}</th>
+                                <td>{{ inventory.user }}</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="box" id='editFormInventory' style="display: none;">
+            <div class="box-header">
+                <div class="box-tools">
+                    {{ form_start(delete_form) }}
+                    {{ form_widget(delete_form) }}
+                    <div class="btn-group record_actions">
+                        <button class="btn btn-link btn-sm" id="delete-btn"
+                                type="submit"> {{ 'Delete'|trans({}, 'Inventory') }}</button>
+                        <a class="btn btn-link  btn-sm" onclick="showEdit(false)">
+                            {{ 'Cancel'|trans({}, 'Account') }}
+                        </a>
+                    </div>
+                    <input name="modal" type="hidden" value="0">
+                    {{ form_end(delete_form) }}
+                </div>
+            </div>
+            <div class="box-body">
+
+                {{ form_start(edit_form) }}
+                {{ form_widget(edit_form) }}
+                <p>
+                    <button class="btn-default btn" type="submit">{{ 'save'|trans | capitalize }}</button>
+                </p>
+                {{ form_end(edit_form) }}
+            </div>
+            <div class="box-footer">
+            </div>
+        </div>
+
+
+        <div class="box">
+            {{ form_start(edit_items_form) }}
+            <div class="box-header">
+                <h3 class="box-title">{{ 'Details'|trans({},'Inventory') }}</h3>
+                <div class="box-tools">
+                    {% if inventory.status == 0 %}
+                        <button class="btn btn-info btn-outline" type="submit">
+                            {{ 'Guardar'|trans }}
+                        </button>
+                    {% endif %}
+                </div>
+            </div>
+            <div class="box-body">
+                {% if inventory.status == 0 %}
+                    <div class="col-sm-9">
+                        <div class="warning-text">
+                            <i class="fa fa-exclamation-triangle"></i>
+                            {{ 'sock.inventory.edit.information'| trans({}, 'Inventory') }}
+                        </div>
+                    </div>
+                {% endif %}
+                <table class="table table-bordered">
+                    <thead>
+                    <tr>
+                        <th class="text-center">{{ 'Product'|trans({}, 'Inventory') }}</th>
+                        {% if inventory.status == 0 %}
+                            <th class="text-center">{{ 'Warehouse stock'|trans({}, 'Inventory') }}</th>
+                        {% endif %}
+
+                        <th class="text-center">{{ 'Inventory stock'|trans({}, 'Inventory') }}</th>
+
+                        {% if inventory.status == 0 %}
+                            <th class="text-center">{{ 'Situation'|trans({}, 'Inventory') }}</th>
+                        {% endif %}
+                        <th></th>
+                    </tr>
+                    </thead>
+                    <tbody id="addItem"
+                           data-prototype="&lt;td  colspan=&quot;2 style=&quot;margin-right:3px&quot;  class=&quot;text-center&quot;&gt;{{ form_widget(edit_items_form.items.vars.prototype.product)|e }}&lt;/td&gt;&lt;td  colspan=&quot;1&quot;  style=&quot;margin-right:3px&quot; class=&quot;text-center&quot;&gt;{{ form_widget(edit_items_form.items.vars.prototype.stock)|e }}&lt;/td&gt;">
+
+                    {% set count = -1 %}
+                    {% for item_form in edit_items_form.items %}
+                        {% set count = item_form.vars.value.id %}
+                        {% set balance = "OK" %}
+
+                        <tr class="{% if item_form.vars.value.stock != item_form.vars.value.product.getWareHouseStock(item_form.vars.value.inventory.warehouse.id) %}inventoryItemIssue{% endif %}">
+                            <td>
+                                #
+                                {{ item_form.vars.value.product.code }}
+                                -
+                                {{ item_form.vars.value.product.name }}
+                            </td>
+                            {% if inventory.status == 0 %}
+                                <td class="text-center productWareHouse">
+                                    {{ item_form.vars.value.product.getWareHouseStock(item_form.vars.value.inventory.warehouse.id) }}
+                                </td>
+                            {% endif %}
+                            {% if inventory.status == 1 %}
+                                <td class="text-center productWareHouse">
+                                    {{ item_form.vars.value.stock }}
+                                </td>
+                            {% endif %}
+
+                            {% if inventory.status == 0 %}
+                                <td>
+                                    {{ form_widget(item_form.stock, { 'attr': {'class': 'productStock'} } ) }}
+                                </td>
+                            {% endif %}
+
+                            {% if inventory.status == 0 %}
+                                <td class="text-center">
+                                    <span class="text-success balance" onload="balance()">
+                                    </span>
+                                </td>
+
+
+                                <td class="text-center">
+                                    <a class="deleteRow" onclick="deleteRow(this)">X</a>
+                                </td>
+                            {% endif %}
+                            
+                            {% if inventory.status == 1 %}
+                                <td></td>
+                            {% endif %}
+
+                            <td class="hidden">
+                                {{ form_rest(item_form) }}
+                            </td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+
+            </div>
+            {{ form_end(edit_items_form) }}
+        </div>
+
+    </section>
+
+    <div class="btn-group record_actions"></div>
+
+    <div id="delete_confirm" class="modal fade">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    <h3>{{ 'Confirm delete'|trans() }}</h3>
+                </div>
+                <div class="modal-body">
+                    <p>{{ 'You are about to delete an item'|trans() }}
+                        , {{ 'this procedure is irreversible'|trans() }}.</p>
+                    <p>{{ 'Do you want to proceed?'|trans() }}</p>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-danger">{{ 'Yes'|trans() }}</button>
+                    <button class="btn btn-default" data-dismiss="modal">{{ 'No'|trans() }}</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="confirm_inventory" class="modal fade">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    <h3>{{ 'stock.inventory.confirm.title'|trans({},"Inventory") }}</h3>
+                </div>
+                <div class="modal-body">
+                    <p>{{ 'stock.inventory.confirm.explanation'|trans({},"Inventory") | raw }}</p>
+                    <p>{{ 'stock.inventory.confirm.seguir'|trans({},"Inventory") }}</p>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-danger">{{ 'Yes'|trans() }}</button>
+                    <button class="btn btn-default" data-dismiss="modal">{{ 'No'|trans() }}</button>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+{% block javascripts %}
+
+    {{ parent() }}
+    <script type="text/javascript">
+        function confirmInventory() {
+            var url = "{{ path('stock_inventory_confirm',{'id':inventory.id}) }}";
+            $('#confirm_inventory').modal('show');
+            $('#confirm_inventory').find('button.btn-danger').click(function () {
+                $('#confirm_inventory').modal('hide');
+                document.location = url;
+            });
+        }
+        function showEdit(show) {
+            if (show) {
+                $('#showInventory').hide();
+                $('#editFormInventory').show();
+
+            } else {
+                $('#showInventory').show();
+                $('#editFormInventory').hide();
+            }
+        }
+
+        $(document).ready(function () {
+            $(".js-example-basic-multiple").select2();
+        });
+        
+        function hideField(value) {
+            $(value).hide();
+        }
+
+        function deleteRow(value) {
+            $(value).parent().parent().remove();
+
+        }
+
+        $('.productStock').change(function () {
+            $("#confirm-btn").hide();
+            var productStock = parseInt($(this).val());
+            var productWareHouse = parseInt($(this).parent().prev().html());
+            if (productStock != productWareHouse) {
+                $(this).parent().next().children().text(productWareHouse - productStock);
+                $(this).parent().parent().addClass('inventoryItemIssue');
+            } else if (productStock == productWareHouse) {
+                $(this).parent().next().children().text(" ");
+                $(this).parent().parent().removeClass('inventoryItemIssue');
+
+            }
+        });
+        var $collectionHolder;
+        var $addTagLink = $('{% if inventory.status == 0 %}<td colspan="6" class="text-center"><a href="#" class="">{{ 'Plus item'|trans({}, 'Inventory') }}</a></td>{% endif %}');
+        var $newLinkLi = $('<tr></tr>').append($addTagLink);
+        jQuery(document).ready(function () {
+            $collectionHolder = $('tbody#addItem');
+            $collectionHolder.append($newLinkLi);
+            $collectionHolder.data('index', $collectionHolder.find('tr').length - 1);
+            $addTagLink.on('click', function (e) {
+                e.preventDefault();
+                addTagForm($collectionHolder, $newLinkLi);
+            });
+        });
+
+
+        function addTagForm($collectionHolder, $newLinkLi) {
+            var prototype = $collectionHolder.data('prototype');
+            var index = $collectionHolder.data('index');
+            var newForm = prototype.replace(/__name__/g, index);
+            $collectionHolder.data('index', index + 1);
+            var $newFormLi = $('<tr></tr>').append(newForm);
+            $newLinkLi.before($newFormLi);
+            $newFormLi.append('<td></td>');
+            $newLinkLi.before($newFormLi);
+            addTagFormDeleteLink($newFormLi);
+        }
+
+        function addTagFormDeleteLink($tagFormLi) {
+            var $removeFormA = $('<td class="text-center"><a href="#">X</a></td>');
+            $tagFormLi.append($removeFormA);
+            $removeFormA.on('click', function (e) {
+                e.preventDefault();
+                $tagFormLi.remove();
+            });
+        }
+
+
+    </script>
+
+
+{% endblock %}
