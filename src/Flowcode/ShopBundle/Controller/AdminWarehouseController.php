@@ -4,6 +4,7 @@ namespace Flowcode\ShopBundle\Controller;
 
 use Amulen\ShopBundle\Entity\Product;
 use Flowcode\ShopBundle\Entity\StockChangeLog;
+use Flowcode\ShopBundle\Form\Filter\StockChangeLogFilterType;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
@@ -50,22 +51,24 @@ class AdminWarehouseController extends Controller
     {
         $em = $this->getDoctrine()->getManager();
 
-        $warehouses = $em->getRepository(Warehouse::class)->findAll();
-        $products = $em->getRepository(Product::class)->findAll();
+        $changeLogFilter = $this->createForm(StockChangeLogFilterType::class, null, array(
+            'action' => $this->generateUrl('admin_warehouse_transactions'),
+            'method' => 'GET',
+        ));
 
-        $filter = array(
-            'product' => $request->get('filter_product'),
-            'warehouse' => $request->get('filter_warehouse')
-        );
+        $changeLogFilter->handleRequest($request);
+
+        $filter = array();
+        $filter['product'] = $changeLogFilter->get('product')->getData();
+        $filter['warehouse'] = $changeLogFilter->get('warehouse')->getData();
+
         $qb = $em->getRepository(StockChangeLog::class)->findAllFilteredQB($filter);
         $qb->addOrderBy('scl.id', "DESC");
 
         $paginator = $this->get('knp_paginator')->paginate($qb, $request->query->get('page', 1), 20);
         return array(
+            'form_filter' => $changeLogFilter->createView(),
             'paginator' => $paginator,
-            'warehouses' => $warehouses,
-            'products' => $products,
-            'filter' => $filter,
         );
     }
 

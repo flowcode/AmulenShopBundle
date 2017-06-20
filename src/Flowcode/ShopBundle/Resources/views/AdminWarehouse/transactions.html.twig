@@ -33,36 +33,15 @@
             <div class="box-header">
             </div>
             <div class="box-body">
-                <form class="form-inline">
-                    <div class="form-group">
-                        <select name="filter_product" class="form-control">
-                            <option value="">{{ 'Product'|trans({},'Product') }}</option>
-                            {% for product in products %}
-                                <option value="{{ product.id }}"
-                                        {% if filter.product == product.id %}selected{% endif %}>
-                                    {{ product }}
-                                </option>
-                            {% endfor %}
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <select name="filter_warehouse" class="form-control">
-                            <option value="">{{ 'Warehouse'|trans({},'Product') }}</option>
-                            {% for warehouse in warehouses %}
-                                <option value="{{ warehouse.id }}"
-                                        {% if filter.warehouse == warehouse.id %}selected{% endif %}>
-                                    {{ warehouse }}
-                                </option>
-                            {% endfor %}
-                        </select>
-                    </div>
-                    <button type="submit" class="btn btn-default">
-                        <i class="fa fa-search"></i> {{ 'search'|trans|title }}
-                    </button>
-                    <a class="btn btn-default btn-sm" href="{{ path('admin_warehouse_transactions') }}?reset">
-                        <i class="fa fa-times"></i> {{ 'clean' | trans | capitalize }}
-                    </a>
-                </form>
+                <div>
+                    {{ form_start(form_filter,{'attr':{'class':'form-inline'}}) }}
+                    {{ form_widget(form_filter.type) }}
+                    {{ form_widget(form_filter.product) }}
+                    {{ form_widget(form_filter.warehouse) }}
+                    {{ form_widget(form_filter.submit) }}
+                    {{ form_end(form_filter) }}
+                </div>
+
                 <table class="table table-hover record_properties">
                     <thead>
                     <th>{{ 'date'|trans({}, 'Product')|title }}</th>
@@ -110,4 +89,9 @@
 
     </section>
 
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script src="{{ asset('bundles/tetranzselect2entity/js/select2entity.js') }}"></script>
 {% endblock %}

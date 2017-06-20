@@ -1,1 +1,16 @@
 "%entity% list": Registros de stock
+
+
+changelog: Registro de cambios
+stock_entry: Entrada
+stock_exit: Salida
+date: fecha
+type: tipo
+amount: cantidad
+balance: balance
+cause: motivo
+comments: comentarios
+
+Warehouse: Depósito...
+Product: Producto...
+Type: Tipo...

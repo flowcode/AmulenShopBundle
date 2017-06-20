@@ -165,6 +165,8 @@ class Product
         $this->items = new ArrayCollection();
         $this->featured = false;
         $this->pack = false;
+        $this->manualStock = true;
+        $this->manualPackPricing = false;
     }
 
     /**

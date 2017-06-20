@@ -18,6 +18,7 @@ class StockChangeLogRepository extends EntityRepository
         $this->_em->persist($stockChangeLog);
         $this->_em->flush();
     }
+
     public function findAllQB()
     {
         $qb = $this->createQueryBuilder('scl');
@@ -30,10 +31,10 @@ class StockChangeLogRepository extends EntityRepository
         $qb->leftJoin('scl.product', 'p');
         $qb->leftJoin('scl.warehouse', 'w');
 
-        if ($filter['product']) {
+        if (isset($filter['product'])) {
             $qb->andWhere('p.id =:product_id')->setParameter('product_id', $filter['product']);
         }
-        if ($filter['warehouse']) {
+        if (isset($filter['warehouse'])) {
             $qb->andWhere('w.id = :warehouse_id')->setParameter('warehouse_id', $filter['warehouse']);
         }
 
