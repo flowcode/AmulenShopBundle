@@ -1,0 +1,14 @@
+WarehousesStock: Stock en depósitos
+register_stock_entry: Registrar entrada de stock
+register_stock_exit: Registrar salida de stock
+
+# changelog
+changelog: Registro de cambios
+stock_entry: Entrada
+stock_exit: Salida
+date: fecha
+type: tipo
+amount: cantidad
+balance: balance
+cause: motivo
+comments: comentarios

@@ -132,6 +132,11 @@ class Product
     protected $warehouse;
 
     /**
+     * @OneToMany(targetEntity="\Flowcode\ShopBundle\Entity\WarehouseProduct", mappedBy="product")
+     */
+    protected $warehousesStock;
+
+    /**
      * @var boolean
      *
      * @ORM\Column(name="isPack", type="boolean")
@@ -578,6 +583,37 @@ class Product
     {
         $this->pack = $pack;
     }
+
+    /**
+     * @return mixed
+     */
+    public function getWarehouseStock($warehouseId)
+    {
+        /* @var WarehouseProduct $warehouseStock */
+        foreach ($this->warehousesStock as $warehouseStock) {
+            if ($warehouseStock->getWarehouse()->getId() == $warehouseId) {
+                return $warehouseStock->getStock();
+            }
+        }
+        return null;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getWarehousesStock()
+    {
+        return $this->warehousesStock;
+    }
+
+    /**
+     * @param mixed $warehousesStock
+     */
+    public function setWarehousesStock($warehousesStock)
+    {
+        $this->warehousesStock = $warehousesStock;
+    }
+
 
     /**
      * @return float

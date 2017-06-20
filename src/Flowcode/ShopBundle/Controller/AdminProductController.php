@@ -8,6 +8,7 @@ use Amulen\MediaBundle\Entity\Media;
 use Amulen\MediaBundle\Form\GalleryItemType;
 use Amulen\MediaBundle\Form\ImageGalleryType;
 use Amulen\ShopBundle\Entity\Product;
+use Flowcode\ShopBundle\Entity\Warehouse;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
@@ -205,6 +206,182 @@ class AdminProductController extends Controller
         $form->add('submit', 'submit', array('label' => 'Update'));
 
         return $form;
+    }
+
+    /**
+     * Finds and displays a Product entity.
+     *
+     * @Route("/{id}/stock_increase", name="admin_product_stock_increase", requirements={"id"="\d+"})
+     * @Method("GET")
+     * @Template()
+     */
+    public function stockIncreaseAction(Product $product)
+    {
+        $em = $this->getDoctrine()->getManager();
+        $warehouses = $em->getRepository(Warehouse::class)->findAll();
+        return array(
+            'warehouses' => $warehouses,
+            'product' => $product,
+        );
+    }
+
+    /**
+     * Finds and displays a Product entity.
+     *
+     * @Route("/{id}/stock_increase", name="admin_product_stock_do_increase", requirements={"id"="\d+"})
+     * @Method("POST")
+     * @Template()
+     */
+    public function stockIncreaseDoAction(Request $request, Product $product)
+    {
+        $em = $this->getDoctrine()->getManager();
+        $quantity = $request->get('quantity');
+        $affectRawMaterial = $request->get('affect_raw_materials');
+
+        if ($quantity && $quantity > 0) {
+
+            if ($request->get('warehouse')) {
+                $warehouse = $em->getRepository(Warehouse::class)->find($request->get('warehouse'));
+            } else {
+                $warehouse = $product->getWarehouse();
+            }
+            if ($warehouse) {
+                $stockService = $this->get('amulen.shop.service.stock');
+                $valid = $stockService->entryStock($warehouse, $product, $quantity, $affectRawMaterial, $request->get('comments'));
+
+                return $this->redirect($this->generateUrl('admin_product_show', array('id' => $product->getId())));
+            } else {
+                $this->addFlash('warning', "Seleccione un deposito.");
+            }
+
+        } else {
+            $this->addFlash('warning', "La cantidad no es válida.");
+        }
+
+        return $this->redirect($this->generateUrl('admin_product_stock_increase', array('id' => $product->getId())));
+    }
+
+    /**
+     * Finds and displays a Product entity.
+     *
+     * @Route("/{id}/stock_decrease", name="admin_product_stock_decrease", requirements={"id"="\d+"})
+     * @Method("GET")
+     * @Template()
+     */
+    public function stockDecreaseAction(Product $product)
+    {
+        $em = $this->getDoctrine()->getManager();
+        $warehouses = $em->getRepository(Warehouse::class)->findAll();
+        return array(
+            'warehouses' => $warehouses,
+            'product' => $product,
+        );
+    }
+
+    /**
+     * Finds and displays a Product entity.
+     *
+     * @Route("/{id}/stock_decrease", name="admin_product_stock_do_decrease", requirements={"id"="\d+"})
+     * @Method("POST")
+     * @Template()
+     */
+    public function stockDecreaseDoAction(Request $request, Product $product)
+    {
+        if ($request->get('quantity')) {
+            $em = $this->getDoctrine()->getManager();
+            if ($request->get('affect_raw_materials')) {
+                $affectRawMaterial = true;
+            } else {
+                $affectRawMaterial = false;
+            }
+            if ($request->get('warehouse')) {
+                $warehouse = $em->getRepository(Warehouse::class)->find($request->get('warehouse'));
+            } else {
+                $warehouse = $product->getWarehouse();
+            }
+            if ($warehouse) {
+                $stockService = $this->get('amulen.shop.service.stock');
+                $stockService->exitStock($warehouse, $product, $request->get('quantity'), null, $affectRawMaterial, $request->get('comments'));
+                return $this->redirect($this->generateUrl('admin_product_show', array('id' => $product->getId())));
+            } else {
+                $this->addFlash('warning', "Seleccione un deposito.");
+            }
+        }
+        return $this->redirect($this->generateUrl('admin_product_stock_increase', array('id' => $product->getId())));
+    }
+
+    /**
+     * Displays a form to edit an existing CampaignMail entity.
+     *
+     * @Route("/{id}/copy", name="product_copy", requirements={"id"="\d+"})
+     * @Method("GET")
+     * @Template()
+     */
+    public function copyAction(Product $product)
+    {
+
+
+        $productCopy = new Product();
+        $copyName = $this->get('translator')->trans('Copy of') . " " . $product->getName();
+        $productCopy->setName($copyName);
+
+        $productCopy->setCostPrice($product->getCostPrice());
+        $productCopy->setDescription($product->getDescription()??$copyName);
+        $productCopy->setCode($product->getCode());
+        $productCopy->setImage($product->getImage());
+        $productCopy->setPlace($product->getPlace());
+        $productCopy->setSalePrice($product->getSalePrice());
+        $productCopy->setSupplier($product->getSupplier());
+        $productCopy->setWarehouse($product->getWarehouse());
+
+        // boleans
+        $productCopy->setEnabled($product->getEnabled());
+        $productCopy->setForSale($product->getForSale());
+        $productCopy->setCompositionOnDemand($product->isCompositionOnDemand());
+        $productCopy->setPack($product->isPack());
+        $productCopy->setManualPackPricing($product->isManualPackPricing());
+        $productCopy->setRawMaterial($product->getRawMaterial());
+
+        $em = $this->getDoctrine()->getManager();
+        $em->persist($productCopy);
+
+        // relations
+
+        /* @var ProductRawMaterial $rawMaterial */
+        foreach ($product->getRawMaterials() as $rawMaterial) {
+            $rawMaterialCopy = new ProductRawMaterial();
+            $rawMaterialCopy->setRawMaterial($rawMaterial->getRawMaterial());
+            $rawMaterialCopy->setProduct($productCopy);
+            $rawMaterialCopy->setMeasureUnit($rawMaterial->getMeasureUnit());
+            $rawMaterialCopy->setQuantity($rawMaterial->getQuantity());
+
+            $em->persist($rawMaterialCopy);
+
+            $productCopy->addRawMaterial($rawMaterialCopy);
+
+        }
+
+        /* @var ProductCategory $category */
+        foreach ($product->getCategories() as $category) {
+            $productCopy->addCategory($category);
+        }
+
+        /* @var ProductCustomField $customField */
+        foreach ($product->getCustomFields() as $customField) {
+            $customFieldCopy = new ProductCustomField();
+            $customFieldCopy->setProduct($productCopy);
+            $customFieldCopy->setSettingField($customField->getSettingField());
+            $customFieldCopy->setValue($customField->getValue());
+
+            $em->persist($customFieldCopy);
+
+            $productCopy->addCustomField($customFieldCopy);
+        }
+
+        $em->flush();
+
+
+        return $this->redirect($this->generateUrl('product_show', array("id" => $productCopy->getId())));
     }
 
     /**

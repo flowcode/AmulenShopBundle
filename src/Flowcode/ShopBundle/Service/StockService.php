@@ -121,11 +121,11 @@ class StockService implements ContainerAwareInterface
      * @param Warehouse $warehouse
      * @param Product $product
      * @param int $quantity
-     * @param Sale|null $sale
+     * @param ProductOrder|null $productOrder
      * @param null $comments
      * @param \DateTime|null $date
      */
-    public function decreaseProduct(Warehouse $warehouse, Product $product, $quantity = 1, ProductOrder $sale = null, $comments = null, \DateTime $date = null)
+    public function decreaseProduct(Warehouse $warehouse, Product $product, $quantity = 1, ProductOrder $productOrder = null, $comments = null, \DateTime $date = null)
     {
         $date = !$date ? new \DateTime() : $date;
 
@@ -148,7 +148,7 @@ class StockService implements ContainerAwareInterface
         /* @var StockChangeLog $stockChangeLog */
         $stockChangeLog = $this->stockChangeLogService->getExitChangeLog($product, $quantity, $previousStock, $date, $comments);
         $stockChangeLog->setWarehouse($warehouseProduct->getWarehouse());
-        $stockChangeLog->setProductOrder($sale);
+        $stockChangeLog->setProductOrder($productOrder);
 
         $this->stockChangeLogService->save($stockChangeLog);
 

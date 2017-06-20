@@ -1,24 +1,20 @@
-{% extends "FlowerCoreBundle::layout.html.twig" %}
+{% extends 'FlowcodeDashboardBundle:Default:layout.html.twig' %}
 
 {% block title %}{{ '%entity% list'|trans({'%entity%': 'MeasureUnit'}, 'MeasureUnit') }} - {{ parent() }}{% endblock %}
-
-{% block app_menu %}
-    {{ include("FlowerCoreBundle:Default:admin_nav.html.twig") }}
-{% endblock %}
 
 {% macro thead(name, field, label) %}
     {% spaceless %}
         {% set sort = app.session.get('sort.' ~ name) %}
         {% if sort and sort.field == field %}
             {% if sort.type == 'DESC' %}
-                <a href="{{ path('admin_stock_measure_unit_sort', {field: field, type: 'ASC'}) }}">{{ label | trans({},'MeasureUnit') }}
+                <a href="{{ path('admin_shop_measure_unit_sort', {field: field, type: 'ASC'}) }}">{{ label | trans({},'MeasureUnit') }}
                     <i class="fa fa-sort-down"></i></a>
             {% elseif sort.type == 'ASC' %}
-                <a href="{{ path('admin_stock_measure_unit_sort', {field: field, type: 'DESC'}) }}">{{ label | trans({},'MeasureUnit') }}
+                <a href="{{ path('admin_shop_measure_unit_sort', {field: field, type: 'DESC'}) }}">{{ label | trans({},'MeasureUnit') }}
                     <i class="fa fa-sort-up"></i></a>
             {% endif %}
         {% else %}
-            <a href="{{ path('admin_stock_measure_unit_sort', {field: field, type: 'ASC'}) }}">{{ label | trans({},'MeasureUnit') }}
+            <a href="{{ path('admin_shop_measure_unit_sort', {field: field, type: 'ASC'}) }}">{{ label | trans({},'MeasureUnit') }}
                 <i class="fa fa-sort"></i></a>
         {% endif %}
     {% endspaceless %}
@@ -37,7 +33,7 @@
         <div class="box">
             <div class="box-header">
                 <div class="box-tools pull-right"><a class="btn btn-link btn-sm"
-                                                     href={{ path('admin_stock_measure_unit_new') }}>
+                                                     href={{ path('admin_shop_measure_unit_new') }}>
                         <i class="fa fa-plus"></i> {{ 'Create a new %entity%'|trans({'%entity%': 'MeasureUnit'}, 'MeasureUnit') }}
                     </a>
                 </div>
@@ -55,7 +51,7 @@
                         <tr>
 
                             <td>
-                                <a href="{{ path('admin_stock_measure_unit_show', {id: measureunit.id}) }}">{{ measureunit.name }}</a>
+                                <a href="{{ path('admin_shop_measure_unit_show', {id: measureunit.id}) }}">{{ measureunit.name }}</a>
                             </td>
                             <td>{{ measureunit.slug }}</td>
                         </tr>

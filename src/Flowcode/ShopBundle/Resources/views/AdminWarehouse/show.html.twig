@@ -1,15 +1,11 @@
-{% extends "FlowerCoreBundle::layout.html.twig" %}
+{% extends 'FlowcodeDashboardBundle:Default:layout.html.twig' %}
 
 {% block title %}Warehouse - {{ parent() }}{% endblock %}
-
-{% block app_menu %}
-    {{ include("FlowerStockBundle::appnav.html.twig", { 'app_warehouse': true}) }}
-{% endblock %}
 
 {% block body %}
     <section class="content-header">
         <h1>
-            <a href="{{ path('warehouse') }}"> {{ 'Warehouse list'|trans({'Warehouse': 'Warehouse'}, 'Warehouse') }}</a>
+            <a href="{{ path('admin_warehouse') }}"> {{ 'Warehouse list'|trans({'Warehouse': 'Warehouse'}, 'Warehouse') }}</a>
             /
             {{ 'Warehouse' | trans({}, 'Warehouse') }}
         </h1>
@@ -70,11 +66,11 @@
                     </tr>
                     <tr>
                         <th scope="row">{{ 'Created'|trans({}, 'Warehouse') }}</th>
-                        <td>{{ warehouse.created|date("fullDateTime" | trans) }}</td>
+                        <td>{{ warehouse.created|date }}</td>
                     </tr>
                     <tr>
                         <th scope="row">{{ 'Updated'|trans({}, 'Warehouse') }}</th>
-                        <td>{{ warehouse.updated|date("fullDateTime" | trans) }}</td>
+                        <td>{{ warehouse.updated|date }}</td>
                     </tr>
                     </tbody>
                 </table>

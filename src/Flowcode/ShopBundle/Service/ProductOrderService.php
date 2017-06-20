@@ -285,7 +285,9 @@ class ProductOrderService
 
             /* @var ProductOrderItem $item */
             foreach ($order->getItems() as $item) {
-                if ($item->getProduct()) {
+
+                // Only if is not manual stock.
+                if ($item->getProduct() && !$item->getProduct()->isManualStock()) {
                     $stockService->exitStock($item->getProduct()->getWarehouse(), $item->getProduct(), $item->getQuantity(), $order);
                 }
             }

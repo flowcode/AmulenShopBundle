@@ -1,0 +1,91 @@
+{% extends 'FlowcodeDashboardBundle:Default:layout.html.twig' %}
+
+{% block title %}Product - {{ parent() }}{% endblock %}
+
+{% block body %}
+    <section class="content-header">
+        <h1>
+            <a href="{{ path('admin_product') }}">
+                {{ '%entity% list'|trans({'%entity%': 'Product'}, 'Product') }}
+            </a>
+            / {{ product.name|title }}
+        </h1>
+    </section>
+    <section class="content">
+        <div class="box" id='showProduct'>
+            <div class="box-header">
+                <h3 class="box-title">
+                    {{ 'register_stock_entry'|trans({}, 'Product')|title }}
+                </h3>
+                <div class="box-tools  pull-right">
+                </div>
+            </div>
+            <div class="box-body">
+
+                <form action="{{ path('admin_product_stock_do_increase',{'id':product.id}) }}" method="post"
+                      class="form-horizontal">
+
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">
+                            Cantidad
+                        </label>
+                        <div class="col-sm-8">
+                            <input type="number" name="quantity" class="form-control" value="1">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">
+                            {{ 'affect_rawmaterial'|trans({}, 'Product')|title }}
+                        </label>
+                        <div class="col-sm-8">
+                            <input type="checkbox" name="affect_raw_materials" checked>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">
+                            {{ 'Warehouse'|trans({}, 'Product')|title }}
+                        </label>
+                        <div class="col-sm-8">
+                            <select name="warehouse" class="form-control">
+                                {% for warehouse in warehouses %}
+                                    <option value="{{ warehouse.id }}"
+                                            {% if warehouse == product.warehouse %}selected{% endif %}
+                                    >
+                                        {{ warehouse }}
+                                        {% if warehouse == product.warehouse %}
+                                            (default)
+                                        {% endif %}
+                                    </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+
+
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">
+                            {{ 'comments'|trans({}, 'Product')|title }}
+                        </label>
+                        <div class="col-sm-8">
+                            <textarea class="form-control" name="comments"></textarea>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="col-sm-offset-2 col-sm-10">
+                            <button type="submit" class="btn btn-default">Confirmar</button>
+                        </div>
+                    </div>
+
+                </form>
+
+            </div>
+            <div class="box-footer">
+
+            </div>
+        </div>
+
+    </section>
+{% endblock %}

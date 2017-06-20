@@ -2,44 +2,47 @@
 
 namespace Flowcode\ShopBundle\Controller;
 
+use Amulen\ShopBundle\Entity\Product;
+use Flowcode\ShopBundle\Entity\StockChangeLog;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Flowcode\ShopBundle\Entity\Warehouse;
-use Flowcode\ShopBundle\Form\Type\WarehouseType;
+use Flowcode\ShopBundle\Form\WarehouseType;
 use Doctrine\ORM\QueryBuilder;
 
 /**
- * Warehouse controller.
+ * Admin Warehouse controller.
  *
- * @Route("/warehouse")
+ * @Route("/admin/shop/warehouse")
  */
-class WarehouseController extends Controller
+class AdminWarehouseController extends Controller
 {
     /**
      * Lists all Warehouse entities.
      *
-     * @Route("/", name="warehouse")
+     * @Route("/", name="admin_warehouse")
      * @Method("GET")
      * @Template()
      */
     public function indexAction(Request $request)
     {
         $em = $this->getDoctrine()->getManager();
-        $qb = $em->getRepository('FlowerStockBundle:Warehouse')->createQueryBuilder('w');
+        $qb = $em->getRepository(Warehouse::class)->createQueryBuilder('w');
         $this->addQueryBuilderSort($qb, 'warehouse');
         $paginator = $this->get('knp_paginator')->paginate($qb, $request->query->get('page', 1), 20);
-        
+
         return array(
             'paginator' => $paginator,
         );
     }
+
     /**
      * Lists all Warehouse entities.
      *
-     * @Route("/transactions", name="warehouse_transactions")
+     * @Route("/transactions", name="admin_warehouse_transactions")
      * @Method("GET")
      * @Template()
      */
@@ -47,14 +50,14 @@ class WarehouseController extends Controller
     {
         $em = $this->getDoctrine()->getManager();
 
-        $warehouses = $em->getRepository('FlowerStockBundle:Warehouse')->findAll();
-        $products = $em->getRepository('FlowerModelBundle:Stock\Product')->findAll();
+        $warehouses = $em->getRepository(Warehouse::class)->findAll();
+        $products = $em->getRepository(Product::class)->findAll();
 
         $filter = array(
             'product' => $request->get('filter_product'),
             'warehouse' => $request->get('filter_warehouse')
         );
-        $qb = $em->getRepository('FlowerStockBundle:StockChangeLog')->findAllFilteredQB($filter);
+        $qb = $em->getRepository(StockChangeLog::class)->findAllFilteredQB($filter);
         $qb->addOrderBy('scl.id', "DESC");
 
         $paginator = $this->get('knp_paginator')->paginate($qb, $request->query->get('page', 1), 20);
@@ -69,22 +72,22 @@ class WarehouseController extends Controller
     /**
      * Finds and displays a Warehouse entity.
      *
-     * @Route("/{id}/show", name="warehouse_show", requirements={"id"="\d+"})
+     * @Route("/{id}/show", name="admin_warehouse_show", requirements={"id"="\d+"})
      * @Method("GET")
      * @Template()
      */
     public function showAction(Warehouse $warehouse)
     {
-        $editForm = $this->createForm(new WarehouseType(), $warehouse, array(
-            'action' => $this->generateUrl('warehouse_update', array('id' => $warehouse->getid())),
+        $editForm = $this->createForm(WarehouseType::class, $warehouse, array(
+            'action' => $this->generateUrl('admin_warehouse_update', array('id' => $warehouse->getid())),
             'method' => 'PUT',
         ));
-        $deleteForm = $this->createDeleteForm($warehouse->getId(), 'warehouse_delete');
+        $deleteForm = $this->createDeleteForm($warehouse->getId(), 'admin_warehouse_update');
 
         return array(
 
-        'warehouse' => $warehouse,
-        'edit_form'   => $editForm->createView(),
+            'warehouse' => $warehouse,
+            'edit_form' => $editForm->createView(),
             'delete_form' => $deleteForm->createView(),
 
         );
@@ -93,64 +96,64 @@ class WarehouseController extends Controller
     /**
      * Displays a form to create a new Warehouse entity.
      *
-     * @Route("/new", name="warehouse_new")
+     * @Route("/new", name="admin_warehouse_new")
      * @Method("GET")
      * @Template()
      */
     public function newAction()
     {
         $warehouse = new Warehouse();
-        $form = $this->createForm(new WarehouseType(), $warehouse);
+        $form = $this->createForm(WarehouseType::class, $warehouse);
 
         return array(
             'warehouse' => $warehouse,
-            'form'   => $form->createView(),
+            'form' => $form->createView(),
         );
     }
 
     /**
      * Creates a new Warehouse entity.
      *
-     * @Route("/create", name="warehouse_create")
+     * @Route("/create", name="admin_warehouse_create")
      * @Method("POST")
-     * @Template("FlowerStockBundle:Warehouse:new.html.twig")
+     * @Template("FlowcodeShopBundle:AdminWarehouse:new.html.twig")
      */
     public function createAction(Request $request)
     {
         $warehouse = new Warehouse();
-        $form = $this->createForm(new WarehouseType(), $warehouse);
+        $form = $this->createForm(WarehouseType::class, $warehouse);
         if ($form->handleRequest($request)->isValid()) {
             $em = $this->getDoctrine()->getManager();
             $em->persist($warehouse);
             $em->flush();
 
-            return $this->redirect($this->generateUrl('warehouse_show', array('id' => $warehouse->getId())));
+            return $this->redirect($this->generateUrl('admin_warehouse_show', array('id' => $warehouse->getId())));
         }
 
         return array(
             'warehouse' => $warehouse,
-            'form'   => $form->createView(),
+            'form' => $form->createView(),
         );
     }
 
     /**
      * Displays a form to edit an existing Warehouse entity.
      *
-     * @Route("/{id}/edit", name="warehouse_edit", requirements={"id"="\d+"})
+     * @Route("/{id}/edit", name="admin_warehouse_edit", requirements={"id"="\d+"})
      * @Method("GET")
      * @Template()
      */
     public function editAction(Warehouse $warehouse)
     {
         $editForm = $this->createForm(new WarehouseType(), $warehouse, array(
-            'action' => $this->generateUrl('warehouse_update', array('id' => $warehouse->getid())),
+            'action' => $this->generateUrl('admin_warehouse_update', array('id' => $warehouse->getid())),
             'method' => 'PUT',
         ));
-        $deleteForm = $this->createDeleteForm($warehouse->getId(), 'warehouse_delete');
+        $deleteForm = $this->createDeleteForm($warehouse->getId(), 'admin_warehouse_delete');
 
         return array(
             'warehouse' => $warehouse,
-            'edit_form'   => $editForm->createView(),
+            'edit_form' => $editForm->createView(),
             'delete_form' => $deleteForm->createView(),
         );
     }
@@ -158,26 +161,26 @@ class WarehouseController extends Controller
     /**
      * Edits an existing Warehouse entity.
      *
-     * @Route("/{id}/update", name="warehouse_update", requirements={"id"="\d+"})
+     * @Route("/{id}/update", name="admin_warehouse_update", requirements={"id"="\d+"})
      * @Method("PUT")
-     * @Template("FlowerStockBundle:Warehouse:edit.html.twig")
+     * @Template("FlowcodeShopBundle:AdminWarehouse:edit.html.twig")
      */
     public function updateAction(Warehouse $warehouse, Request $request)
     {
         $editForm = $this->createForm(new WarehouseType(), $warehouse, array(
-            'action' => $this->generateUrl('warehouse_update', array('id' => $warehouse->getid())),
+            'action' => $this->generateUrl('admin_warehouse_update', array('id' => $warehouse->getid())),
             'method' => 'PUT',
         ));
         if ($editForm->handleRequest($request)->isValid()) {
             $this->getDoctrine()->getManager()->flush();
 
-            return $this->redirect($this->generateUrl('warehouse_show', array('id' => $warehouse->getId())));
+            return $this->redirect($this->generateUrl('admin_warehouse_show', array('id' => $warehouse->getId())));
         }
-        $deleteForm = $this->createDeleteForm($warehouse->getId(), 'warehouse_delete');
+        $deleteForm = $this->createDeleteForm($warehouse->getId(), 'admin_warehouse_delete');
 
         return array(
             'warehouse' => $warehouse,
-            'edit_form'   => $editForm->createView(),
+            'edit_form' => $editForm->createView(),
             'delete_form' => $deleteForm->createView(),
         );
     }
@@ -186,7 +189,7 @@ class WarehouseController extends Controller
     /**
      * Save order.
      *
-     * @Route("/order/{field}/{type}", name="warehouse_sort")
+     * @Route("/order/{field}/{type}", name="admin_warehouse_sort")
      */
     public function sortAction($field, $type)
     {
@@ -196,9 +199,9 @@ class WarehouseController extends Controller
     }
 
     /**
-     * @param string $name  session name
+     * @param string $name session name
      * @param string $field field name
-     * @param string $type  sort type ("ASC"/"DESC")
+     * @param string $type sort type ("ASC"/"DESC")
      */
     protected function setOrder($name, $field, $type = 'ASC')
     {
@@ -218,7 +221,7 @@ class WarehouseController extends Controller
 
     /**
      * @param QueryBuilder $qb
-     * @param string       $name
+     * @param string $name
      */
     protected function addQueryBuilderSort(QueryBuilder $qb, $name)
     {
@@ -231,7 +234,7 @@ class WarehouseController extends Controller
     /**
      * Deletes a Warehouse entity.
      *
-     * @Route("/{id}/delete", name="warehouse_delete", requirements={"id"="\d+"})
+     * @Route("/{id}/delete", name="admin_warehouse_delete", requirements={"id"="\d+"})
      * @Method("DELETE")
      */
     public function deleteAction(Warehouse $warehouse, Request $request)
@@ -249,8 +252,8 @@ class WarehouseController extends Controller
     /**
      * Create Delete form
      *
-     * @param integer                       $id
-     * @param string                        $route
+     * @param integer $id
+     * @param string $route
      * @return \Symfony\Component\Form\Form
      */
     protected function createDeleteForm($id, $route)
@@ -258,7 +261,6 @@ class WarehouseController extends Controller
         return $this->createFormBuilder(null, array('attr' => array('id' => 'delete')))
             ->setAction($this->generateUrl($route, array('id' => $id)))
             ->setMethod('DELETE')
-            ->getForm()
-        ;
+            ->getForm();
     }
 }

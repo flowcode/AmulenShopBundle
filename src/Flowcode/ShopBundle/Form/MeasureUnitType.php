@@ -1,7 +1,8 @@
 <?php
 
-namespace Flowcode\ShopBundle\Form\Type;
+namespace Flowcode\ShopBundle\Form;
 
+use Flowcode\ShopBundle\Entity\MeasureUnit;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
@@ -14,10 +15,7 @@ class MeasureUnitType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-        
-            ->add('name')
-            //->add('slug')
-        ;
+            ->add('name');
     }
 
     /**
@@ -26,16 +24,9 @@ class MeasureUnitType extends AbstractType
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
         $resolver->setDefaults(array(
-            'data_class' => 'Flowcode\ShopBundle\Entity\MeasureUnit',
+            'data_class' => MeasureUnit::class,
             'translation_domain' => 'MeasureUnit',
         ));
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function getName()
-    {
-        return 'measureunit';
-    }
 }

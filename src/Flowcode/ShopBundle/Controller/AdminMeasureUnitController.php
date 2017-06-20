@@ -8,27 +8,27 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Flowcode\ShopBundle\Entity\MeasureUnit;
-use Flowcode\ShopBundle\Form\Type\MeasureUnitType;
+use Flowcode\ShopBundle\Form\MeasureUnitType;
 use Doctrine\ORM\QueryBuilder;
 
 /**
  * MeasureUnit controller.
  *
- * @Route("/admin/stock/measure_unit")
+ * @Route("/admin/shop/measure_unit")
  */
-class MeasureUnitController extends Controller
+class AdminMeasureUnitController extends Controller
 {
     /**
      * Lists all MeasureUnit entities.
      *
-     * @Route("/", name="admin_stock_measure_unit")
+     * @Route("/", name="admin_shop_measure_unit")
      * @Method("GET")
      * @Template()
      */
     public function indexAction(Request $request)
     {
         $em = $this->getDoctrine()->getManager();
-        $qb = $em->getRepository('FlowerStockBundle:MeasureUnit')->createQueryBuilder('m');
+        $qb = $em->getRepository(MeasureUnit::class)->createQueryBuilder('m');
         $this->addQueryBuilderSort($qb, 'measureunit');
         $paginator = $this->get('knp_paginator')->paginate($qb, $request->query->get('page', 1), 20);
 
@@ -40,17 +40,17 @@ class MeasureUnitController extends Controller
     /**
      * Finds and displays a MeasureUnit entity.
      *
-     * @Route("/{id}/show", name="admin_stock_measure_unit_show", requirements={"id"="\d+"})
+     * @Route("/{id}/show", name="admin_shop_measure_unit_show", requirements={"id"="\d+"})
      * @Method("GET")
      * @Template()
      */
     public function showAction(MeasureUnit $measureunit)
     {
-        $editForm = $this->createForm(new MeasureUnitType(), $measureunit, array(
-            'action' => $this->generateUrl('admin_stock_measure_unit_update', array('id' => $measureunit->getid())),
+        $editForm = $this->createForm(MeasureUnitType::class, $measureunit, array(
+            'action' => $this->generateUrl('admin_shop_measure_unit_update', array('id' => $measureunit->getid())),
             'method' => 'PUT',
         ));
-        $deleteForm = $this->createDeleteForm($measureunit->getId(), 'admin_stock_measure_unit_delete');
+        $deleteForm = $this->createDeleteForm($measureunit->getId(), 'admin_shop_measure_unit_delete');
 
         return array(
 
@@ -64,14 +64,14 @@ class MeasureUnitController extends Controller
     /**
      * Displays a form to create a new MeasureUnit entity.
      *
-     * @Route("/new", name="admin_stock_measure_unit_new")
+     * @Route("/new", name="admin_shop_measure_unit_new")
      * @Method("GET")
      * @Template()
      */
     public function newAction()
     {
         $measureunit = new MeasureUnit();
-        $form = $this->createForm(new MeasureUnitType(), $measureunit);
+        $form = $this->createForm(MeasureUnitType::class, $measureunit);
 
         return array(
             'measureunit' => $measureunit,
@@ -82,7 +82,7 @@ class MeasureUnitController extends Controller
     /**
      * Creates a new MeasureUnit entity.
      *
-     * @Route("/create", name="admin_stock_measure_unit_create")
+     * @Route("/create", name="admin_shop_measure_unit_create")
      * @Method("POST")
      * @Template("FlowerStockBundle:MeasureUnit:new.html.twig")
      */
@@ -95,7 +95,7 @@ class MeasureUnitController extends Controller
             $em->persist($measureunit);
             $em->flush();
 
-            return $this->redirect($this->generateUrl('admin_stock_measure_unit_show', array('id' => $measureunit->getId())));
+            return $this->redirect($this->generateUrl('admin_shop_measure_unit_show', array('id' => $measureunit->getId())));
         }
 
         return array(
@@ -107,17 +107,17 @@ class MeasureUnitController extends Controller
     /**
      * Displays a form to edit an existing MeasureUnit entity.
      *
-     * @Route("/{id}/edit", name="admin_stock_measure_unit_edit", requirements={"id"="\d+"})
+     * @Route("/{id}/edit", name="admin_shop_measure_unit_edit", requirements={"id"="\d+"})
      * @Method("GET")
      * @Template()
      */
     public function editAction(MeasureUnit $measureunit)
     {
         $editForm = $this->createForm(new MeasureUnitType(), $measureunit, array(
-            'action' => $this->generateUrl('admin_stock_measure_unit_update', array('id' => $measureunit->getid())),
+            'action' => $this->generateUrl('admin_shop_measure_unit_update', array('id' => $measureunit->getid())),
             'method' => 'PUT',
         ));
-        $deleteForm = $this->createDeleteForm($measureunit->getId(), 'admin_stock_measure_unit_delete');
+        $deleteForm = $this->createDeleteForm($measureunit->getId(), 'admin_shop_measure_unit_delete');
 
         return array(
             'measureunit' => $measureunit,
@@ -129,22 +129,22 @@ class MeasureUnitController extends Controller
     /**
      * Edits an existing MeasureUnit entity.
      *
-     * @Route("/{id}/update", name="admin_stock_measure_unit_update", requirements={"id"="\d+"})
+     * @Route("/{id}/update", name="admin_shop_measure_unit_update", requirements={"id"="\d+"})
      * @Method("PUT")
      * @Template("FlowerStockBundle:MeasureUnit:edit.html.twig")
      */
     public function updateAction(MeasureUnit $measureunit, Request $request)
     {
         $editForm = $this->createForm(new MeasureUnitType(), $measureunit, array(
-            'action' => $this->generateUrl('admin_stock_measure_unit_update', array('id' => $measureunit->getid())),
+            'action' => $this->generateUrl('admin_shop_measure_unit_update', array('id' => $measureunit->getid())),
             'method' => 'PUT',
         ));
         if ($editForm->handleRequest($request)->isValid()) {
             $this->getDoctrine()->getManager()->flush();
 
-            return $this->redirect($this->generateUrl('admin_stock_measure_unit_show', array('id' => $measureunit->getId())));
+            return $this->redirect($this->generateUrl('admin_shop_measure_unit_show', array('id' => $measureunit->getId())));
         }
-        $deleteForm = $this->createDeleteForm($measureunit->getId(), 'admin_stock_measure_unit_delete');
+        $deleteForm = $this->createDeleteForm($measureunit->getId(), 'admin_shop_measure_unit_delete');
 
         return array(
             'measureunit' => $measureunit,
@@ -157,13 +157,13 @@ class MeasureUnitController extends Controller
     /**
      * Save order.
      *
-     * @Route("/order/{field}/{type}", name="admin_stock_measure_unit_sort")
+     * @Route("/order/{field}/{type}", name="admin_shop_measure_unit_sort")
      */
     public function sortAction($field, $type)
     {
         $this->setOrder('measureunit', $field, $type);
 
-        return $this->redirect($this->generateUrl('admin_stock_measure_unit'));
+        return $this->redirect($this->generateUrl('admin_shop_measure_unit'));
     }
 
     /**
@@ -202,19 +202,19 @@ class MeasureUnitController extends Controller
     /**
      * Deletes a MeasureUnit entity.
      *
-     * @Route("/{id}/delete", name="admin_stock_measure_unit_delete", requirements={"id"="\d+"})
+     * @Route("/{id}/delete", name="admin_shop_measure_unit_delete", requirements={"id"="\d+"})
      * @Method("DELETE")
      */
     public function deleteAction(MeasureUnit $measureunit, Request $request)
     {
-        $form = $this->createDeleteForm($measureunit->getId(), 'admin_stock_measure_unit_delete');
+        $form = $this->createDeleteForm($measureunit->getId(), 'admin_shop_measure_unit_delete');
         if ($form->handleRequest($request)->isValid()) {
             $em = $this->getDoctrine()->getManager();
             $em->remove($measureunit);
             $em->flush();
         }
 
-        return $this->redirect($this->generateUrl('admin_stock_measure_unit'));
+        return $this->redirect($this->generateUrl('admin_shop_measure_unit'));
     }
 
     /**

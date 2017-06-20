@@ -1,15 +1,11 @@
-{% extends "FlowerCoreBundle::layout.html.twig" %}
+{% extends 'FlowcodeDashboardBundle:Default:layout.html.twig' %}
 
 {% block title %}{{ '%entity% creation'|trans({'%entity%': 'Warehouse'}, 'Warehouse') }} - {{ parent() }}{% endblock %}
-
-{% block app_menu %}
-    {{ include("FlowerStockBundle::appnav.html.twig", { 'app_warehouse': true}) }}
-{% endblock %}
 
 {% block body %}
     <section class="content-header">
         <h1>
-            <a href="{{ path('warehouse') }}"> {{ '%entity% list'|trans({'%entity%': 'Warehouse'}, 'Warehouse') }}</a>
+            <a href="{{ path('admin_warehouse') }}"> {{ '%entity% list'|trans({'%entity%': 'Warehouse'}, 'Warehouse') }}</a>
             /
             {{ 'Warehouse' | trans({}, 'Warehouse') }}
         </h1>
@@ -18,10 +14,12 @@
     <section class="content">
         <div class="box">
             <div class="box-body">
-                {{ form_start(form, {action: path('warehouse_create')}) }}
+                {{ form_start(form, {action: path('admin_warehouse_create')}) }}
                 {{ form_widget(form) }}
                 <p>
-                    <button class="btn-default btn" type="submit">{{ 'save'|trans | capitalize }}</button>
+                    <button class="btn-default btn" type="submit">
+                        {{ 'save'|trans | capitalize }}
+                    </button>
                 </p>
                 {{ form_end(form) }}
             </div>

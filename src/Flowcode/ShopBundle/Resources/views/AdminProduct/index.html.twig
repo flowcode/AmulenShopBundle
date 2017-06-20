@@ -8,7 +8,7 @@
             <div class="box-header">
                 <h3>{{ "product list"|trans|title }}</h3>
                 <div class="box-tools">
-                    <a href="{{ path('admin_product_new') }}" class="btn btn-link btn-sm">
+                    <a href="{{ path('amulen_admin_product_new') }}" class="btn btn-link btn-sm">
                         <i class="fa fa-plus"></i> {{ "new"|trans|title }}
                     </a>
                 </div>
@@ -42,7 +42,10 @@
                 <table class="records_list table table-condensed">
                     <thead>
                     <tr>
+                        <th>{{ "Id"|trans }}</th>
+                        <th></th>
                         <th>{{ "Nombre"|trans }}</th>
+                        <th>Categoría</th>
                         <th>{{ "Descripcion"|trans }}</th>
                         <th>{{ "Precio"|trans }}</th>
                         <th>{{ "Habilitado"|trans }}</th>
@@ -51,9 +54,31 @@
                     <tbody>
                     {% for entity in pagination %}
                         <tr>
-                            <td><a href="{{ path('admin_product_show', { 'id': entity.id }) }}">{{ entity.name }}</a>
+                            <td>
+                                <a href="{{ path('amulen_admin_product_show', { 'id': entity.id }) }}">
+                                    {{ entity.id }}
+                                </a>
                             </td>
-                            <td>{{ entity.description }}</td>
+                            <td>
+                                {% if entity.getMediaGallery.getGalleryItems[0] is defined %}
+                                    {% if entity.flowrId %}
+                                        <img src="{{ asset(entity.getMediaGallery.getGalleryItems[0].media.path) }}" class="img-responsive" style="max-width: 50px;">
+                                    {% else %}
+                                        <img src="{{ asset(entity.getMediaGallery.getGalleryItems[0].media.path|imagine_filter('thumb_product_image_xs')) }}">
+                                    {% endif %}
+                                {% endif %}
+                            </td>
+                            <td>
+                                <a href="{{ path('amulen_admin_product_show', { 'id': entity.id }) }}">
+                                    {{ entity.name }}
+                                </a>
+                            </td>
+                            <td>
+                                {{ entity.category }}
+                            </td>
+                            <td>
+                                {{ entity.description }}
+                            </td>
                             <td>{{ entity.price }}</td>
                             <td>{{ entity.enabled ? 'yes'|trans : 'no'|trans }}</td>
                         </tr>

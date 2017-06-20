@@ -1,6 +1,6 @@
 <?php
 
-namespace Flowcode\ShopBundle\Form\Type;
+namespace Flowcode\ShopBundle\Form;
 
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
