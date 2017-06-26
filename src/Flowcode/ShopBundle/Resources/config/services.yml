@@ -17,6 +17,12 @@ services:
         tags:
             - { name: form.type, alias: amulen_shopbundle_productorder_shipping }
 
+    amulen.shop.form.strategy:
+        class: Flowcode\ShopBundle\Form\StrategyType
+        arguments: ['@amulen.classification.category']
+        tags:
+            - { name: form.type, alias: flowcode_shopbundle_strategy }
+
     symfony.form.type.tree:
        class: Yavin\Symfony\Form\Type\TreeType
        arguments: [ "@property_accessor" ]
@@ -136,6 +142,11 @@ services:
         arguments:
           - "@doctrine.orm.entity_manager"
           - "@lexik_form_filter.query_builder_updater"
+
+    amulen.shop.strategy:
+        class: Flowcode\ShopBundle\Service\StrategyService
+        arguments:
+          - "@doctrine.orm.entity_manager"
 
     amulen.shop.order:
         class: Flowcode\ShopBundle\Service\ProductOrderService

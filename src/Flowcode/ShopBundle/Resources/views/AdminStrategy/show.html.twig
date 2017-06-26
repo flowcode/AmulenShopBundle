@@ -1,0 +1,54 @@
+{% extends 'FlowcodeDashboardBundle:Default:layout.html.twig' %}
+
+{% block body -%}
+{{ include('FlowcodeShopBundle:AdminStrategy:strategyHeader.html.twig') }}
+
+<section class="content">
+    <div class="box box-solid">
+        <div class="box-header">
+            {#<h3 class="box-title">{{ entity.name|title }}</h3>#}
+            <div class="box-tools">
+                <a class="btn btn-link btn-sm" href="{{ path('admin_strategy') }}">
+                    {{ "Back to the list"|trans }}
+                </a>
+                <a class="btn btn-link btn-sm" href="{{ path('admin_strategy_edit', { 'id': entity.id }) }}">
+                    {{ "edit"|trans }}
+                </a>
+            </div>
+        </div>
+        <div class="box-body">
+            <div class="row">
+                <div class="col-sm-8">
+                    <div class="panel panel-default">
+                        <div class="panel-heading">Datos del producto</div>
+                            <table class="record_properties table table-condensed">
+                                <tbody>
+                                    <tr>
+                                        <th>{{ "Id"|trans }}</th>
+                                        <td>{{ entity.id }}</td>
+                                    </tr>
+                                    <tr>
+                                        <th>{{ "Name"|trans }}</th>
+                                        <td>{{ entity.name }}</td>
+                                    </tr>
+                                    <tr>
+                                        <th>{{ "Product"|trans }}</th>
+                                        <td>{% if entity.product %}{{ entity.product.name }}{% endif %}</td>
+                                    </tr>
+                                    <tr>
+                                        <th>{{ "Factor"|trans }}</th>
+                                        <td>{{ entity.factor }}</td>
+                                    </tr>
+                                    <tr>
+                                        <th>{{ "Categories"|trans }}</th>
+                                        <td>{{ entity.categories|join(', ') }}</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

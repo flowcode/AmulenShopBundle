@@ -77,6 +77,10 @@ class ShowMenuSubscriber implements EventSubscriberInterface
                     "title" => $this->translator->trans('%entity% list', array(), 'StockChangeLog'),
                 ),
                 array(
+                    "url" => $this->router->generate('admin_strategy'),
+                    "title" => $this->translator->trans('strategy'),
+                ),
+                array(
                     "url" => $this->router->generate('admin_amulen_shop_setting'),
                     "title" => $this->translator->trans('settings'),
                 ),

@@ -3,6 +3,7 @@
 namespace Flowcode\ShopBundle\Entity;
 
 use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\ORM\Mapping\JoinColumn;
 use Doctrine\ORM\Mapping\JoinTable;
@@ -65,6 +66,13 @@ class Product
     protected $price;
 
     /**
+     * @var float
+     *
+     * @ORM\Column(name="capacity", type="float", nullable=true)
+     */
+    protected $capacity;
+
+    /**
      * @var boolean
      *
      * @ORM\Column(name="enabled", type="boolean")
@@ -117,6 +125,11 @@ class Product
     protected $items;
 
     /**
+     * @OneToMany(targetEntity="Amulen\ShopBundle\Entity\Strategy", mappedBy="product")
+     * */
+    protected $strategies;
+
+    /**
      * @var float
      *
      * @ORM\Column(name="stock", type="integer")
@@ -163,9 +176,12 @@ class Product
     {
         $this->tags = new ArrayCollection();
         $this->items = new ArrayCollection();
+        $this->strategies = new ArrayCollection();
         $this->featured = false;
         $this->pack = false;
         $this->manualStock = true;
+        $this->stock = 0;
+        $this->capacity = 0;
         $this->manualPackPricing = false;
     }
 
@@ -269,6 +285,29 @@ class Product
     public function getPrice()
     {
         return $this->price;
+    }
+
+    /**
+     * Set capacity
+     *
+     * @param float $capacity
+     * @return Product
+     */
+    public function setCapacity($capacity)
+    {
+        $this->capacity = $capacity;
+
+        return $this;
+    }
+
+    /**
+     * Get capacity
+     *
+     * @return float
+     */
+    public function getCapacity()
+    {
+        return $this->capacity;
     }
 
     /**
@@ -536,6 +575,39 @@ class Product
     public function getItems()
     {
         return $this->items;
+    }
+
+    /**
+     * Add strategy
+     *
+     * @param Strategy $strategy
+     * @return Product
+     */
+    public function addStrategy(Strategy $strategy)
+    {
+        $this->strategies[] = $strategy;
+
+        return $this;
+    }
+
+    /**
+     * Remove strategy
+     *
+     * @param Strategy $strategy
+     */
+    public function removeStrategy(Strategy $strategy)
+    {
+        $this->strategies->removeElement($strategy);
+    }
+
+    /**
+     * Get strategies
+     *
+     * @return Collection
+     */
+    public function getStrategies()
+    {
+        return $this->strategies;
     }
 
     /**

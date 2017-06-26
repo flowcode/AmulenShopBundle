@@ -4,13 +4,15 @@ namespace Flowcode\ShopBundle\Form;
 
 use Amulen\ClassificationBundle\Entity\Category;
 use Amulen\ShopBundle\Entity\Product;
+use Amulen\ShopBundle\Entity\Strategy;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\PercentType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 use Amulen\ClassificationBundle\Entity\Tag;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 
-class ProductType extends AbstractType
+class StrategyType extends AbstractType
 {
 
     private $categoryService;
@@ -28,8 +30,14 @@ class ProductType extends AbstractType
     {
         $builder
             ->add('name')
-            ->add('description')
-            ->add('category', EntityType::class, array(
+            ->add('product', EntityType::class, array(
+                'class' => Product::class,
+                'choice_label' => function ($product) {
+                    return $product->getName();
+                },
+                'multiple' => false,
+            ))
+            ->add('categories', EntityType::class, array(
                 'class' => Category::class,
                 'choices' => $this->categoryService->findByRoot("product"),
                 'choice_label' => function ($category, $key, $index) {
@@ -39,19 +47,9 @@ class ProductType extends AbstractType
                     }
                     return strtolower($prefix . $category->getName());
                 },
-                'multiple' => false,
+                'multiple' => true,
             ))
-            ->add('price', 'text', array("label" => "Precio"))
-            ->add('enabled')
-            ->add('warehouse')
-            ->add('featured')
-            ->add('manualStock')
-            ->add('manualPackPricing')
-            ->add('tags', 'collection', array("type" => new Tag(), "label" => "Etiquetas"))
-            ->add('mediaGallery', null, array("label" => "Galería de medios"))
-            ->add('content', 'ckeditor')
-            ->add('brand')
-            ->add('capacity');
+            ->add('factor', PercentType::class, array("label" => "Factor descuento"));
     }
 
     /**
@@ -60,7 +58,7 @@ class ProductType extends AbstractType
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
         $resolver->setDefaults(array(
-            'data_class' => Product::class
+            'data_class' => Strategy::class
         ));
     }
 
@@ -69,6 +67,6 @@ class ProductType extends AbstractType
      */
     public function getName()
     {
-        return 'flowcode_shopbundle_product';
+        return 'flowcode_shopbundle_strategy';
     }
 }
