@@ -38,16 +38,27 @@ class StrategyRepository extends EntityRepository
      * @param Category $category
      * @return \Doctrine\ORM\QueryBuilder
      */
-    public function getByCategory(Category $category = null)
+    public function getByCategory(Category $category = null, $pathCat = null)
     {
         $qb = $this->findAllQB();
-        $qb->join('s.product', 'p');
+        $qb->innerJoin('s.product', 'p');
 
         if ($category) {
             $qb->where(':category MEMBER OF s.categories');
             $qb->setParameter("category", $category);
-            $qb->orderBy('s.price', 'ASC');
-            $qb->orderBy('p.capacity', 'ASC');
+
+            //Incluir todos los padres de la categoria actual
+            if($pathCat){
+                $i = 1;
+                foreach ($pathCat as $item) {
+                    $qb->orWhere(':parentCat_'.$i.' MEMBER OF s.categories');
+                    $qb->setParameter("parentCat_".$i, $item);
+                    $i++;
+                }
+            }
+
+            $qb->addOrderBy('p.capacity', 'ASC');
+            $qb->addOrderBy('s.factor', 'DESC');
         }
 
         return $qb->getQuery()->getResult();

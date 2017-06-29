@@ -63,7 +63,9 @@ class StrategyService
 
     public function getByCategory(Category $category = null)
     {
-        return $this->getEm()->getRepository("AmulenShopBundle:Strategy")->getByCategory($category);
+        $pathCat = $this->getEm()->getRepository("AmulenClassificationBundle:Category")->getPath($category);
+
+        return $this->getEm()->getRepository("AmulenShopBundle:Strategy")->getByCategory($category, $pathCat);
     }
 
     public function supportsClass($class)

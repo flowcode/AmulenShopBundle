@@ -113,7 +113,7 @@ class ProductOrderService
      * @param int $quantity
      * @return ProductOrderItem|bool
      */
-    public function addProduct(Product $product, ProductOrder $productOrder, $quantity = 1)
+    public function addProduct(Product $product, ProductOrder $productOrder, $quantity = 1, $discount = null)
     {
         $item = $this->getProductItem($product, $productOrder);
         if (!$item) {
@@ -123,22 +123,19 @@ class ProductOrderService
             $item->setUnitPrice($product->getPrice());
             $item->setOrder($productOrder);
             $productOrder->addItem($item);
-            $subTotal = $productOrder->getSubTotal() + $product->getPrice();
-            $productOrder->setSubTotal($subTotal);
-            $total = $productOrder->getTotal() + $product->getPrice();
-            $productOrder->setTotal($total);
         } else {
             $oldQty = $item->getQuantity();
             $item->setQuantity($quantity + $oldQty);
-
-            $subTotal = $productOrder->getSubTotal() - $product->getPrice() * $oldQty;
-            $subTotal += $product->getPrice() * ($quantity + $oldQty);
-            $productOrder->setSubTotal($subTotal);
-
-            $total = $productOrder->getTotal() - $product->getPrice() * $oldQty;
-            $total += $product->getPrice() * ($quantity + $oldQty);
-            $productOrder->setTotal($total);
         }
+        if($discount){
+            $item->setDiscount($discount);
+        }
+
+        $subTotal = $productOrder->getSubTotal() + $product->getPrice() * $quantity;
+        $productOrder->setSubTotal($subTotal);
+        $total = $productOrder->getTotal() + $product->getPrice() * $quantity - $item->getDiscount();
+        $productOrder->setTotal($total);
+
         $this->getEm()->persist($item);
         $this->update($productOrder);
 
@@ -205,6 +202,9 @@ class ProductOrderService
         $productOrder->setTotal($total);
 
         if ($newQty <= 0) {
+            $discount = $item->getDiscount();
+            $productOrder->setTotal($productOrder->getTotal() + $discount);
+            $item->setDiscount(0);
             $productOrder->getItems()->removeElement($item);
         }
 

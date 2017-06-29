@@ -51,6 +51,17 @@ class ProductOrderItem
      */
     protected $unitPrice;
 
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="discount", type="float")
+     */
+    protected $discount;
+
+    public function __construct()
+    {
+        $this->discount = 0;
+    }
 
     /**
      * Get id
@@ -146,6 +157,22 @@ class ProductOrderItem
     public function setUnitPrice($unitPrice)
     {
         $this->unitPrice = $unitPrice;
+    }
+
+    /**
+     * @return int
+     */
+    public function getDiscount()
+    {
+        return $this->discount;
+    }
+
+    /**
+     * @param int $discount
+     */
+    public function setDiscount($discount)
+    {
+        $this->discount = $discount;
     }
 
     /**
