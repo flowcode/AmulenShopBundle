@@ -113,7 +113,7 @@ class ProductOrderService
      * @param int $quantity
      * @return ProductOrderItem|bool
      */
-    public function addProduct(Product $product, ProductOrder $productOrder, $quantity = 1, $discount = null)
+    public function addProduct(Product $product, ProductOrder $productOrder, $quantity = 1, $discount = 0)
     {
         $item = $this->getProductItem($product, $productOrder);
         if (!$item) {
@@ -127,13 +127,13 @@ class ProductOrderService
             $oldQty = $item->getQuantity();
             $item->setQuantity($quantity + $oldQty);
         }
-        if($discount){
+        if($discount > 0){
             $item->setDiscount($discount);
         }
 
         $subTotal = $productOrder->getSubTotal() + $product->getPrice() * $quantity;
         $productOrder->setSubTotal($subTotal);
-        $total = $productOrder->getTotal() + $product->getPrice() * $quantity - $item->getDiscount();
+        $total = $productOrder->getTotal() + $product->getPrice() * $quantity - $discount;
         $productOrder->setTotal($total);
 
         $this->getEm()->persist($item);

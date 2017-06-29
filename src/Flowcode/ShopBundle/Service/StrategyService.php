@@ -68,6 +68,22 @@ class StrategyService
         return $this->getEm()->getRepository("AmulenShopBundle:Strategy")->getByCategory($category, $pathCat);
     }
 
+    public function getByCategoryDistinctProd(Category $category = null)
+    {
+        $strategies = $this->getByCategory($category);
+
+        $result = [];
+        $product = null;
+        foreach ($strategies as $strategy) {
+            if ($product != $strategy->getProduct()) {
+                $result[] = $strategy;
+            }
+            $product = $strategy->getProduct();
+        }
+
+        return $result;
+    }
+
     public function supportsClass($class)
     {
         return $class === 'Amulen\ShopBundle\Entity\Strategy';

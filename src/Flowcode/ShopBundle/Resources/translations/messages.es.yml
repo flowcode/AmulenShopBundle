@@ -11,6 +11,8 @@ categorias de productos: categorias de productos
 nuevo producto: nuevo producto
 categorias: categorías
 Categorias: Categorías
+categories: categorías
+Categories: Categorías
 #Tablero de la tienda: Tablero de la tienda
 Inicio: Inicio
 Nuevo: Nuevo
@@ -58,6 +60,17 @@ Province: Provincia
 Zone: Zona
 Stock: Stock
 Warehouse: Depósito
+Capacity: Capacidad
+capacity: Capacidad
+new: Nuevo
+Settings: Ajustes
+settings: Ajustes
+Strategy: Estrategia
+strategy: Estrategia
+Orders: Pedidos
+orders: Pedidos
+Services: Servicios
+services: Servicios
 
 STATUS_DRAFT: Borrador
 STATUS_PENDING: Pendiente

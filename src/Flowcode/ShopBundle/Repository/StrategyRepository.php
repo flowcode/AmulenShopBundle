@@ -58,6 +58,7 @@ class StrategyRepository extends EntityRepository
             }
 
             $qb->addOrderBy('p.capacity', 'ASC');
+            $qb->addOrderBy('p.id', 'ASC');
             $qb->addOrderBy('s.factor', 'DESC');
         }
 
