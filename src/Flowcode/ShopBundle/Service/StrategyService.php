@@ -61,16 +61,16 @@ class StrategyService
         return $strategy;
     }
 
-    public function getByCategory(Category $category = null)
+    public function getByCategory(Category $category = null, $elemCount = null)
     {
         $pathCat = $this->getEm()->getRepository("AmulenClassificationBundle:Category")->getPath($category);
 
-        return $this->getEm()->getRepository("AmulenShopBundle:Strategy")->getByCategory($category, $pathCat);
+        return $this->getEm()->getRepository("AmulenShopBundle:Strategy")->getByCategory($category, $pathCat, $elemCount);
     }
 
-    public function getByCategoryDistinctProd(Category $category = null)
+    public function getByCategoryDistinctProd(Category $category = null, $elemCount = null)
     {
-        $strategies = $this->getByCategory($category);
+        $strategies = $this->getByCategory($category, $elemCount);
 
         $result = [];
         $product = null;

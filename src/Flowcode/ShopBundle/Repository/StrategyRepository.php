@@ -38,7 +38,7 @@ class StrategyRepository extends EntityRepository
      * @param Category $category
      * @return \Doctrine\ORM\QueryBuilder
      */
-    public function getByCategory(Category $category = null, $pathCat = null)
+    public function getByCategory(Category $category = null, $pathCat = null, $elemCount = null)
     {
         $qb = $this->findAllQB();
         $qb->innerJoin('s.product', 'p');
@@ -55,6 +55,10 @@ class StrategyRepository extends EntityRepository
                     $qb->setParameter("parentCat_".$i, $item);
                     $i++;
                 }
+            }
+
+            if($elemCount){
+                $qb->andWhere('p.capacity = :elemCount')->setParameter("elemCount", $elemCount);
             }
 
             $qb->addOrderBy('p.capacity', 'ASC');

@@ -631,7 +631,7 @@ class AdminProductController extends Controller
      */
     public function deleteGalleryItemAction(Request $request, GalleryItem $entity)
     {
-        $form = $this->createDeleteForm($id);
+        $form = $this->createDeleteForm($entity->getId());
         $form->handleRequest($request);
 
         if ($form->isValid()) {

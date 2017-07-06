@@ -43,6 +43,7 @@ class ProductType extends AbstractType
             ))
             ->add('price', 'text', array("label" => "Precio"))
             ->add('enabled')
+            ->add('pack')
             ->add('warehouse')
             ->add('featured')
             ->add('manualStock')
