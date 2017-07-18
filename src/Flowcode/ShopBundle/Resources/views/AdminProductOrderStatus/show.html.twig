@@ -1,0 +1,70 @@
+{% extends 'FlowcodeDashboardBundle:Default:layout.html.twig' %}
+
+{% block body -%}
+    {{ include('FlowcodeShopBundle:AdminProductOrderStatus:productOrderStatusHeader.html.twig') }}
+
+    <section class="content">
+        <div class="box box-solid">
+            <div class="box-header">
+                <div class="box-tools">
+                    <a class="btn btn-link btn-sm" href="{{ path('admin_orderstatus') }}">
+                        {{ "Back to the list"|trans }}
+                    </a>
+                    <a class="btn btn-link btn-sm" href="{{ path('admin_orderstatus_edit', { 'id': entity.id }) }}">
+                        {{ "edit"|trans }}
+                    </a>
+                </div>
+            </div>
+            <div class="box-body">
+                <div class="row">
+                    <div class="col-sm-8">
+                        <div class="panel panel-default">
+                            <div class="panel-heading">Datos del producto</div>
+                            <table class="record_properties table table-condensed">
+                                <tbody>
+                                <tr>
+                                    <th scope="row">{{ 'Name'|trans() }}</th>
+                                    <td>{{ entity.name }}</td>
+                                </tr>
+                                <tr>
+                                    <th scope="row">{{ 'previous'|trans() }}</th>
+                                    <td>{{ entity.previousSteps|join(', ')|capitalize }}</td>
+                                </tr>
+                                <tr>
+                                    <th scope="row">{{ 'following'|trans() }}</th>
+                                    <td>{{ entity.followingSteps|join(', ')|capitalize }}</td>
+                                </tr>
+                                <tr>
+                                    <th scope="row">{{ 'Ordermodificable'|trans() }}</th>
+                                    <td>{% if entity.orderModificable %}<i class="fa fa-check-square-o"></i>{% else %}<i
+                                                class="fa fa-square-o"></i>{% endif %}</td>
+                                </tr>
+                                <tr>
+                                    <th scope="row">{{ 'StockModifier'|trans() }}</th>
+                                    <td>{% if entity.StockModifier %}<i class="fa fa-check-square-o"></i>{% else %}<i
+                                                class="fa fa-square-o"></i>{% endif %}</td>
+                                </tr>
+                                <tr>
+                                    <th scope="row">{{ 'invoiceable'|trans() }}</th>
+                                    <td>{% if entity.invoiceable %}<i class="fa fa-check-square-o"></i>{% else %}<i
+                                                class="fa fa-square-o"></i>{% endif %}</td>
+                                </tr>
+                                <tr>
+                                    <th scope="row">{{ 'OrderDeleted'|trans() }}</th>
+                                    <td>{% if entity.orderDeleted %}<i class="fa fa-check-square-o"></i>{% else %}<i
+                                                class="fa fa-square-o"></i>{% endif %}</td>
+                                </tr>
+                                <tr>
+                                    <th scope="row">{{ 'OrderCanceled'|trans() }}</th>
+                                    <td>{% if entity.orderCanceled %}<i class="fa fa-check-square-o"></i>{% else %}<i
+                                                class="fa fa-square-o"></i>{% endif %}</td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+{% endblock %}

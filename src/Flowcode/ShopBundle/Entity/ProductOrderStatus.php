@@ -2,8 +2,12 @@
 
 namespace Flowcode\ShopBundle\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\ORM\Mapping\OneToMany;
+use Doctrine\ORM\Mapping\ManyToMany;
+use Doctrine\ORM\Mapping\JoinColumn;
+use Doctrine\ORM\Mapping\JoinTable;
 
 /**
  * ProductOrderStatus
@@ -48,6 +52,13 @@ class ProductOrderStatus
     /**
      * @var boolean
      *
+     * @ORM\Column(name="invoiceable", type="boolean")
+     */
+    protected $invoiceable;
+
+    /**
+     * @var boolean
+     *
      * @ORM\Column(name="order_modificable", type="boolean")
      */
     protected $orderModificable;
@@ -74,15 +85,32 @@ class ProductOrderStatus
     protected $orderCanceled;
 
     /**
+     * @ManyToMany(targetEntity="\Amulen\ShopBundle\Entity\ProductOrderStatus", inversedBy="followingSteps")
+     * @JoinTable(name="shop_status_previous_following",
+     *      joinColumns={@JoinColumn(name="order_status_id", referencedColumnName="id")},
+     *      inverseJoinColumns={@JoinColumn(name="related_order_status_id", referencedColumnName="id")}
+     *      )
+     */
+    protected $previousSteps;
+
+    /**
+     * @ManyToMany(targetEntity="\Amulen\ShopBundle\Entity\ProductOrderStatus", mappedBy="previousSteps")
+     */
+    protected $followingSteps;
+
+    /**
      * Constructor
      */
     public function __construct()
     {
-        $this->productorders = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->productorders = new ArrayCollection();
         $this->orderCanceled = false;
         $this->orderDeleted = false;
         $this->stockModifier = false;
         $this->orderModificable = true;
+        $this->invoiceable = false;
+        $this->previousSteps = new ArrayCollection();
+        $this->followingSteps = new ArrayCollection();
     }
 
 
@@ -184,6 +212,22 @@ class ProductOrderStatus
     /**
      * @return bool
      */
+    public function isInvoiceable(): bool
+    {
+        return $this->invoiceable;
+    }
+
+    /**
+     * @param bool $invoiceable
+     */
+    public function setInvoiceable(bool $invoiceable)
+    {
+        $this->invoiceable = $invoiceable;
+    }
+
+    /**
+     * @return bool
+     */
     public function isOrderModificable(): bool
     {
         return $this->orderModificable;
@@ -245,5 +289,70 @@ class ProductOrderStatus
         $this->orderCanceled = $orderCanceled;
     }
 
+    /**
+     * Add previousStep
+     *
+     * @param \Amulen\ShopBundle\Entity\ProductOrderStatus $previousStep
+     * @return ProductOrderStatus
+     */
+    public function addPreviousStep(\Amulen\ShopBundle\Entity\ProductOrderStatus $previousStep = null)
+    {
+        $this->previousSteps[] = $previousStep;
 
+        return $this;
+    }
+
+    /**
+     * Remove previousStep
+     *
+     * @param \Amulen\ShopBundle\Entity\ProductOrderStatus $previousStep
+     */
+    public function removePreviousStep(\Amulen\ShopBundle\Entity\ProductOrderStatus $previousStep = null)
+    {
+        $this->previousSteps->removeElement($previousStep);
+    }
+
+    /**
+     * Get previousSteps
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getPreviousSteps()
+    {
+        return $this->previousSteps;
+    }
+
+    /**
+     * Add followingStep
+     *
+     * @param \Amulen\ShopBundle\Entity\ProductOrderStatus $followingStep
+     * @return ProductOrderStatus
+     */
+    public function addFollowingStep(\Amulen\ShopBundle\Entity\ProductOrderStatus $followingStep = null)
+    {
+        $followingStep->addPreviousStep($this);
+        $this->followingSteps[] = $followingStep;
+
+        return $this;
+    }
+
+    /**
+     * Remove followingStep
+     *
+     * @param \Amulen\ShopBundle\Entity\ProductOrderStatus $followingStep
+     */
+    public function removeFollowingStep(\Amulen\ShopBundle\Entity\ProductOrderStatus $followingStep = null)
+    {
+        $this->followingSteps->removeElement($followingStep);
+    }
+
+    /**
+     * Get followingStep
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getFollowingSteps()
+    {
+        return $this->followingSteps;
+    }
 }

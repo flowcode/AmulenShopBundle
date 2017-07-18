@@ -12,4 +12,28 @@ use Doctrine\ORM\EntityRepository;
  */
 class ProductOrderStatusRepository extends EntityRepository
 {
+
+    /**
+     * @return \Doctrine\ORM\QueryBuilder
+     */
+    public function findAllQB()
+    {
+        $qb = $this->createQueryBuilder('os');
+        return $qb;
+    }
+
+    /**
+     * @param $filter
+     * @return \Doctrine\ORM\QueryBuilder
+     */
+    public function findAllFilteredQB($filter)
+    {
+        $qb = $this->findAllQB();
+
+        if ($filter['q']) {
+            $qb->andwhere('os.name LIKE :name')->setParameter('name', '%' . $filter['q'] . '%');
+        }
+
+        return $qb;
+    }
 }

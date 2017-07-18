@@ -65,6 +65,10 @@ class ShowMenuSubscriber implements EventSubscriberInterface
                     "title" => $this->translator->trans('services'),
                 ),
                 array(
+                    "url" => $this->router->generate('admin_orderstatus'),
+                    "title" => $this->translator->trans('status'),
+                ),
+                array(
                     "url" => $this->router->generate('admin_warehouse'),
                     "title" => $this->translator->trans('%entity% list', array(), 'Warehouse'),
                 ),

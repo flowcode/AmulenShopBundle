@@ -298,31 +298,6 @@ class ProductOrderService
         return false;
     }
 
-    //FIXME: Sacar de amulen y pasar a hanga.
-    public function checkBonification(User $user, ProductOrder $order, $zone)
-    {
-        $bonification = false;
-        if ($user->getTribeStatus() == User::TRIBE_STATUS_ACCEPTED && $zone == ProductOrder::ZONE_CABA_GBA && $user->getMembership() == User::MEMBERSHIP_COLLECTOR) {
-            $bonification = true;
-        }
-        $shipping = $this->hasShipping($order);
-        $shippingPrice = $shipping ? $shipping->getService()->getPrice() : 0;
-        if ($bonification) {
-            $order->setDiscount(100);
-            $order->setTotalDiscount($shipping->getService()->getPrice());
-            $order->setTotal($order->getSubTotal() - $shippingPrice);
-        } else {
-            if ($order->getTotalDiscount()) {
-                $order->setTotal($order->getSubTotal() - $shippingPrice);
-                $order->setSubTotal($order->getSubTotal() - $shippingPrice);
-            }
-            $order->setDiscount(null);
-            $order->setTotalDiscount(null);
-        }
-        $this->update($order);
-        return $order;
-    }
-
     public function setShippingAddress(ProductOrder $order, UserAddress $address)
     {
         $order = $this->clearShippingAddress($order);
