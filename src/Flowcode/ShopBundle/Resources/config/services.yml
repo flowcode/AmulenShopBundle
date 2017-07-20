@@ -130,6 +130,12 @@ services:
         arguments:
             - Amulen\ShopBundle\Entity\ProductOrderStatus
 
+    amulen.shop.repository.order_status.log:
+        class: Doctrine\ORM\EntityRepository
+        factory: ["@doctrine.orm.entity_manager", getRepository]
+        arguments:
+            - Amulen\ShopBundle\Entity\ProductOrderStatusLog
+
     amulen.shop.repository.order.item:
         class: Doctrine\ORM\EntityRepository
         factory: ["@doctrine.orm.entity_manager", getRepository]
@@ -162,6 +168,8 @@ services:
           - "@event_dispatcher"
           - "@amulen.shop.repository.order.item"
           - "@amulen.shop.service.stock"
+          - "@security.token_storage"
+          - "@amulen.shop.repository.order_status.log"
 
     amulen.shop.order.item:
         class: Flowcode\ShopBundle\Service\ProductOrderItemService

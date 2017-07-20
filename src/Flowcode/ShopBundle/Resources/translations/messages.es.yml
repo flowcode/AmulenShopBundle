@@ -77,3 +77,10 @@ STATUS_PENDING: Pendiente
 STATUS_PAYED: Pagado
 STATUS_COMPLETED: Completado
 STATUS_CANCELED: Cancelado
+
+statuses: Estados
+back: Volver
+next: Siguiente
+PreviousStatus: Estado Previo
+FollowingStatus: Estado Siguiente
+User: Usuario

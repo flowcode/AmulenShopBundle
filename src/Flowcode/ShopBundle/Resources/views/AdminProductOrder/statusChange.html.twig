@@ -1,0 +1,49 @@
+<ul class="list-inline">
+    <li>
+        {{ 'statuses'|trans|capitalize }}
+    </li>
+    {% if order.status.previousSteps|length > 0 %}
+        <li>
+            <div class="btn-group">
+                <button type="button" class="btn btn-default dropdown-toggle btn-xs" data-toggle="dropdown"
+                        aria-haspopup="true" aria-expanded="false">
+                    {{ 'back'|trans|capitalize }} <span class="caret"></span>
+                </button>
+                <ul class="dropdown-menu">
+                    {% for status in order.status.previousSteps %}
+                        <li>
+                            <a href="{{ path('admin_order_change_status',{
+                                'id': order.id,
+                                'statusName':status.name
+                            }) }}" class="btn btn-default">
+                                {{ status.name|trans }}
+                            </a>
+                        </li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </li>
+    {% endif %}
+    {% if order.status.followingSteps|length > 0 %}
+        <li>
+            <div class="btn-group">
+                <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown"
+                        aria-haspopup="true" aria-expanded="false">
+                    {{ 'next'|trans|capitalize }} <span class="caret"></span>
+                </button>
+                <ul class="dropdown-menu">
+                    {% for status in order.status.followingSteps %}
+                        <li>
+                            <a href="{{ path('admin_order_change_status',{
+                                'id': order.id,
+                                'statusName':status.name
+                            }) }}">
+                                {{ status.name|trans }}
+                            </a>
+                        </li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </li>
+    {% endif %}
+</ul>

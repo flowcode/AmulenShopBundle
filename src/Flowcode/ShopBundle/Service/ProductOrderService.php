@@ -6,6 +6,7 @@ use Amulen\ShopBundle\Entity\Product;
 use Amulen\ShopBundle\Entity\ProductOrder;
 use Amulen\ShopBundle\Entity\ProductOrderItem;
 use Amulen\ShopBundle\Entity\ProductOrderStatus;
+use Amulen\ShopBundle\Entity\ProductOrderStatusLog;
 use Amulen\ShopBundle\Entity\Service;
 use Amulen\UserBundle\Entity\User;
 use Amulen\UserBundle\Entity\UserAddress;
@@ -15,6 +16,7 @@ use Doctrine\ORM\EntityRepository;
 use Flowcode\ShopBundle\Event\OrderStatusChangedEvent;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorage;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
 /**
@@ -33,7 +35,7 @@ class ProductOrderService
     protected $stockService;
     protected $productOrderItemRepository;
 
-    public function __construct(EntityManager $em, EntityRepository $productOrderRepository, EntityRepository $productOrderStatusRepository, EventDispatcherInterface $dispatcher, EntityRepository $productOrderItemRepository, $stockService)
+    public function __construct(EntityManager $em, EntityRepository $productOrderRepository, EntityRepository $productOrderStatusRepository, EventDispatcherInterface $dispatcher, EntityRepository $productOrderItemRepository, $stockService, TokenStorage $tokenStorage, EntityRepository $productOrderStatusLogRepository)
     {
         $this->em = $em;
         $this->productOrderRepository = $productOrderRepository;
@@ -41,6 +43,8 @@ class ProductOrderService
         $this->dispatcher = $dispatcher;
         $this->productOrderItemRepository = $productOrderItemRepository;
         $this->stockService = $stockService;
+        $this->tokenStorage = $tokenStorage;
+        $this->productOrderStatusLogRepository = $productOrderStatusLogRepository;
     }
 
     /**
@@ -127,7 +131,7 @@ class ProductOrderService
             $oldQty = $item->getQuantity();
             $item->setQuantity($quantity + $oldQty);
         }
-        if($discount > 0){
+        if ($discount > 0) {
             $item->setDiscount($discount);
         }
 
@@ -272,6 +276,8 @@ class ProductOrderService
 
         if ($orderStatusTo) {
 
+            $oldStatus = $order->getStatus();
+
             $order->setStatus($orderStatusTo);
             $this->update($order);
 
@@ -279,6 +285,48 @@ class ProductOrderService
 
             $this->dispatcher->dispatch(OrderStatusChangedEvent::NAME, $OrderStatusChangedEvent);
 
+            /* Stock Update */
+            if ($orderStatusTo->isStockModifier()) {
+                $this->updateStock($order);
+            }
+            if ($orderStatusTo->isOrderCanceled() || $orderStatusTo->isOrderDeleted()) {
+                $this->updateStock($order, true);
+            }
+
+            /* Status Log change */
+            $this->orderStatusLog($order, $oldStatus, $orderStatusTo);
+
+            return true;
+        }
+
+        return false;
+    }
+
+    public function orderStatusLog($order, $oldStatus, $newStatus)
+    {
+        $log = new ProductOrderStatusLog();
+        $log->setOrder($order);
+        $log->setPreviousStatus($oldStatus);
+        $log->setFollowingStatus($newStatus);
+        $user = $this->tokenStorage->getToken()->getUser();
+        $log->setUser($user);
+        $this->getEm()->persist($log);
+        $this->getEm()->flush();
+
+        return true;
+    }
+
+    public function updateStock($order, $rollbackStock = false)
+    {
+        $isModifiable = $this->productOrderStatusLogRepository->checkStockModified($order);
+        $modifier = 1;
+        /* Solo se da para atras si se bajo el stock, x eso isModifiable */
+        if (count($isModifiable) > 0 && $rollbackStock) {
+            $isModifiable = $this->productOrderStatusLogRepository->checkOrderCancelledOrDeleted($order);
+            $modifier = -1;
+        }
+
+        if (count($isModifiable) <= 0) {
             /* Stock management */
             /* @var StockService $stockService */
             $stockService = $this->stockService;
@@ -287,15 +335,12 @@ class ProductOrderService
             foreach ($order->getItems() as $item) {
 
                 // Only if is not manual stock.
-                if ($item->getProduct() && !$item->getProduct()->isManualStock()) {
-                    $stockService->exitStock($item->getProduct()->getWarehouse(), $item->getProduct(), $item->getQuantity(), $order);
+                if ($item->getProduct() && !$item->getProduct()->isManualStock() && $item->getProduct()->getWarehouse()) {
+                    $stockService->exitStock($item->getProduct()->getWarehouse(), $item->getProduct(), $modifier * $item->getQuantity(), $order);
                 }
             }
-
-            return true;
         }
-
-        return false;
+        return true;
     }
 
     public function setShippingAddress(ProductOrder $order, UserAddress $address)

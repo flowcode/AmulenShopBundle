@@ -2,6 +2,7 @@
 
 namespace Flowcode\ShopBundle\Entity;
 
+use Amulen\ShopBundle\Entity\ProductOrderStatusLog;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
@@ -184,9 +185,15 @@ class ProductOrder
      */
     protected $comment;
 
+    /**
+     * @OneToMany(targetEntity="\Amulen\ShopBundle\Entity\ProductOrderStatusLog", mappedBy="order")
+     * */
+    protected $logs;
+
     function __construct()
     {
         $this->items = new ArrayCollection();
+        $this->logs = new ArrayCollection();
         $this->enabled = true;
         $this->total = 0;
         $this->subTotal = 0;
@@ -739,5 +746,38 @@ class ProductOrder
     public function setComment($comment)
     {
         $this->comment = $comment;
+    }
+
+    /**
+     * Add log
+     *
+     * @param ProductOrderStatusLog $log
+     * @return ProductOrder
+     */
+    public function addLog(ProductOrderStatusLog $log)
+    {
+        $this->logs[] = $log;
+
+        return $this;
+    }
+
+    /**
+     * Remove log
+     *
+     * @param ProductOrderStatusLog $log
+     */
+    public function removeLog(ProductOrderStatusLog $log)
+    {
+        $this->logs->removeElement($log);
+    }
+
+    /**
+     * Get logs
+     *
+     * @return Collection
+     */
+    public function getLogs()
+    {
+        return $this->logs;
     }
 }
