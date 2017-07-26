@@ -383,6 +383,33 @@ class ProductOrderService
     }
 
     /**
+     * Disable old draft orders.
+     * @return array
+     */
+    public function clearDrafts()
+    {
+        $interval = new \DateInterval('P1D');
+        $dateTo = new \DateTime();
+        $dateTo->sub($interval);
+
+        $orders = $this->productOrderRepository->getDraftsBetween(null, $dateTo);
+
+        $processedCount = 0;
+
+        /** @var ProductOrder $productOrder */
+        foreach ($orders as $productOrder) {
+            $productOrder->setEnabled(false);
+            $processedCount++;
+        }
+
+        $this->getEm()->flush();
+
+        return [
+            'processed' => $processedCount
+        ];
+    }
+
+    /**
      * Set entityManager.
      */
     public function setEm(EntityManager $em)

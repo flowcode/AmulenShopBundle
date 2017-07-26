@@ -3,6 +3,7 @@
 namespace Flowcode\ShopBundle\Repository;
 
 use Doctrine\ORM\EntityRepository;
+use Flowcode\ShopBundle\Entity\ProductOrderStatus;
 
 /**
  * ProductOrderRepository
@@ -81,6 +82,30 @@ class ProductOrderRepository extends EntityRepository
             ->andWhere("o.id = :order")->setParameter("order", $id)
             ->orderBy('p.id', 'DESC')
             ->getQuery()->getOneOrNullResult();
+        return $query;
+    }
+
+    public function getDraftsBetween(\DateTime $dateFrom = null, \DateTime $dateTo = null)
+    {
+        $query = $this->createQueryBuilder("o");
+
+        $query->join("o.status", "s");
+
+        $query->where("s.name = :status_name")
+            ->setParameter("status_name", ProductOrderStatus::STATUS_DRAFT);
+
+        if ($dateFrom) {
+            $query->andWhere("o.updated >= :date_from")
+                ->setParameter("date_from", $dateFrom);
+
+        }
+
+        if ($dateTo) {
+            $query->andWhere("o.updated <= :date_to")
+                ->setParameter("date_to", $dateTo);
+
+        }
+
         return $query;
     }
 

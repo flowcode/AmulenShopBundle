@@ -112,6 +112,11 @@ services:
         tags:
             - { name: kernel.event_subscriber }
 
+    amulen.shop.collectjobs_eventsubscriber:
+        class: Flowcode\ShopBundle\Event\CollectJobsSubscriber
+        tags:
+            - { name: kernel.event_subscriber }
+
     amulen.shop.listplugins_eventsubscriber:
         class: Flowcode\ShopBundle\Event\ListPluginsSubscriber
         arguments: ['@router', '@translator']
