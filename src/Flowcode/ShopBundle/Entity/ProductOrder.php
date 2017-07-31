@@ -2,7 +2,6 @@
 
 namespace Flowcode\ShopBundle\Entity;
 
-use Amulen\ShopBundle\Entity\ProductOrderStatusLog;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
@@ -751,10 +750,10 @@ class ProductOrder
     /**
      * Add log
      *
-     * @param ProductOrderStatusLog $log
+     * @param \Amulen\ShopBundle\Entity\ProductOrderStatusLog $log
      * @return ProductOrder
      */
-    public function addLog(ProductOrderStatusLog $log)
+    public function addLog(\Amulen\ShopBundle\Entity\ProductOrderStatusLog $log)
     {
         $this->logs[] = $log;
 
@@ -764,9 +763,9 @@ class ProductOrder
     /**
      * Remove log
      *
-     * @param ProductOrderStatusLog $log
+     * @param \Amulen\ShopBundle\Entity\ProductOrderStatusLog $log
      */
-    public function removeLog(ProductOrderStatusLog $log)
+    public function removeLog(\Amulen\ShopBundle\Entity\ProductOrderStatusLog $log)
     {
         $this->logs->removeElement($log);
     }
