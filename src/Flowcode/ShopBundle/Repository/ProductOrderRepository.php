@@ -31,6 +31,7 @@ class ProductOrderRepository extends EntityRepository
     {
         $qb = $this->findAllQB();
         $qb->orderBy('po.created', 'DESC');
+        $qb->andWhere('po.enabled = 1');
         $qb->setMaxResults($max);
 
         return $qb->getQuery()->getResult();
@@ -89,24 +90,26 @@ class ProductOrderRepository extends EntityRepository
     {
         $query = $this->createQueryBuilder("o");
 
-        $query->join("o.status", "s");
+        $query->leftJoin("o.status", "s");
 
-        $query->where("s.name = :status_name")
+        $query->orWhere("s.name = :status_name")
             ->setParameter("status_name", ProductOrderStatus::STATUS_DRAFT);
+
+        $query->orWhere("o.user IS NULL");
+
+        $query->orWhere("o.status IS NULL");
 
         if ($dateFrom) {
             $query->andWhere("o.updated >= :date_from")
                 ->setParameter("date_from", $dateFrom);
-
         }
 
         if ($dateTo) {
             $query->andWhere("o.updated <= :date_to")
                 ->setParameter("date_to", $dateTo);
-
         }
 
-        return $query;
+        return $query->getQuery()->getResult();
     }
 
 }
