@@ -51,6 +51,7 @@ services:
 
     amulen.shop.form.service:
         class: Flowcode\ShopBundle\Form\ServiceType
+        arguments: ['@amulen.classification.category']
         tags:
             - { name: form.type, alias: flowcode_shopbundle_service }
 

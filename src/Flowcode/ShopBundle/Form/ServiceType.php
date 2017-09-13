@@ -2,12 +2,22 @@
 
 namespace Flowcode\ShopBundle\Form;
 
+use Amulen\ClassificationBundle\Entity\Category;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
 class ServiceType extends AbstractType
 {
+
+    private $categoryService;
+
+    public function __construct($categoryService)
+    {
+        $this->categoryService = $categoryService;
+    }
+
     /**
      * @param FormBuilderInterface $builder
      * @param array $options
@@ -19,6 +29,14 @@ class ServiceType extends AbstractType
             ->add('detail')
             ->add('price')
             ->add('description')
+            ->add('category', EntityType::class, array(
+                'class' => Category::class,
+                'choices' => $this->categoryService->findByRoot("service"),
+                'choice_label' => function ($category) {
+                    return strtolower($category->getName());
+                },
+                'multiple' => false,
+            ))
         ;
     }
     
