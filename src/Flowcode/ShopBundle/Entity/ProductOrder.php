@@ -714,8 +714,11 @@ class ProductOrder
         /** @var ProductOrderItem $item */
         foreach ($this->getItems() as $item) {
             if ($item->getProduct()) {
-                array_push($productIds, $item->getId());
+                $element = $item->getProduct()->getId();
+            } else {
+                $element = $item->getId();
             }
+            array_push($productIds, $element);
         }
         return $productIds;
     }
