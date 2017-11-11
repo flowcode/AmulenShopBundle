@@ -8,6 +8,9 @@ use Amulen\MediaBundle\Entity\Media;
 use Amulen\MediaBundle\Form\GalleryItemType;
 use Amulen\MediaBundle\Form\ImageGalleryType;
 use Amulen\ShopBundle\Entity\Product;
+use Amulen\ShopBundle\Entity\ProductItemField;
+use Amulen\ShopBundle\Entity\ProductItemFieldData;
+use Amulen\ShopBundle\Entity\ProductRawMaterial;
 use Flowcode\ShopBundle\Entity\Warehouse;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
@@ -66,6 +69,7 @@ class AdminProductController extends Controller
     public function createAction(Request $request)
     {
         $entity = new Product();
+        $entity = $this->addProductItemFieldData($entity);
         $form = $this->createCreateForm($entity);
         $form->handleRequest($request);
 
@@ -133,6 +137,10 @@ class AdminProductController extends Controller
     public function newAction()
     {
         $entity = new Product();
+
+        $entity = $this->addProductItemFieldData($entity);
+
+
         $form = $this->createCreateForm($entity);
 
         return array(
@@ -175,6 +183,7 @@ class AdminProductController extends Controller
         $em = $this->getDoctrine()->getManager();
 
         $entity = $em->getRepository('AmulenShopBundle:Product')->find($id);
+        $entity = $this->addProductItemFieldData($entity);
 
         if (!$entity) {
             throw $this->createNotFoundException('Unable to find Product entity.');
@@ -397,6 +406,7 @@ class AdminProductController extends Controller
         $em = $this->getDoctrine()->getManager();
 
         $entity = $em->getRepository('AmulenShopBundle:Product')->find($id);
+        $entity = $this->addProductItemFieldData($entity);
 
         if (!$entity) {
             throw $this->createNotFoundException('Unable to find Product entity.');
@@ -407,6 +417,10 @@ class AdminProductController extends Controller
         $editForm->handleRequest($request);
 
         if ($editForm->isValid()) {
+            /* @var ProductRawMaterial $productRawMaterial */
+            foreach ($entity->getRawMaterials() as $productRawMaterial) {
+                $productRawMaterial->setProduct($entity);
+            }
             $em->flush();
 
             return $this->redirect($this->generateUrl('admin_product_edit', array('id' => $id)));
@@ -939,5 +953,27 @@ class AdminProductController extends Controller
 
         return new JsonResponse($productArr);
 
+    }
+
+    private function addProductItemFieldData(Product $product)
+    {
+        $em = $this->getDoctrine()->getManager();
+
+        $category = $product->getCategory();
+
+        $itemFields = $em->getRepository(ProductItemField::class)->findByCategories($category);
+
+        /* @var ProductItemField $itemField */
+        foreach ($itemFields as $itemField) {
+            if (!$product->getProductItemFieldData($itemField->getId())) {
+
+                $fieldData = new ProductItemFieldData();
+                $fieldData->setProductItemField($itemField);
+
+                $product->addProductItemFieldData($fieldData);
+            }
+        }
+
+        return $product;
     }
 }

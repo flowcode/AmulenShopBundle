@@ -12,11 +12,11 @@ use Doctrine\ORM\EntityRepository;
  */
 class ProductItemFieldRepository extends EntityRepository
 {
-    public function findByCategories($categoryIds)
+    public function findByCategories($category)
     {
         $qb = $this->createQueryBuilder('pif');
         $qb->join('pif.category', 'c');
-        $qb->where('c.id in (:category_ids)')->setParameter('category_ids', $categoryIds);
+        $qb->where('c.id = :category')->setParameter('category', $category);
 
         return $qb->getQuery()->getResult();
     }
