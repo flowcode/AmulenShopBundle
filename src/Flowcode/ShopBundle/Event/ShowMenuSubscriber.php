@@ -88,6 +88,10 @@ class ShowMenuSubscriber implements EventSubscriberInterface
                     "url" => $this->router->generate('admin_amulen_shop_setting'),
                     "title" => $this->translator->trans('settings'),
                 ),
+                array(
+                    "url" => $this->router->generate('admin_productitemfield'),
+                    "title" => $this->translator->trans('Item Field'),
+                ),
             ),
         );
 

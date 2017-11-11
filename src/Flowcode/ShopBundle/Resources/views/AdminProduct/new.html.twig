@@ -1,5 +1,6 @@
 {% extends 'FlowcodeDashboardBundle:Default:layout.html.twig' %}
 
+
 {% block body %}
     {{ include('FlowcodeShopBundle:AdminProduct:productsHeader.html.twig') }}
     <section class="content">
@@ -14,8 +15,110 @@
             </div>
 
             <div class="box-body">
-                {{ form(form) }}
+                {{ form_start(form) }}
+                {{ form_errors(form) }}
+
+                <div class="row">
+                    <div class="col-sm-8">
+                        <div class="nav-tabs-custom">
+                            <ul class="nav nav-tabs">
+                                <li class="active">
+                                    <a href="#product-basic-info" data-toggle="tab">
+                                        Datos básicos
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="#product-detailed-info" data-toggle="tab">
+                                        Características
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="#product-composition" data-toggle="tab">
+                                        Composición
+                                    </a>
+                                </li>
+                            </ul>
+                            <div class="tab-content">
+
+                                <div class="tab-pane active" id="product-basic-info">
+                                    {{ form_row(form.name) }}
+                                    {{ form_row(form.description) }}
+
+                                    {{ form_row(form.price) }}
+                                    {{ form_row(form.enabled) }}
+                                    {{ form_row(form.pack) }}
+                                    {{ form_row(form.featured) }}
+                                    {{ form_row(form.tags) }}
+                                    {{ form_row(form.content) }}
+                                </div>
+
+                                <div class="tab-pane" id="product-detailed-info">
+                                    {{ form_row(form.productItemFieldDatas) }}
+                                </div>
+
+                                <div class="tab-pane" id="product-composition">
+                                    <div class="form-group">
+                                        <div class="col-sm-10">
+                                            <div class="raw-materials" id="contentMaterials">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-4">
+                        {{ form_row(form.category) }}
+                        {{ form_row(form.capacity) }}
+                    </div>
+                </div>
+
+                {{ form_widget(form._token) }}
+
+                <hr>
+
+                <div class="form-group">
+                    <div class="col-sm-8 col-sm-offset-1">
+                        <button class="btn btn-primary btn-lg" type="submit">
+                            Guardar
+                        </button>
+                        <a href="{{ path('admin_product') }}" class="btn btn-link">
+                            Cancelar
+                        </a>
+                    </div>
+                </div>
+
+                <div class="hidden" id="productRawMaterialTemplate">
+                    <div class="form-group reminders">
+                        <div class="col-sm-6 field"
+                             data-prototype="{{ form_widget(form.rawMaterials.vars.prototype.rawMaterial)|e }}">
+                        </div>
+                        <div class="col-sm-3 field"
+                             data-prototype="{{ form_widget(form.rawMaterials.vars.prototype.quantity)|e }}">
+                        </div>
+                        <div class="col-sm-2 tools">
+                        </div>
+                    </div>
+                </div>
+                {{ form_end(form, {'render_rest': false}) }}
             </div>
+
         </div>
     </section>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+
+    <script src="{{ asset('bundles/tetranzselect2entity/js/select2entity.js') }}"></script>
+    <script>
+        var tagARemove = '<button href="#" class="btn btn-link">Quitar</button>';
+        var tagAAddOther = '<div class="col-sm-2 col-xs-offset-2"><button href="#" class="btn btn-link add_tag_link"><i class="ionicons ion-plus-circled"></i>  Agregar otro</button></div>';
+    </script>
+    <script src="{{ asset('bundles/flowcodeshop/js/rawmaterials.js') }}"></script>
+    <script src="{{ asset('bundles/flowcodedashboard/plugins/datepicker/bootstrap-datepicker.js') }}"
+            type="text/javascript"></script>
+    <script src="{{ asset('bundles/flowcodedashboard/plugins/datepicker/locales/bootstrap-datepicker.es.js') }}"
+            type="text/javascript"></script>
+    <script src="{{ asset("bundles/flowcodeshop/js/shop-datetime-picker.js") }}"></script>
 {% endblock %}

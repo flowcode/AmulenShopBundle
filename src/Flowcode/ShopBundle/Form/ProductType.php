@@ -9,6 +9,7 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 use Amulen\ClassificationBundle\Entity\Tag;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
+use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 
 class ProductType extends AbstractType
 {
@@ -52,7 +53,18 @@ class ProductType extends AbstractType
             ->add('mediaGallery', null, array("label" => "Galería de medios"))
             ->add('content', 'ckeditor')
             ->add('brand')
-            ->add('capacity');
+            ->add('capacity')
+            ->add('rawMaterials', 'collection', array(
+                'type' => new ProductRawMaterialType($builder->getData()),
+                'allow_add' => true,
+                'by_reference' => false,
+                'allow_delete' => true
+            ))
+            ->add('productItemFieldDatas', CollectionType::class, array(
+                'entry_type' => ProductItemFieldDataType::class,
+                'label' => false,
+                'required' => false
+            ));
     }
 
     /**

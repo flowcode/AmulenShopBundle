@@ -1,0 +1,71 @@
+{% extends "FlowcodeDashboardBundle:Default:layout.html.twig" %}
+
+{% block title %}{{ '%entity% list'|trans({'%entity%': 'ProductItemFieldData'}, 'ProductItemFieldData') }} - {{ parent() }}{% endblock %}
+{% macro thead(name, field, label) %}
+    {% spaceless %}
+        {% set sort = app.session.get('sort.' ~ name) %}
+        {% if sort and sort.field == field %}
+            {% if sort.type == 'DESC' %}
+                <a href="{{ path('admin_productitemfielddata_sort', {field: field, type: 'ASC'}) }}">{{ label | trans({},'ProductItemFieldData') }}
+                    <i class="fa fa-sort-down"></i></a>
+            {% elseif sort.type == 'ASC' %}
+                <a href="{{ path('admin_productitemfielddata_sort', {field: field, type: 'DESC'}) }}">{{ label | trans({},'ProductItemFieldData') }}
+                    <i class="fa fa-sort-up"></i></a>
+            {% endif %}
+        {% else %}
+            <a href="{{ path('admin_productitemfielddata_sort', {field: field, type: 'ASC'}) }}">{{ label | trans({},'ProductItemFieldData') }}
+                <i class="fa fa-sort"></i></a>
+        {% endif %}
+    {% endspaceless %}
+{% endmacro %}
+
+{% from _self import thead %}
+
+
+{% block body %}
+    <section class="content-header">
+        <h1>
+            {{ '%entity% list'|trans({'%entity%': 'ProductItemFieldData'}, 'ProductItemFieldData') }}
+        </h1>
+    </section>
+    <section class="content">
+        <div class="box">
+            <div class="box-header">
+                <div class="box-tools pull-right"><a class="btn btn-link btn-sm"
+                                                     href={{ path('admin_productitemfielddata_new') }}>
+                        <i class="fa fa-plus"></i> {{ 'Create a new %entity%'|trans({'%entity%': 'ProductItemFieldData'}, 'ProductItemFieldData') }}
+                    </a>
+                </div>
+            </div>
+            <div class="box-body">
+                <table class="table table-hover records_list table-condensed">
+                    <thead>
+                    <tr>
+                        <th scope="col">{{ thead('productitemfielddata', 'productItem', 'Productitem') }}</th>
+                        <th scope="col">{{ thead('productitemfielddata', 'data', 'Data') }}</th>
+                        <th scope="col">{{ thead('productitemfielddata', 'created', 'Created') }}</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for productitemfielddata in paginator %}
+                        <tr>
+
+                            <td>
+                                <a href="{{ path('admin_productitemfielddata_show', {id: productitemfielddata.id}) }}">{{ productitemfielddata.productItem.id }}</a>
+                            </td>
+                            <td>{{ productitemfielddata.data }}</td>
+                            <td>{% if productitemfielddata.created %}{{ productitemfielddata.created|date('Y-m-d H:i:s') }}{% endif %}</td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+
+                {{ knp_pagination_render(paginator) }}
+            </div>
+            <div class="box-footer">
+
+            </div>
+
+    </section>
+
+{% endblock %}

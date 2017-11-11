@@ -55,6 +55,16 @@ services:
         tags:
             - { name: form.type, alias: flowcode_shopbundle_service }
 
+    amulen.shop.form.product.item.field:
+        class: Flowcode\ShopBundle\Form\ProductItemFieldType
+        tags:
+            - { name: form.type, alias: flowcode_shopbundle_productitemfield }
+
+    amulen.shop.form.product.item.field.data:
+        class: Flowcode\ShopBundle\Form\ProductItemFieldDataType
+        tags:
+            - { name: form.type, alias: flowcode_shopbundle_productitemfielddata }
+
     # Repositories
     amulen.shop.repository.product:
             class: Doctrine\ORM\EntityRepository
@@ -216,4 +226,10 @@ services:
           - "@amulen.shop.repository.product"
         calls:
           - [setContainer, ["@service_container"]]
+
+    amulen.shop.product.item.field:
+        class: Flowcode\ShopBundle\Service\ProductItemFieldService
+        arguments:
+          - "%uploads_base_dir%"
+          - "%uploads_post_dir%"
         

@@ -31,11 +31,11 @@ class ProductRepository extends EntityRepository
             $qb->orWhere('p.description LIKE :name')->setParameter('name', '%' . $filter['q'] . '%');
         }
 
-        if ($filter['category']) {
+        if (isset($filter['category'])) {
             $qb->andWhere('c.id =:category_id')->setParameter('category_id', $filter['category']);
         }
 
-        if ($filter['is_enabled']) {
+        if (isset($filter['is_enabled'])) {
             $qb->andWhere('p.enabled = :is_enabled')->setParameter('is_enabled', true);
         }
 

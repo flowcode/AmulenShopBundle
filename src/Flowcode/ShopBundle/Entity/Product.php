@@ -137,6 +137,20 @@ class Product
     protected $stock;
 
     /**
+     * @var boolean
+     *
+     * @ORM\Column(name="manual_stock", type="boolean")
+     */
+    protected $manualStock;
+
+    /**
+     * @var boolean
+     *
+     * @ORM\Column(name="manual_pack_pricing", type="boolean")
+     */
+    protected $manualPackPricing;
+
+    /**
      * Es el defecto por el producto.
      *
      * @ORM\ManyToOne(targetEntity="\Flowcode\ShopBundle\Entity\Warehouse")
@@ -172,16 +186,28 @@ class Product
      */
     protected $updated;
 
+    /**
+     * @OneToMany(targetEntity="\Amulen\ShopBundle\Entity\ProductRawMaterial", mappedBy="product", cascade={"persist","remove"})
+     */
+    protected $rawMaterials;
+
+    /**
+     * @OneToMany(targetEntity="\Amulen\ShopBundle\Entity\ProductItemFieldData", mappedBy="product",cascade={"persist","remove"})
+     */
+    protected $productItemFieldDatas;
+
     function __construct()
     {
         $this->tags = new ArrayCollection();
         $this->items = new ArrayCollection();
         $this->strategies = new ArrayCollection();
+        $this->rawMaterials = new ArrayCollection();
+        $this->productItemFieldDatas = new ArrayCollection();
         $this->featured = false;
         $this->pack = false;
-        $this->manualStock = true;
         $this->stock = 0;
         $this->capacity = 0;
+        $this->manualStock = true;
         $this->manualPackPricing = false;
     }
 
@@ -705,5 +731,120 @@ class Product
         $this->stock = $stock;
     }
 
+    /**
+     * @return bool
+     */
+    public function isManualPackPricing()
+    {
+        return $this->manualPackPricing;
+    }
 
+    /**
+     * @param $manualPackPricing
+     */
+    public function setManualPackPricing($manualPackPricing)
+    {
+        $this->manualPackPricing = $manualPackPricing;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isManualStock()
+    {
+        return $this->manualStock;
+    }
+
+    /**
+     * @param bool $manualStock
+     */
+    public function setManualStock($manualStock)
+    {
+        $this->manualStock = $manualStock;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getRawMaterials()
+    {
+        return $this->rawMaterials;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function addRawMaterial(\Amulen\ShopBundle\Entity\ProductRawMaterial $productRawMaterial)
+    {
+        $this->rawMaterials->add($productRawMaterial);
+    }
+
+    /**
+     * @return mixed
+     */
+    public function removeRawMaterial(\Amulen\ShopBundle\Entity\ProductRawMaterial $productRawMaterial)
+    {
+        if ($this->rawMaterials->contains($productRawMaterial)) {
+            $this->rawMaterials->removeElement($productRawMaterial);
+            $productRawMaterial->setProduct(null);
+        }
+    }
+
+    /**
+     * @param mixed $rawMaterials
+     */
+    public function setRawMaterials($rawMaterials)
+    {
+        $this->rawMaterials = $rawMaterials;
+    }
+
+    /**
+     * Add productItemFieldData
+     *
+     * @param productItemFieldData $productItemFieldData
+     * @return Product
+     */
+    public function addProductItemFieldData(ProductItemFieldData $productItemFieldData)
+    {
+        $productItemFieldData->setProduct($this);
+
+        $this->productItemFieldDatas->add($productItemFieldData);
+
+        return $this;
+    }
+
+    /**
+     * Remove productItemFieldData
+     *
+     * @param ProductItemFieldData $productItemFieldData
+     */
+    public function removeProductItemFieldData(ProductItemFieldData $productItemFieldData)
+    {
+        $this->productItemFieldDatas->removeElement($productItemFieldData);
+    }
+
+    /**
+     * Get productItemFieldDatas
+     *
+     * @return ArrayCollection
+     */
+    public function getProductItemFieldDatas()
+    {
+        return $this->productItemFieldDatas;
+    }
+
+    /**
+     * @param $itemFieldId
+     * @return productItemFieldData|null
+     */
+    public function getProductItemFieldData($itemFieldId)
+    {
+        /* @var ProductItemFieldData $customField */
+        foreach ($this->getProductItemFieldDatas() as $productItemFieldData) {
+            if ($productItemFieldData->getProductItemField() && $productItemFieldData->getProductItemField()->getId() == $itemFieldId) {
+                return $productItemFieldData;
+            }
+        }
+        return null;
+    }
 }

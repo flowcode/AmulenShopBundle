@@ -16,8 +16,110 @@
                 </div>
             </div>
             <div class="box-body">
-                {{ form(edit_form) }}
-                {{ form(delete_form) }}
+                <div class="box-body">
+                    {{ form_start(edit_form) }}
+                    {{ form_errors(edit_form) }}
+
+                    <div class="row">
+                        <div class="col-sm-8">
+                            <div class="nav-tabs-custom">
+                                <ul class="nav nav-tabs">
+                                    <li class="active">
+                                        <a href="#product-basic-info" data-toggle="tab">
+                                            Datos básicos
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a href="#product-wine-info" data-toggle="tab">
+                                            Características
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a href="#product-composition" data-toggle="tab">
+                                            Composición
+                                        </a>
+                                    </li>
+                                </ul>
+                                <div class="tab-content">
+
+                                    <div class="tab-pane active" id="product-basic-info">
+                                        {{ form_row(edit_form.name) }}
+                                        {{ form_row(edit_form.description) }}
+                                        {{ form_row(edit_form.price) }}
+                                        {{ form_row(edit_form.enabled) }}
+                                        {{ form_row(edit_form.pack) }}
+                                        {{ form_row(edit_form.featured) }}
+                                        {{ form_row(edit_form.manualStock) }}
+                                        {{ form_row(edit_form.manualPackPricing) }}
+                                        {{ form_row(edit_form.tags) }}
+                                        {{ form_row(edit_form.content) }}
+                                        {{ form_row(edit_form.warehouse) }}
+                                    </div>
+
+                                    <div class="tab-pane" id="product-wine-info">
+                                        {{ form_row(edit_form.productItemFieldDatas) }}
+                                    </div>
+
+                                    <div class="tab-pane" id="product-composition">
+                                        <div class="form-group">
+                                            <div class="col-sm-10">
+                                                <div class="raw-materials" id="contentMaterials">
+                                                    {% for productrawmaterial in edit_form.rawMaterials %}
+                                                        <div class="form-group raw-materials">
+                                                            <div class="col-sm-6 content-raw-material" data="{{ productrawmaterial.rawMaterial.vars.data.id }}">
+                                                                {{ form_widget(productrawmaterial.rawMaterial) }}
+                                                            </div>
+                                                            <div class="col-sm-3">
+                                                                {{ form_widget(productrawmaterial.quantity) }}
+                                                            </div>
+                                                            <div class="col-sm-2 tools">
+                                                            </div>
+                                                        </div>
+                                                    {% endfor %}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-4">
+                            {{ form_row(edit_form.category) }}
+                            {{ form_row(edit_form.capacity) }}
+                        </div>
+                    </div>
+
+
+                    {{ form_widget(edit_form._token) }}
+
+
+                    <hr>
+
+                    <div class="form-group">
+                        <div class="col-sm-8 col-sm-offset-1">
+                            <button class="btn btn-primary btn-lg" type="submit">
+                                Guardar
+                            </button>
+                            <a href="{{ path('admin_product_show', { 'id': entity.id }) }}" class="btn btn-link">
+                                Cancelar
+                            </a>
+                        </div>
+                    </div>
+
+                    <div class="hidden" id="productRawMaterialTemplate">
+                        <div class="form-group reminders">
+                            <div class="col-sm-6 field"
+                                 data-prototype="{{ form_widget(edit_form.rawMaterials.vars.prototype.rawMaterial)|e }}">
+                            </div>
+                            <div class="col-sm-3 field"
+                                 data-prototype="{{ form_widget(edit_form.rawMaterials.vars.prototype.quantity)|e }}">
+                            </div>
+                            <div class="col-sm-2 tools">
+                            </div>
+                        </div>
+                    </div>
+                    {{ form_end(edit_form, {'render_rest': false}) }}
+                </div>
             </div>
         </div>
     </section>
@@ -25,5 +127,16 @@
 {% block javascripts %}
     {{ parent() }}
 
-    {{ form_javascript(edit_form) }}
+    <script>
+        var tagARemove = '<button href="#" class="btn btn-link">Quitar</button>';
+        var tagAAddOther = '<div class="col-sm-2 col-xs-offset-2"><button href="#" id="add-tag-lala" class="btn btn-link add_tag_link"><i class="ionicons ion-plus-circled"></i>  Agregar otro</button></div>';
+    </script>
+    <script src="{{ asset('bundles/tetranzselect2entity/js/select2entity.js') }}"></script>
+    <script src="{{ asset('bundles/flowcodeshop/js/rawmaterials.js') }}"></script>
+    <script src="{{ asset('bundles/flowcodedashboard/plugins/datepicker/bootstrap-datepicker.js') }}"
+            type="text/javascript"></script>
+    <script src="{{ asset('bundles/flowcodedashboard/plugins/datepicker/locales/bootstrap-datepicker.es.js') }}"
+            type="text/javascript"></script>
+    <script src="{{ asset("bundles/flowcodeshop/js/shop-datetime-picker.js") }}"></script>
+
 {% endblock %}

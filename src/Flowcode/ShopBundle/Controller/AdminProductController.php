@@ -14,6 +14,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\Form\Form;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Finder\SplFileInfo;
@@ -908,5 +909,35 @@ class AdminProductController extends Controller
             'product' => $product,
             'edit_form' => $editForm->createView(),
         );
+    }
+
+    /**
+     * Edits an existing Media entity.
+     *
+     * @Route("/find/rawmaterial", name="admin_product_find")
+     * @Method("GET")
+     */
+    public function findAction(Request $request)
+    {
+        $em = $this->getDoctrine()->getManager();
+
+        $productRepo = $em->getRepository(Product::class);
+        $productsQb = $productRepo->findAllFilteredQB([
+            'q' => $request->get('q')
+        ]);
+        $products = $productsQb->getQuery()->getResult();
+        $productArr = [];
+        /* @var Product $product */
+        foreach ($products as $product) {
+            $productArrItem = [
+                'id' => $product->getId(),
+                'text' => $product->getName() . ' - $' . $product->getPrice()
+            ];
+
+            array_push($productArr, $productArrItem);
+        }
+
+        return new JsonResponse($productArr);
+
     }
 }
