@@ -92,6 +92,14 @@
                                         </div>
                                     </td>
                                 </tr>
+                                {% if entity.productItemFieldDatas %}
+                                    {% for fieldData in entity.productItemFieldDatas %}
+                                        <tr>
+                                            <th>{{ fieldData.productItemField.name|trans|capitalize }}</th>
+                                            <td>{{ fieldData.data }}</td>
+                                        </tr>
+                                    {% endfor %}
+                                {% endif %}
                                 </tbody>
                             </table>
                         </div>
