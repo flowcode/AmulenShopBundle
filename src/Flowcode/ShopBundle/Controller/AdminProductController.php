@@ -401,18 +401,17 @@ class AdminProductController extends Controller
      * @Method("PUT")
      * @Template("FlowcodeShopBundle:AdminProduct:edit.html.twig")
      */
-    public function updateAction(Request $request, $id)
+    public function updateAction(Request $request, Product $entity)
     {
         $em = $this->getDoctrine()->getManager();
 
-        $entity = $em->getRepository('AmulenShopBundle:Product')->find($id);
         $entity = $this->addProductItemFieldData($entity);
 
         if (!$entity) {
             throw $this->createNotFoundException('Unable to find Product entity.');
         }
 
-        $deleteForm = $this->createDeleteForm($id);
+        $deleteForm = $this->createDeleteForm($entity->getId());
         $editForm = $this->createEditForm($entity);
         $editForm->handleRequest($request);
 
@@ -423,7 +422,7 @@ class AdminProductController extends Controller
             }
             $em->flush();
 
-            return $this->redirect($this->generateUrl('admin_product_edit', array('id' => $id)));
+            return $this->redirect($this->generateUrl('admin_product_show', array('id' => $entity->getId())));
         }
 
         return array(

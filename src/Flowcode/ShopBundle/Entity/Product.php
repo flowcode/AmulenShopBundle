@@ -663,7 +663,7 @@ class Product
     /**
      * @param Warehouse $warehouse
      */
-    public function setWarehouse(Warehouse $warehouse)
+    public function setWarehouse(Warehouse $warehouse = null)
     {
         $this->warehouse = $warehouse;
     }
