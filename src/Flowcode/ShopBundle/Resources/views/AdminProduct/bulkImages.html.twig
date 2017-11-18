@@ -1,0 +1,28 @@
+{% extends 'FlowcodeDashboardBundle:Default:layout.html.twig' %}
+
+{% block body %}
+{{ include('FlowcodeMediaBundle:AdminMedia:mediaHeader.html.twig') }}
+<section class="content">
+    <div class="box box-solid">
+        <div class="box-header">
+            <h3 class="box-title">{{"new item"|trans|title}}</h3>
+            <div class="box-tools">
+                <a href="{{ path('admin_product_show', { 'id': product.id }) }}" class="btn btn-xs btn-link">
+                    {{"back to product"|trans|title}}
+                </a>
+            </div>
+        </div>
+        <div class="box-body">
+            <div class="box" id="addImages">
+                <div class="box-body">
+                    <form action="{{ path('admin_product_upload_images', {'id': product.id}) }}" class="dropzone">
+                        <div class="fallback">
+                            <input name="file" type="file" multiple />
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

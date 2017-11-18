@@ -5,6 +5,7 @@ namespace Flowcode\ShopBundle\Controller;
 use Amulen\MediaBundle\Entity\Gallery;
 use Amulen\MediaBundle\Entity\GalleryItem;
 use Amulen\MediaBundle\Entity\Media;
+use Amulen\MediaBundle\Entity\MediaType;
 use Amulen\MediaBundle\Form\GalleryItemType;
 use Amulen\MediaBundle\Form\ImageGalleryType;
 use Amulen\ShopBundle\Entity\Product;
@@ -492,8 +493,6 @@ class AdminProductController extends Controller
      */
     public function addimageAction(Product $product)
     {
-        $em = $this->getDoctrine()->getManager();
-
         $gallery = $product->getMediaGallery();
         $entity = new GalleryItem();
         $entity->setGallery($gallery);
@@ -522,9 +521,7 @@ class AdminProductController extends Controller
      */
     public function createGalleryItemAction(Product $product, Request $request)
     {
-        $em = $this->getDoctrine()->getManager();
-
-        $entity = new \Amulen\MediaBundle\Entity\GalleryItem();
+        $entity = new GalleryItem();
 
         $form = $this->createForm($this->get("amulen.shop.form.product.gallery"), $entity, array(
             'action' => $this->generateUrl('admin_product_gallery_item_create', array('id' => $product->getId())),
@@ -555,6 +552,33 @@ class AdminProductController extends Controller
         );
     }
 
+    /**
+     * Displays a form to create a new Gallery entity.
+     *
+     * @Route("/{id}/bulkImages", name="admin_product_bulk_images")
+     * @Method("GET")
+     * @Template()
+     */
+    public function bulkImagesAction(Product $product)
+    {
+        $gallery = $product->getMediaGallery();
+        $entity = new GalleryItem();
+        $entity->setGallery($gallery);
+        $position = $gallery->getGalleryItems()->count();
+        $entity->setPosition($position);
+
+        $form = $this->createForm($this->get("amulen.shop.form.product.gallery"), $entity, array(
+            'action' => $this->generateUrl('admin_product_gallery_item_create', array('id' => $product->getId())),
+            'method' => 'POST',
+        ));
+        $form->add('submit', 'submit', array('label' => 'Create'));
+
+        return array(
+            'entity' => $entity,
+            'product' => $product,
+            'form' => $form->createView(),
+        );
+    }
 
     /**
      * Finds and displays a Gallery entity.
@@ -743,6 +767,60 @@ class AdminProductController extends Controller
         }
         $em->flush();
         return new Response('ok');
+    }
+
+    /**
+     * Finds and displays a Product entity.
+     *
+     * @Route("/{id}/upload", name="admin_product_upload_images")
+     * @Method("POST")
+     */
+    public function uploadAction(Product $product)
+    {
+        if (!$product) {
+            throw $this->createNotFoundException('Unable to find Product entity.');
+        }
+
+        $productService = $this->get('amulen.shop.product');
+        $response = $productService->uploadImage($product);
+
+        $httpResponse = Response::HTTP_BAD_REQUEST;
+
+        if ($response['upload_ok'] != 0) {
+            $path = $response['target_file'];
+            $em = $this->getDoctrine()->getManager();
+            $mediaTypeRepository = $em->getRepository(MediaType::class);
+
+            $mediaType = $mediaTypeRepository->findOneBy([
+                'name' => 'image'
+            ]);
+
+            $media = new Media();
+            $name = basename($_FILES["file"]["name"]);
+            $slugName = strtolower(str_replace(' ','-',$name));
+            $media->setName($slugName);
+            $media->setPath($path);
+            $media->setMediaType($mediaType);
+            $em->persist($media);
+
+            $galleryItem = new GalleryItem();
+            $gallery = $product->getMediaGallery();
+            $gallery->addGalleryItem($galleryItem);
+            $galleryItem->setGallery($gallery);
+            $galleryItem->setMedia($media);
+            $position = $gallery->getGalleryItems()->count() + 1;
+            $galleryItem->setPosition($position);
+
+            $em->persist($galleryItem);
+            $em->flush();
+            $httpResponse = Response::HTTP_OK;
+        }
+
+        if ($response['upload_ok'] == 2) {
+            $httpResponse = Response::HTTP_BAD_REQUEST;
+        }
+
+        return new JsonResponse($response['message'], $httpResponse);
     }
 
     /**
