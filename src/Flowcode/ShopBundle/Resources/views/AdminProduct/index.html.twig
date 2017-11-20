@@ -61,11 +61,7 @@
                             </td>
                             <td>
                                 {% if entity.getMediaGallery.getGalleryItems[0] is defined %}
-                                    {% if entity.flowrId %}
-                                        <img src="{{ asset(entity.getMediaGallery.getGalleryItems[0].media.path) }}" class="img-responsive" style="max-width: 50px;">
-                                    {% else %}
-                                        <img src="{{ asset(entity.getMediaGallery.getGalleryItems[0].media.path|imagine_filter('thumb_product_image_xs')) }}">
-                                    {% endif %}
+                                    <img src="{{ asset(entity.getMediaGallery.getGalleryItems[0].media.path) }}" class="img-responsive" style="max-width: 50px;">
                                 {% endif %}
                             </td>
                             <td>
